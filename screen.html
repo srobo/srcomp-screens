@@ -35,11 +35,13 @@
         var Match = $resource("http://localhost:5112/matches/" + arenaId + "/current");
 
         var updateState = function() {
-          $scope.match = Match.get();
+          Match.get(function(match) {
+            $scope.match = match;
 
-          // calculate milliseconds left until the second
-          var timeDelta = Date.now() - parseInt(Date.now() / 1000) * 1000;
-          $timeout(updateState, timeDelta);
+            // calculate milliseconds left until the second
+            var timeDelta = Date.now() - parseInt(Date.now() / 1000) * 1000;
+            $timeout(updateState, timeDelta);
+          });
         }
 
         updateState();
