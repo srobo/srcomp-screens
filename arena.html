@@ -213,12 +213,12 @@
             if (!currentMatch && !nextMatch) {
               // TODO: implement
             } else {
-              var timeToStart = parseInt((new Date(nextMatch.start_time) - new Date()) / 1000);
+              var timeToStart = nextMatch.secondsToStart();
               if (timeToStart <= 120 || !currentMatch) {
                 corner.update(nextMatch.teams[i], nextMatch.number,
                               -timeToStart);
               } else {
-                var timeToEnd = parseInt((new Date(currentMatch.end_time) - new Date()) / 1000) - 120;
+                var timeToEnd = currentMatch.secondsToEnd() - 120;
                 corner.update(currentMatch.teams[i], currentMatch.number,
                               timeToEnd);
               }
@@ -253,26 +253,46 @@
       (function() {
         "use strict";
 
+        var Corner = function(def) {
+          this.colour = def.colour;
+        };
+
+        var Match = function(def) {
+          this.teams = def.teams;
+          this.number = this.id = def.number;
+          this.startTime = new Date(def.start_time);
+          this.endTime = new Date(def.end_time);
+        };
+
+        Match.prototype.secondsToStart = function() {
+          return parseInt((this.startTime - new Date()) / 1000);
+        };
+
+        Match.prototype.secondsToEnd = function() {
+          return parseInt((this.endTime - new Date()) / 1000);
+        };
+
         var Resources = window.Resources = function() {
 
         };
 
-        Resources.prototype.get = function(url, callback) {
+        Resources.prototype.get = function(url, resource, callback) {
           var xhr = new XMLHttpRequest();
           xhr.open("GET", url);
           xhr.responseType = "json";
           xhr.addEventListener("load", function(e) {
-            callback(e.target.response);
+            var res = new resource(e.target.response);
+            callback(res);
           });
           xhr.send();
         };
 
         Resources.prototype.getMatches = function(arena, query, callback) {
-          this.get("/matches/" + arena + "/" + query, callback);
+          this.get("/matches/" + arena + "/" + query, Match, callback);
         };
 
         Resources.prototype.getCorner = function(id, callback) {
-          this.get("/corner/" + id, callback);
+          this.get("/corner/" + id, Corner, callback);
         };
 
         Resources.prototype.getCurrentAndNextMatch = function(arena, callback) {
@@ -336,7 +356,7 @@
 
           // timer to redraw the UI faster than the data is updated
           var updateView = function() {
-            var timeToStart = parseInt((new Date(nextMatch.start_time) - new Date()) / 1000);
+            var timeToStart = nextMatch.secondsToStart();
             if (timeToStart <= 5 && timeToStart > 0) {
               countdownView.element.hidden = false;
               countdownView.update(timeToStart);
