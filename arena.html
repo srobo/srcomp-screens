@@ -151,28 +151,12 @@
     </main>
 
     <aside>
-      <section class="match small">
-        <div ng-style="{background: corners[otherCorners[0]].colour}"></div>
+      <section class="match small" ng-repeat="i in [0,1,2]">
+        <div ng-style="{background: corners[otherCorners[i]].colour}"></div>
         <div>
-          <h1>{{ match.teams[otherCorners[0]] }}</h1>
+          <h1>{{ match.teams[otherCorners[i]] }}</h1>
         </div>
-        <div ng-style="{background: corners[otherCorners[0]].colour}"></div>
-      </section>
-
-      <section class="match small">
-        <div ng-style="{background: corners[otherCorners[1]].colour}"></div>
-        <div>
-          <h1>{{ match.teams[otherCorners[1]] }}</h1>
-        </div>
-        <div ng-style="{background: corners[otherCorners[1]].colour}"></div>
-      </section>
-
-      <section class="match small">
-        <div ng-style="{background: corners[otherCorners[2]].colour}"></div>
-        <div>
-          <h1>{{ match.teams[otherCorners[2]] }}</h1>
-        </div>
-        <div ng-style="{background: corners[otherCorners[2]].colour}"></div>
+        <div ng-style="{background: corners[otherCorners[i]].colour}"></div>
       </section>
     </aside>
   </body>
