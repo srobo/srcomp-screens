@@ -173,12 +173,20 @@
           xhr.send();
         };
 
-        Resources.prototype.getMatch = function(id, callback) {
-          this.get("/matches/" + id + "/current", callback);
+        Resources.prototype.getMatches = function(arena, query, callback) {
+          this.get("/matches/" + arena + "/" + query, callback);
         };
 
         Resources.prototype.getCorner = function(id, callback) {
           this.get("/corner/" + id, callback);
+        };
+
+        Resources.prototype.getCurrentAndNextMatch = function(arena, callback) {
+          this.getMatches(arena, "current", function(currentMatch) {
+            this.getMatches(arena, currentMatch.number + 1, function(nextMatch) {
+              callback(currentMatch, nextMatch);
+            }.bind(this));
+          }.bind(this));
         };
 
         Resources.prototype.getAllCorners = function(callback) {
@@ -197,6 +205,10 @@
 
     <script>
       (function() {
+        var fragment = window.location.hash.substr(1).split(",");
+        var arenaId = fragment[0];
+        var cornerId = parseInt(fragment[1]);
+
         var loadCorners = function(resources, mainCorner, callback) {
           var main = document.querySelector("main");
           var aside = document.querySelector("aside");
@@ -219,20 +231,21 @@
           });
         };
 
-
         var resources = new Resources();
-        loadCorners(resources, 0, function(corners) {
+        loadCorners(resources, cornerId, function(corners) {
           var currentMatch = undefined;
+          var nextMatch = undefined;
 
           // timer to update the match data at regular intervals
           setInterval(function() {
-            resources.getMatch("A", function(match) {
+            resources.getCurrentAndNextMatch(arenaId, function(current, next) {
               if (currentMatch === undefined) {
                 // start redrawing the UI once we are sure a match exists
                 window.requestAnimationFrame(updateView);
               }
 
-              currentMatch = match;
+              currentMatch = current;
+              nextMatch = next;
             });
           }, 1000);
 
