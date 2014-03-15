@@ -60,18 +60,24 @@
       }
 
       section.corner h1 {
-        font-size: 24vw;
+        font-size: 22vw;
       }
 
       section.corner h1.small {
-        font-size: 18vw;
+        font-size: 16vw;
       }
 
       section.corner.small h1 {
         font-size: 6vw;
       }
 
-      section.corner p, section.corner h2 {
+      section.corner h2 {
+        font-size: 4vw;
+        font-weight: bold;
+        margin: 6px;
+      }
+
+      section.corner p {
         font-size: 6vw;
         font-weight: bold;
         margin: 5px;
@@ -100,12 +106,16 @@
           }
         };
 
-        var formatTimeLeft = function(input) {
-          var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
+        var formatTimeLeft = function(delta) {
+          var prefix = "";
+          if (delta < 0) {
+            delta = -delta;
+            prefix = "Starting in ";
+          }
 
           var minutesLeft = parseInt(delta/60, 10);
           var secondsLeft = delta - parseInt(delta/60, 10) * 60;
-          return minutesLeft + ":" + pad(secondsLeft);
+          return prefix + minutesLeft + ":" + pad(secondsLeft);
         };
 
         var updateElementIfNecessary = function(element, textContent) {
@@ -147,10 +157,10 @@
           this.element.appendChild(sidebar.cloneNode(false));
         };
 
-        Corner.prototype.update = function(team, matchNumber, endTime) {
+        Corner.prototype.update = function(team, matchNumber, delay) {
           updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
           updateElementIfNecessary(this.teamElement, team);
-          updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(endTime));
+          updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
         };
       }());
     </script>
@@ -252,8 +262,19 @@
           // timer to redraw the UI faster than the data is updated
           var updateView = function() {
             corners.forEach(function(corner, i) {
-              corner.update(currentMatch.teams[i], currentMatch.number,
-                            currentMatch.end_time);
+              if (!currentMatch && !nextMatch) {
+                // TODO: implement
+              } else {
+                var timeToStart = parseInt((new Date(nextMatch.start_time) - new Date()) / 1000);
+                if (timeToStart <= 120 || !currentMatch) {
+                  corner.update(nextMatch.teams[i], nextMatch.number,
+                                -timeToStart);
+                } else {
+                  var timeToEnd = parseInt((new Date(currentMatch.end_time) - new Date()) / 1000) - 120;
+                  corner.update(currentMatch.teams[i], currentMatch.number,
+                                timeToEnd);
+                }
+              }
             });
 
             window.requestAnimationFrame(updateView);
