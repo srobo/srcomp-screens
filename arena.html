@@ -15,19 +15,21 @@
         $locationProvider.html5Mode(true);
       });
 
+      var pad = function(s) {
+        if (parseInt(s) < 10) {
+          return "0" + s;
+        } else {
+          return s;
+        }
+      }
+
       app.filter("formatTimeLeft", function() {
         return function(input) {
           var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
 
-          var prefix = "";
-          if (delta > 3 * 60) {
-            delta -= 3 * 60;
-            prefix = "Starting in ";
-          }
-
           var minutesLeft = parseInt(delta/60, 10);
           var secondsLeft = delta - parseInt(delta/60, 10) * 60;
-          return prefix + minutesLeft + "m " + secondsLeft + "s";
+          return minutesLeft + ":" + pad(secondsLeft);
         };
       });
 
@@ -128,8 +130,9 @@
       }
 
       section.match p {
-        font-size: 4vw;
+        font-size: 5vw;
         font-weight: bold;
+        margin: 5px;
       }
     </style>
   </head>
