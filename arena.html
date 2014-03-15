@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular-resource.js"></script>
 
     <script>
+      // pure JS
       var get = function(url, callback) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, true);
@@ -31,26 +32,25 @@
         get(url, callback);
       };
 
-      var app = angular.module("app", ["ngResource"], function($locationProvider) {
-        $locationProvider.html5Mode(true);
-      });
-
       var pad = function(s) {
         if (parseInt(s) < 10) {
           return "0" + s;
         } else {
           return s;
         }
-      }
+      };
 
-      app.filter("formatTimeLeft", function() {
-        return function(input) {
-          var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
+      var formatTimeLeft = function(input) {
+        var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
 
-          var minutesLeft = parseInt(delta/60, 10);
-          var secondsLeft = delta - parseInt(delta/60, 10) * 60;
-          return minutesLeft + ":" + pad(secondsLeft);
-        };
+        var minutesLeft = parseInt(delta/60, 10);
+        var secondsLeft = delta - parseInt(delta/60, 10) * 60;
+        return minutesLeft + ":" + pad(secondsLeft);
+      };
+
+      // angular JS
+      var app = angular.module("app", ["ngResource"], function($locationProvider) {
+        $locationProvider.html5Mode(true);
       });
 
       app.controller("MainController", function($scope, $resource, $location, $interval, $filter) {
@@ -84,7 +84,7 @@
         var time = document.getElementById("time");
         var updateView = function() {
           if (currentMatch) {
-            time.textContent = $filter("formatTimeLeft")(currentMatch.end_time);
+            time.textContent = formatTimeLeft(currentMatch.end_time);
           }
           window.requestAnimationFrame(updateView);
         };
