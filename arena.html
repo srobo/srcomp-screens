@@ -11,6 +11,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular-resource.js"></script>
 
     <script>
+      var get = function(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.responseType = "json";
+        xhr.addEventListener("load", function(e) {
+          callback(e.target.response);
+        });
+        xhr.send();
+      };
+
+      var getMatch = function(id, callback) {
+        var url = "/matches/" + id + "/current";
+        get(url, callback);
+      };
+
+      var getCorner = function(id, callback) {
+        var url = "/corner/" + id;
+        get(url, callback);
+      };
+
       var app = angular.module("app", ["ngResource"], function($locationProvider) {
         $locationProvider.html5Mode(true);
       });
@@ -33,34 +53,43 @@
         };
       });
 
-      app.controller("MainController", function($scope, $resource, $location, $timeout) {
-        var Corner = $resource("/corner/:corner");
-        var Match = $resource("/matches/:arena/current");
-
+      app.controller("MainController", function($scope, $resource, $location, $interval, $filter) {
         var arena = $location.search().arena;
         var corner = $scope.corner = parseInt($location.search().corner, 10);
 
-        $scope.corners = [
-          Corner.get({corner: 0}),
-          Corner.get({corner: 1}),
-          Corner.get({corner: 2}),
-          Corner.get({corner: 3}),
-        ];
+        getCorner(0, function(corner0) {
+          getCorner(1, function(corner1) {
+            getCorner(2, function(corner2) {
+              getCorner(3, function(corner3) {
+                $scope.corners = [corner0, corner1, corner2, corner3];
+              });
+            });
+          });
+        });
 
         var otherCorners = $scope.otherCorners = [0, 1, 2, 3];
         otherCorners.splice(corner, 1);
 
-        var updateState = function() {
-          Match.get({arena: arena}, function(match) {
-            $scope.match = match;
-
-            // calculate milliseconds left until the second
-            var timeDelta = Date.now() - parseInt(Date.now() / 1000) * 1000;
-            $timeout(updateState, timeDelta);
+        var currentMatch = undefined;
+        $interval(function() {
+          getMatch(arena, function(match) {
+            currentMatch = match;
           });
-        }
+        }, 1000);
 
-        updateState();
+        $interval(function() {
+          $scope.match = currentMatch;
+        }, 500);
+
+        var time = document.getElementById("time");
+        var updateView = function() {
+          if (currentMatch) {
+            time.textContent = $filter("formatTimeLeft")(currentMatch.end_time);
+          }
+          window.requestAnimationFrame(updateView);
+        };
+
+        updateView();
       });
     </script>
 
@@ -130,7 +159,7 @@
       }
 
       section.match p {
-        font-size: 5vw;
+        font-size: 6vw;
         font-weight: bold;
         margin: 5px;
       }
@@ -144,7 +173,7 @@
         <div>
           <p>Match {{ match.number }}</p>
           <h1>{{ match.teams[corner] }}</h1>
-          <p>{{ match.end_time | formatTimeLeft }}</p>
+          <p id="time"></p>
         </div>
         <div ng-style="{background: corners[corner].colour}"></div>
       </section>
