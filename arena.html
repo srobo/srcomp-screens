@@ -13,30 +13,55 @@
         padding: 0px;
       }
 
-      html, body {
+      section.view {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
         width: 100%;
         height: 100%;
+        color: rgb(255, 255, 255);
+        background: rgb(0, 0, 0);
       }
 
-      body {
+      section.view[hidden] {
+        display: none;
+      }
+
+      section.corners {
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: stretch;
       }
 
-      body > main {
+      section.corners > main {
         flex: 1 0 auto;
       }
 
-      body > aside {
+      section.corners > aside {
         border-top: 1px solid rgb(255, 255, 255);
         flex: 0 0 auto;
         height: 25%;
         display: flex;
       }
 
-      section.corner {
+      section.big {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      section.big > main {
+        flex: 0 0 auto;
+      }
+
+      section.big h1 {
+        font-size: 30vw;
+      }
+
+      .corner {
         width: 100%;
         height: 100%;
         background: rgb(0, 0, 0);
@@ -45,39 +70,39 @@
         font-family: sans-serif;
       }
 
-      section.corner aside {
+      .corner aside {
         background: rgb(255, 255, 255);
         flex: 0 0 auto;
         align-self: stretch;
         width: 15%;
       }
 
-      section.corner main {
+      .corner main {
         flex: 1 1 auto;
         align-self: center;
         text-align: center;
         color: rgb(255, 255, 255)
       }
 
-      section.corner h1 {
+      .corner h1 {
         font-size: 22vw;
       }
 
-      section.corner h1.small {
+      .corner h1.small {
         font-size: 16vw;
       }
 
-      section.corner.small h1 {
+      .corner.small h1 {
         font-size: 6vw;
       }
 
-      section.corner h2 {
+      .corner h2 {
         font-size: 4vw;
         font-weight: bold;
         margin: 6px;
       }
 
-      section.corner p {
+      .corner p {
         font-size: 6vw;
         font-weight: bold;
         margin: 5px;
@@ -86,14 +111,6 @@
   </head>
 
   <body>
-    <main>
-    <!-- main corner goes here -->
-    </main>
-
-    <aside>
-    <!-- other corners go in here -->
-    </aside>
-
     <script>
       (function() {
         "use strict";
@@ -127,7 +144,7 @@
         };
 
         var Corner = window.Corner = function(colour, small) {
-          this.element = document.createElement("section");
+          this.element = document.createElement("div");
           this.element.classList.add("corner");
           if (small) {
             this.element.classList.add("small");
@@ -161,6 +178,73 @@
           updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
           updateElementIfNecessary(this.teamElement, team);
           updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
+        };
+      }());
+    </script>
+
+    <script>
+      (function() {
+        var CornersView = window.CornersView = function(cornerDefs, mainCorner) {
+          var main = document.createElement("main");
+          var aside = document.createElement("aside");
+
+          this.corners = [];
+          cornerDefs.forEach(function(cornerDef, i) {
+            var small = i !== mainCorner;
+            var corner = new Corner(cornerDef.colour, small);
+            if (small) {
+              aside.appendChild(corner.element);
+            } else {
+              main.appendChild(corner.element);
+            }
+
+            this.corners.push(corner);
+          }.bind(this));
+
+          this.element = document.createElement("section");
+          this.element.classList.add("view");
+          this.element.classList.add("corners");
+          this.element.appendChild(main);
+          this.element.appendChild(aside);
+        };
+
+        CornersView.prototype.update = function(currentMatch, nextMatch) {
+          this.corners.forEach(function(corner, i) {
+            if (!currentMatch && !nextMatch) {
+              // TODO: implement
+            } else {
+              var timeToStart = parseInt((new Date(nextMatch.start_time) - new Date()) / 1000);
+              if (timeToStart <= 120 || !currentMatch) {
+                corner.update(nextMatch.teams[i], nextMatch.number,
+                              -timeToStart);
+              } else {
+                var timeToEnd = parseInt((new Date(currentMatch.end_time) - new Date()) / 1000) - 120;
+                corner.update(currentMatch.teams[i], currentMatch.number,
+                              timeToEnd);
+              }
+            }
+          });
+        };
+      }());
+    </script>
+
+    <script>
+      (function() {
+        var BigView = window.BigView = function() {
+          var main = document.createElement("main");
+          this.h1 = document.createElement("h1");
+          main.appendChild(this.h1);
+
+          this.element = document.createElement("section");
+          this.element.classList.add("view");
+          this.element.classList.add("big");
+          this.element.appendChild(main);
+        };
+
+        BigView.prototype.update = function(text) {
+          if (this.h1.textContent !== text) {
+            this.h1.textContent = text;
+          }
         };
       }());
     </script>
@@ -220,29 +304,20 @@
         var cornerId = parseInt(fragment[1]);
 
         var loadCorners = function(resources, mainCorner, callback) {
-          var main = document.querySelector("main");
-          var aside = document.querySelector("aside");
-          var corners = [];
-
           resources.getAllCorners(function(cornerDefs) {
-            cornerDefs.forEach(function(cornerDef, i) {
-              var small = i !== mainCorner;
-              var corner = new Corner(cornerDef.colour, small);
-              if (small) {
-                aside.appendChild(corner.element);
-              } else {
-                main.appendChild(corner.element);
-              }
-
-              corners.push(corner);
-            });
-
+            var corners = new CornersView(cornerDefs, mainCorner);
+            document.body.appendChild(corners.element);
             callback(corners);
           });
         };
 
         var resources = new Resources();
         loadCorners(resources, cornerId, function(corners) {
+          var countdownView = new BigView();
+          document.body.appendChild(countdownView.element);
+
+          countdownView.update("5");
+
           var currentMatch = undefined;
           var nextMatch = undefined;
 
@@ -261,22 +336,15 @@
 
           // timer to redraw the UI faster than the data is updated
           var updateView = function() {
-            corners.forEach(function(corner, i) {
-              if (!currentMatch && !nextMatch) {
-                // TODO: implement
-              } else {
-                var timeToStart = parseInt((new Date(nextMatch.start_time) - new Date()) / 1000);
-                if (timeToStart <= 120 || !currentMatch) {
-                  corner.update(nextMatch.teams[i], nextMatch.number,
-                                -timeToStart);
-                } else {
-                  var timeToEnd = parseInt((new Date(currentMatch.end_time) - new Date()) / 1000) - 120;
-                  corner.update(currentMatch.teams[i], currentMatch.number,
-                                timeToEnd);
-                }
-              }
-            });
+            var timeToStart = parseInt((new Date(nextMatch.start_time) - new Date()) / 1000);
+            if (timeToStart <= 5 && timeToStart > 0) {
+              countdownView.element.hidden = false;
+              countdownView.update(timeToStart);
+            } else {
+              countdownView.element.hidden = true;
+            }
 
+            corners.update(currentMatch, nextMatch);
             window.requestAnimationFrame(updateView);
           };
         });
