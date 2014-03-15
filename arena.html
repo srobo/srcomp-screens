@@ -19,15 +19,21 @@
         return function(input) {
           var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
 
+          var prefix = "";
+          if (delta > 3 * 60) {
+            delta -= 3 * 60;
+            prefix = "Starting in ";
+          }
+
           var minutesLeft = parseInt(delta/60, 10);
           var secondsLeft = delta - parseInt(delta/60, 10) * 60;
-          return minutesLeft + "m " + secondsLeft + "s";
+          return prefix + minutesLeft + "m " + secondsLeft + "s";
         };
       });
 
       app.controller("MainController", function($scope, $resource, $location, $timeout) {
-        var Corner = $resource("http://localhost:5112/corner/:corner");
-        var Match = $resource("http://localhost:5112/matches/:arena/current");
+        var Corner = $resource("/corner/:corner");
+        var Match = $resource("/matches/:arena/current");
 
         var arena = $location.search().arena;
         var corner = $scope.corner = parseInt($location.search().corner, 10);
@@ -144,7 +150,7 @@
       <section class="match small">
         <div ng-style="{background: corners[otherCorners[0]].colour}"></div>
         <div>
-          <h1>{{ match.teams[1] }}</h1>
+          <h1>{{ match.teams[otherCorners[0]] }}</h1>
         </div>
         <div ng-style="{background: corners[otherCorners[0]].colour}"></div>
       </section>
@@ -152,7 +158,7 @@
       <section class="match small">
         <div ng-style="{background: corners[otherCorners[1]].colour}"></div>
         <div>
-          <h1>{{ match.teams[2] }}</h1>
+          <h1>{{ match.teams[otherCorners[1]] }}</h1>
         </div>
         <div ng-style="{background: corners[otherCorners[1]].colour}"></div>
       </section>
@@ -160,7 +166,7 @@
       <section class="match small">
         <div ng-style="{background: corners[otherCorners[2]].colour}"></div>
         <div>
-          <h1>{{ match.teams[3] }}</h1>
+          <h1>{{ match.teams[otherCorners[2]] }}</h1>
         </div>
         <div ng-style="{background: corners[otherCorners[2]].colour}"></div>
       </section>
