@@ -142,6 +142,7 @@
       <section class="match big">
         <div ng-style="{background: corners[corner].colour}"></div>
         <div>
+          <p>Match {{ match.number }}</p>
           <h1>{{ match.teams[corner] }}</h1>
           <p>{{ match.end_time | formatTimeLeft }}</p>
         </div>
