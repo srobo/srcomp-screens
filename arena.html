@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+
+  <head>
+    <title>Arena Screen</title>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular-resource.js"></script>
+
+    <script>
+      var app = angular.module("app", ["ngResource"], function($locationProvider) {
+        $locationProvider.html5Mode(true);
+      });
+
+      app.filter("formatTimeLeft", function() {
+        return function(input) {
+          var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
+
+          var minutesLeft = parseInt(delta/60, 10);
+          var secondsLeft = delta - parseInt(delta/60, 10) * 60;
+          return minutesLeft + "m " + secondsLeft + "s";
+        };
+      });
+
+      app.controller("MainController", function($scope, $resource, $location, $timeout) {
+        var Corner = $resource("http://localhost:5112/corner/:corner");
+        var Match = $resource("http://localhost:5112/matches/:arena/current");
+
+        var arena = $location.search().arena;
+        var corner = $scope.corner = parseInt($location.search().corner, 10);
+
+        $scope.corners = [
+          Corner.get({corner: 0}),
+          Corner.get({corner: 1}),
+          Corner.get({corner: 2}),
+          Corner.get({corner: 3}),
+        ];
+
+        var otherCorners = $scope.otherCorners = [0, 1, 2, 3];
+        otherCorners.splice(corner, 1);
+
+        var updateState = function() {
+          Match.get({arena: arena}, function(match) {
+            $scope.match = match;
+
+            // calculate milliseconds left until the second
+            var timeDelta = Date.now() - parseInt(Date.now() / 1000) * 1000;
+            $timeout(updateState, timeDelta);
+          });
+        }
+
+        updateState();
+      });
+    </script>
+
+    <style type="text/css">
+      * {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      html, body {
+        width: 100%;
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-content: stretch;
+        align-items: stretch;
+      }
+
+      main {
+        flex: 1 0 auto;
+      }
+
+      aside {
+        border-top: 1px solid rgb(255, 255, 255);
+        flex: 0 0 auto;
+        height: 25%;
+        display: flex;
+      }
+
+      section.match {
+        width: 100%;
+        height: 100%;
+        background: rgb(0, 0, 0);
+        display: flex;
+        align-items: stretch;
+        font-family: sans-serif;
+      }
+
+      section.match > div:nth-child(1), section.match > div:nth-child(3) {
+        background: rgb(255, 255, 255);
+        flex: 0 0 auto;
+        align-self: stretch;
+        width: 15%;
+      }
+
+      section.match > div:nth-child(2) {
+        flex: 1 1 auto;
+        align-self: center;
+        text-align: center;
+        color: rgb(255, 255, 255)
+      }
+
+      section.match.big h1 {
+        font-size: 24vw;
+      }
+
+      section.match.big h1.small {
+        font-size: 18vw;
+      }
+
+      section.match.small h1 {
+        font-size: 6vw;
+      }
+
+      section.match p {
+        font-size: 4vw;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body ng-controller="MainController">
+    <main>
+      <section class="match big">
+        <div ng-style="{background: corners[corner].colour}"></div>
+        <div>
+          <h1>{{ match.teams[corner] }}</h1>
+          <p>{{ match.end_time | formatTimeLeft }}</p>
+        </div>
+        <div ng-style="{background: corners[corner].colour}"></div>
+      </section>
+    </main>
+
+    <aside>
+      <section class="match small">
+        <div ng-style="{background: corners[otherCorners[0]].colour}"></div>
+        <div>
+          <h1>{{ match.teams[1] }}</h1>
+        </div>
+        <div ng-style="{background: corners[otherCorners[0]].colour}"></div>
+      </section>
+
+      <section class="match small">
+        <div ng-style="{background: corners[otherCorners[1]].colour}"></div>
+        <div>
+          <h1>{{ match.teams[2] }}</h1>
+        </div>
+        <div ng-style="{background: corners[otherCorners[1]].colour}"></div>
+      </section>
+
+      <section class="match small">
+        <div ng-style="{background: corners[otherCorners[2]].colour}"></div>
+        <div>
+          <h1>{{ match.teams[3] }}</h1>
+        </div>
+        <div ng-style="{background: corners[otherCorners[2]].colour}"></div>
+      </section>
+    </aside>
+  </body>
+
+</html>
