@@ -7,92 +7,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.1/angular-resource.js"></script>
-
-    <script>
-      // pure JS
-      var get = function(url, callback) {
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", url, true);
-        xhr.responseType = "json";
-        xhr.addEventListener("load", function(e) {
-          callback(e.target.response);
-        });
-        xhr.send();
-      };
-
-      var getMatch = function(id, callback) {
-        var url = "/matches/" + id + "/current";
-        get(url, callback);
-      };
-
-      var getCorner = function(id, callback) {
-        var url = "/corner/" + id;
-        get(url, callback);
-      };
-
-      var pad = function(s) {
-        if (parseInt(s) < 10) {
-          return "0" + s;
-        } else {
-          return s;
-        }
-      };
-
-      var formatTimeLeft = function(input) {
-        var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
-
-        var minutesLeft = parseInt(delta/60, 10);
-        var secondsLeft = delta - parseInt(delta/60, 10) * 60;
-        return minutesLeft + ":" + pad(secondsLeft);
-      };
-
-      // angular JS
-      var app = angular.module("app", ["ngResource"], function($locationProvider) {
-        $locationProvider.html5Mode(true);
-      });
-
-      app.controller("MainController", function($scope, $resource, $location, $interval, $filter) {
-        var arena = $location.search().arena;
-        var corner = $scope.corner = parseInt($location.search().corner, 10);
-
-        getCorner(0, function(corner0) {
-          getCorner(1, function(corner1) {
-            getCorner(2, function(corner2) {
-              getCorner(3, function(corner3) {
-                $scope.corners = [corner0, corner1, corner2, corner3];
-              });
-            });
-          });
-        });
-
-        var otherCorners = $scope.otherCorners = [0, 1, 2, 3];
-        otherCorners.splice(corner, 1);
-
-        var currentMatch = undefined;
-        $interval(function() {
-          getMatch(arena, function(match) {
-            currentMatch = match;
-          });
-        }, 1000);
-
-        $interval(function() {
-          $scope.match = currentMatch;
-        }, 500);
-
-        var time = document.getElementById("time");
-        var updateView = function() {
-          if (currentMatch) {
-            time.textContent = formatTimeLeft(currentMatch.end_time);
-          }
-          window.requestAnimationFrame(updateView);
-        };
-
-        updateView();
-      });
-    </script>
-
     <style type="text/css">
       * {
         margin: 0px;
@@ -108,22 +22,21 @@
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        align-content: stretch;
         align-items: stretch;
       }
 
-      main {
+      body > main {
         flex: 1 0 auto;
       }
 
-      aside {
+      body > aside {
         border-top: 1px solid rgb(255, 255, 255);
         flex: 0 0 auto;
         height: 25%;
         display: flex;
       }
 
-      section.match {
+      section.corner {
         width: 100%;
         height: 100%;
         background: rgb(0, 0, 0);
@@ -132,33 +45,33 @@
         font-family: sans-serif;
       }
 
-      section.match > div:nth-child(1), section.match > div:nth-child(3) {
+      section.corner aside {
         background: rgb(255, 255, 255);
         flex: 0 0 auto;
         align-self: stretch;
         width: 15%;
       }
 
-      section.match > div:nth-child(2) {
+      section.corner main {
         flex: 1 1 auto;
         align-self: center;
         text-align: center;
         color: rgb(255, 255, 255)
       }
 
-      section.match.big h1 {
+      section.corner h1 {
         font-size: 24vw;
       }
 
-      section.match.big h1.small {
+      section.corner h1.small {
         font-size: 18vw;
       }
 
-      section.match.small h1 {
+      section.corner.small h1 {
         font-size: 6vw;
       }
 
-      section.match p {
+      section.corner p, section.corner h2 {
         font-size: 6vw;
         font-weight: bold;
         margin: 5px;
@@ -166,28 +79,175 @@
     </style>
   </head>
 
-  <body ng-controller="MainController">
+  <body>
     <main>
-      <section class="match big">
-        <div ng-style="{background: corners[corner].colour}"></div>
-        <div>
-          <p>Match {{ match.number }}</p>
-          <h1>{{ match.teams[corner] }}</h1>
-          <p id="time"></p>
-        </div>
-        <div ng-style="{background: corners[corner].colour}"></div>
-      </section>
+    <!-- main corner goes here -->
     </main>
 
     <aside>
-      <section class="match small" ng-repeat="i in [0,1,2]">
-        <div ng-style="{background: corners[otherCorners[i]].colour}"></div>
-        <div>
-          <h1>{{ match.teams[otherCorners[i]] }}</h1>
-        </div>
-        <div ng-style="{background: corners[otherCorners[i]].colour}"></div>
-      </section>
+    <!-- other corners go in here -->
     </aside>
+
+    <script>
+      (function() {
+        "use strict";
+
+        var pad = function(s) {
+          if (parseInt(s) < 10) {
+            return "0" + s;
+          } else {
+            return s;
+          }
+        };
+
+        var formatTimeLeft = function(input) {
+          var delta = parseInt((new Date(input) - new Date()) / 1000, 10);
+
+          var minutesLeft = parseInt(delta/60, 10);
+          var secondsLeft = delta - parseInt(delta/60, 10) * 60;
+          return minutesLeft + ":" + pad(secondsLeft);
+        };
+
+        var updateElementIfNecessary = function(element, textContent) {
+          if (element) {
+            if (element.textContent !== textContent) {
+              element.textContent = textContent;
+            }
+          }
+        };
+
+        var Corner = window.Corner = function(colour, small) {
+          this.element = document.createElement("section");
+          this.element.classList.add("corner");
+          if (small) {
+            this.element.classList.add("small");
+          }
+
+          var sidebar = document.createElement("aside");
+          sidebar.style.backgroundColor = colour;
+          this.element.appendChild(sidebar);
+
+          var main = document.createElement("main");
+
+          if (!small) {
+            this.matchNumberElement = document.createElement("h2");
+            main.appendChild(this.matchNumberElement);
+          }
+
+          this.teamElement = document.createElement("h1");
+          main.appendChild(this.teamElement);
+
+          if (!small) {
+            this.timeLeftElement = document.createElement("p");
+            main.appendChild(this.timeLeftElement);
+          }
+
+          this.element.appendChild(main);
+
+          this.element.appendChild(sidebar.cloneNode(false));
+        };
+
+        Corner.prototype.update = function(team, matchNumber, endTime) {
+          updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
+          updateElementIfNecessary(this.teamElement, team);
+          updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(endTime));
+        };
+      }());
+    </script>
+
+    <script>
+      (function() {
+        "use strict";
+
+        var Resources = window.Resources = function() {
+
+        };
+
+        Resources.prototype.get = function(url, callback) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url);
+          xhr.responseType = "json";
+          xhr.addEventListener("load", function(e) {
+            callback(e.target.response);
+          });
+          xhr.send();
+        };
+
+        Resources.prototype.getMatch = function(id, callback) {
+          this.get("/matches/" + id + "/current", callback);
+        };
+
+        Resources.prototype.getCorner = function(id, callback) {
+          this.get("/corner/" + id, callback);
+        };
+
+        Resources.prototype.getAllCorners = function(callback) {
+          this.getCorner(0, function(corner0) {
+            this.getCorner(1, function(corner1) {
+              this.getCorner(2, function(corner2) {
+                this.getCorner(3, function(corner3) {
+                  callback([corner0, corner1, corner2, corner3]);
+                }.bind(this));
+              }.bind(this));
+            }.bind(this));
+          }.bind(this));
+        };
+      }());
+    </script>
+
+    <script>
+      (function() {
+        var loadCorners = function(resources, mainCorner, callback) {
+          var main = document.querySelector("main");
+          var aside = document.querySelector("aside");
+          var corners = [];
+
+          resources.getAllCorners(function(cornerDefs) {
+            cornerDefs.forEach(function(cornerDef, i) {
+              var small = i !== mainCorner;
+              var corner = new Corner(cornerDef.colour, small);
+              if (small) {
+                aside.appendChild(corner.element);
+              } else {
+                main.appendChild(corner.element);
+              }
+
+              corners.push(corner);
+            });
+
+            callback(corners);
+          });
+        };
+
+
+        var resources = new Resources();
+        loadCorners(resources, 0, function(corners) {
+          var currentMatch = undefined;
+
+          // timer to update the match data at regular intervals
+          setInterval(function() {
+            resources.getMatch("A", function(match) {
+              if (currentMatch === undefined) {
+                // start redrawing the UI once we are sure a match exists
+                window.requestAnimationFrame(updateView);
+              }
+
+              currentMatch = match;
+            });
+          }, 1000);
+
+          // timer to redraw the UI faster than the data is updated
+          var updateView = function() {
+            corners.forEach(function(corner, i) {
+              corner.update(currentMatch.teams[i], currentMatch.number,
+                            currentMatch.end_time);
+            });
+
+            window.requestAnimationFrame(updateView);
+          };
+        });
+      }());
+    </script>
   </body>
 
 </html>
