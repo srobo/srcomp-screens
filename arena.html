@@ -343,30 +343,33 @@
           var nextMatch = undefined;
 
           // timer to update the match data at regular intervals
-          setInterval(function() {
+          var updateModel = function() {
             resources.getCurrentAndNextMatch(arenaId, function(current, next) {
+              if (currentMatch === undefined) {
+                window.requestAnimationFrame(updateView);
+              }
+
               currentMatch = current;
               nextMatch = next;
             });
-          }, 1000);
+          };
+          setInterval(updateModel, 1000);
+          updateModel();
 
           // timer to redraw the UI faster than the data is updated
           var updateView = function() {
-            if (nextMatch) {
-              var timeToStart = nextMatch.secondsToStart();
-              if (timeToStart <= 5 && timeToStart > 0) {
-                countdownView.element.hidden = false;
-                countdownView.update(timeToStart);
-              } else {
-                countdownView.element.hidden = true;
-              }
+            var timeToStart = nextMatch.secondsToStart();
+            if (timeToStart <= 5 && timeToStart > 0) {
+              countdownView.element.hidden = false;
+              countdownView.update(timeToStart);
+            } else {
+              countdownView.element.hidden = true;
             }
 
             corners.update(currentMatch, nextMatch);
             window.requestAnimationFrame(updateView);
           };
 
-          window.requestAnimationFrame(updateView);
         });
       }());
     </script>
