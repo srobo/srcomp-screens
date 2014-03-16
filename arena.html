@@ -89,7 +89,7 @@
       }
 
       .corner h1.small {
-        font-size: 16vw;
+        font-size: 19vw;
       }
 
       .corner.small h1 {
@@ -135,10 +135,16 @@
           return prefix + minutesLeft + ":" + pad(secondsLeft);
         };
 
-        var updateElementIfNecessary = function(element, textContent) {
+        var updateElementIfNecessary = function(element, textContent, className) {
           if (element) {
             if (element.textContent !== textContent) {
               element.textContent = textContent;
+            }
+
+            if (className !== undefined) {
+              if (element.className !== className) {
+                element.className = className;
+              }
             }
           }
         };
@@ -176,7 +182,7 @@
 
         Corner.prototype.update = function(team, matchNumber, delay) {
           updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
-          updateElementIfNecessary(this.teamElement, team);
+          updateElementIfNecessary(this.teamElement, team, team.length === 4 ? "small" : "");
           updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
         };
       }());
