@@ -13,6 +13,10 @@
         padding: 0px;
       }
 
+      body {
+        font-family: sans-serif;
+      }
+
       section.view {
         position: fixed;
         top: 0;
@@ -41,7 +45,7 @@
       }
 
       section.corners > aside {
-        border-top: 1px solid rgb(255, 255, 255);
+        border-top: 1px solid rgb(0, 0, 0);
         flex: 0 0 auto;
         height: 25%;
         display: flex;
@@ -58,7 +62,7 @@
       }
 
       section.big h1 {
-        font-size: 30vw;
+        font-size: 36vw;
       }
 
       .corner {
@@ -67,7 +71,6 @@
         background: rgb(0, 0, 0);
         display: flex;
         align-items: stretch;
-        font-family: sans-serif;
       }
 
       .corner aside {
@@ -79,13 +82,22 @@
 
       .corner main {
         flex: 1 1 auto;
-        align-self: center;
         text-align: center;
-        color: rgb(255, 255, 255)
+        color: rgb(255, 255, 255);
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: space-around;
+      }
+
+      .corner.small main {
+        justify-content: center;
       }
 
       .corner h1 {
+        flex: 0 0 auto;
         font-size: 22vw;
+        line-height: 0.8;
       }
 
       .corner h1.small {
@@ -97,12 +109,14 @@
       }
 
       .corner h2 {
+        flex: 0 0 auto;
         font-size: 4vw;
         font-weight: bold;
         margin: 6px;
       }
 
       .corner p {
+        flex: 0 0 auto;
         font-size: 6vw;
         font-weight: bold;
         margin: 5px;
