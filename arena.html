@@ -129,12 +129,9 @@
       (function() {
         "use strict";
 
-        var pad = function(s) {
-          if (parseInt(s) < 10) {
-            return "0" + s;
-          } else {
-            return s;
-          }
+        var pad = function(value) {
+          var num = parseInt(value, 10);
+          return num < 10 ? "0" + num : num.toString();
         };
 
         var formatTimeLeft = function(delta) {
@@ -307,8 +304,8 @@
           xhr.send();
         };
 
-        Resources.prototype.getMatches = function(arena, query, callback) {
-          this.get("/matches/" + arena + "/" + query, Match, callback);
+        Resources.prototype.getMatches = function(query, callback) {
+          this.get("/matches/" + query, Object, callback);
         };
 
         Resources.prototype.getCorner = function(id, callback) {
@@ -316,11 +313,10 @@
         };
 
         Resources.prototype.getCurrentAndNextMatch = function(arena, callback) {
-          this.getMatches(arena, "current", function(currentMatch) {
-            this.getMatches(arena, currentMatch.number + 1, function(nextMatch) {
-              callback(currentMatch, nextMatch);
-            }.bind(this));
-          }.bind(this));
+          this.getMatches(arena + "?numbers=current,next", function(res) {
+            var m = res.matches;
+            callback(new Match(m[0]), new Match(m[1]));
+          });
         };
 
         Resources.prototype.getAllCorners = function(callback) {
