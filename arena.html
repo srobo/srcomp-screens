@@ -335,12 +335,27 @@
 
     <script>
       (function() {
+        var badCorner = function() {
+          var h2 = document.createElement("h2");
+          h2.innerHTML = "Invalid arena corner specified";
+          document.body.appendChild(h2);
+        };
+
         var fragment = window.location.hash.substr(1).split(",");
         var arenaId = fragment[0];
         var cornerId = parseInt(fragment[1]);
 
+        if (arenaId == null || arenaId.length == 0 || cornerId == NaN) {
+          badCorner();
+          return;
+        }
+
         var loadCorners = function(resources, mainCorner, callback) {
           resources.getAllCorners(function(cornerDefs) {
+            if (mainCorner > cornerDefs.length) {
+              badCorner();
+              return;
+            }
             var corners = new CornersView(cornerDefs, mainCorner);
             document.body.appendChild(corners.element);
             callback(corners);
