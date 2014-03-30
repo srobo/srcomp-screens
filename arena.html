@@ -383,9 +383,9 @@
           args[bits[0]] = bits[1];
         }
         var arenaId = args["arena"];
-        var cornerId = parseInt(args["corner"]);
+        var cornerId = parseInt(args["corner"], 10);
 
-        if (arenaId == null || arenaId.length == 0 || cornerId == NaN) {
+        if (arenaId == null || arenaId.length === 0 || isNaN(cornerId)) {
           badCorner();
           return;
         }
@@ -433,7 +433,6 @@
               if (countdownView.element.hidden) {
                 countdownView.element.hidden = false;
               }
-
               countdownView.update(timeToStart);
             } else {
               if (!countdownView.element.hidden) {
