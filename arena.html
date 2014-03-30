@@ -347,13 +347,13 @@
           var showButtons = function(cornerDefs) {
             resources.getArenas(function(arenas) {
               arenas = arenas.arenas;
-              for (var i=0; i<arenas.length; i++) {
+              for (var i = 0; i < arenas.length; i++) {
                 var arena = arenas[i];
                 var para = document.createElement("p");
-                for (var c=0; c<cornerDefs.length; c++) {
+                for (var c = 0; c < cornerDefs.length; c++) {
                   var link = document.createElement("a");
                   link.href = "?arena=" + arena + "&corner=" + c;
-                  link.innerHTML = arena + ":" + c;
+                  link.textContent = arena + ":" + c;
                   link.style = "padding: 0.5em; margin: 0.5em; font-size: 1.2em;";
                   para.appendChild(link);
                 }
@@ -367,10 +367,10 @@
             resources.getAllCorners(showButtons);
           }
           var h2 = document.createElement("h2");
-          h2.innerHTML = "Invalid arena corner specified";
+          h2.textContent = "Invalid arena corner specified";
           document.body.appendChild(h2);
           var h3 = document.createElement("h3");
-          h3.innerHTML = "Please choose a suitable corner:";
+          h3.textContent = "Please choose a suitable corner:";
           document.body.appendChild(h3);
           document.body.appendChild(buttonsDiv);
         };
@@ -378,7 +378,7 @@
         // load which arena corner were are from url parameters.
         var pairs = window.location.search.substr(1).split("&");
         var args = {};
-        for (var i=0; i<pairs.length; i++) {
+        for (var i = 0; i < pairs.length; i++) {
           var bits = pairs[i].split("=");
           args[bits[0]] = bits[1];
         }
