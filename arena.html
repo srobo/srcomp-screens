@@ -338,6 +338,8 @@
     </script>
 
     <script>
+      // work around slightly older Firefox (<23) not having requestAnimationFrame.
+      window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame;
       (function() {
         var resources = new Resources();
         var badCorner = function(cornerDefs) {
