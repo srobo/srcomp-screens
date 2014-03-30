@@ -304,6 +304,10 @@
           xhr.send();
         };
 
+        Resources.prototype.getArenas = function(callback) {
+          this.get("/arenas", Object, callback);
+        };
+
         Resources.prototype.getMatches = function(query, callback) {
           this.get("/matches/" + query, Object, callback);
         };
@@ -335,10 +339,38 @@
 
     <script>
       (function() {
-        var badCorner = function() {
+        var resources = new Resources();
+        var badCorner = function(cornerDefs) {
+          var buttonsDiv = document.createElement("div");
+          var showButtons = function(cornerDefs) {
+            resources.getArenas(function(arenas) {
+              arenas = arenas.arenas;
+              for (var i=0; i<arenas.length; i++) {
+                var arena = arenas[i];
+                var para = document.createElement("p");
+                for (var c=0; c<cornerDefs.length; c++) {
+                  var link = document.createElement("a");
+                  link.href = "?arena=" + arena + "&corner=" + c;
+                  link.innerHTML = arena + ":" + c;
+                  link.style = "padding: 0.5em; margin: 0.5em; font-size: 1.2em;";
+                  para.appendChild(link);
+                }
+                buttonsDiv.appendChild(para);
+              }
+            });
+          };
+          if (cornerDefs != null) {
+            showButtons(cornerDefs);
+          } else {
+            resources.getAllCorners(showButtons);
+          }
           var h2 = document.createElement("h2");
           h2.innerHTML = "Invalid arena corner specified";
           document.body.appendChild(h2);
+          var h3 = document.createElement("h3");
+          h3.innerHTML = "Please choose a suitable corner:";
+          document.body.appendChild(h3);
+          document.body.appendChild(buttonsDiv);
         };
 
         // load which arena corner were are from url parameters.
@@ -359,7 +391,7 @@
         var loadCorners = function(resources, mainCorner, callback) {
           resources.getAllCorners(function(cornerDefs) {
             if (mainCorner > cornerDefs.length) {
-              badCorner();
+              badCorner(cornerDefs);
               return;
             }
             var corners = new CornersView(cornerDefs, mainCorner);
@@ -368,7 +400,6 @@
           });
         };
 
-        var resources = new Resources();
         loadCorners(resources, cornerId, function(corners) {
           var countdownView = new BigView();
           countdownView.element.hidden = true; // start hidden
