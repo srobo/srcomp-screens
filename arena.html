@@ -341,9 +341,15 @@
           document.body.appendChild(h2);
         };
 
-        var fragment = window.location.hash.substr(1).split(",");
-        var arenaId = fragment[0];
-        var cornerId = parseInt(fragment[1]);
+        // load which arena corner were are from url parameters.
+        var pairs = window.location.search.substr(1).split("&");
+        var args = {};
+        for (var i=0; i<pairs.length; i++) {
+          var bits = pairs[i].split("=");
+          args[bits[0]] = bits[1];
+        }
+        var arenaId = args["arena"];
+        var cornerId = parseInt(args["corner"]);
 
         if (arenaId == null || arenaId.length == 0 || cornerId == NaN) {
           badCorner();
