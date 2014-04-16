@@ -29,10 +29,6 @@
         background: rgb(0, 0, 0);
       }
 
-      section.view[hidden] {
-        display: none;
-      }
-
       section.corners {
         display: flex;
         flex-direction: column;
@@ -71,6 +67,10 @@
         background: rgb(0, 0, 0);
         display: flex;
         align-items: stretch;
+      }
+
+      [hidden] {
+        display: none !important;
       }
 
       .corner aside {
@@ -192,9 +192,18 @@
         };
 
         Corner.prototype.update = function(team, matchNumber, delay) {
-          updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
-          updateElementIfNecessary(this.teamElement, team, team.length === 4 ? "small" : "");
-          updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
+          if (team) {
+            updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
+            updateElementIfNecessary(this.teamElement, team, team.length === 4 ? "small" : "");
+            updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
+            if (this.element.hidden) {
+              this.element.hidden = false;
+            }
+          } else {
+            if (!this.element.hidden) {
+              this.element.hidden = true;
+            }
+          }
         };
       }());
     </script>
