@@ -328,7 +328,9 @@
         Resources.prototype.getCurrentAndNextMatch = function(arena, callback) {
           this.getMatches(arena + "?numbers=current,next", function(res) {
             var m = res.matches;
-            callback(new Match(m[0]), new Match(m[1]));
+            var m0 = m[0].error ? null : new Match(m[0]);
+            var m1 = m[1].error ? null : new Match(m[1]);
+            callback(m0, m1);
           });
         };
 
