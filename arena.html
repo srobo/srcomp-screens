@@ -129,6 +129,9 @@
       (function() {
         "use strict";
 
+        // you might want to set this to '' this in development.
+        var API_ROOT = '/comp-api';
+
         var pad = function(value) {
           var num = parseInt(value, 10);
           return num < 10 ? "0" + num : num.toString();
