@@ -192,17 +192,11 @@
         };
 
         Corner.prototype.update = function(team, matchNumber, delay) {
+          updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
+          updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
+
           if (team) {
-            updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
             updateElementIfNecessary(this.teamElement, team, team.length === 4 ? "small" : "");
-            updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
-            if (this.element.hidden) {
-              this.element.hidden = false;
-            }
-          } else {
-            if (!this.element.hidden) {
-              this.element.hidden = true;
-            }
           }
         };
       }());
