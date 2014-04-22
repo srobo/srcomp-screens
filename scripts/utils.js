@@ -1,6 +1,10 @@
 var utils = (function(utils) {
     "use strict";
 
+    // work around slightly older Firefox (<23) not having requestAnimationFrame
+    window.requestAnimationFrame = window.requestAnimationFrame ||
+                                   window.mozRequestAnimationFrame;
+
     utils.pad = function(value) {
         var num = parseInt(value, 10);
         return num < 10 ? "0" + num : num.toString();
