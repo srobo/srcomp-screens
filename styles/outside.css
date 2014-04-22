@@ -11,6 +11,9 @@ body > footer {
 
 body > main {
     flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 body > footer {
@@ -30,5 +33,14 @@ body > footer p {
 }
 
 .page {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
+}
+
+th {
+    font-weight: bold;
+}
+
+td, th {
+    text-align: center;
+    padding: 10px;
 }

@@ -78,7 +78,96 @@ var outside = (function(outside) {
                 status.setIndexCount(pages.length);
 
                 nextPage();
-                setInterval(updateProgress.bind(null, 0.002), 50);
+                setInterval(updateProgress.bind(null, 0.003), 50);
+            }
+        };
+    }();
+
+    var scoresPage = function() {
+        var table = undefined;
+
+        var update = function() {
+            srobo.competition.scores("league", function(scores) {
+                var tbody = document.createElement("tbody");
+
+                var i = 0;
+                var tr = document.createElement("tr");
+                for (var tla in scores["game_points"]) {
+                    var score = scores["game_points"][tla];
+
+                    var td0 = document.createElement("th");
+                    td0.textContent = tla;
+                    td0.style.paddingLeft = "32px";
+                    tr.appendChild(td0);
+                    var td1 = document.createElement("td");
+                    td1.textContent = score;
+                    td1.style.paddingRight = "32px";
+                    tr.appendChild(td1);
+
+                    i++;
+                    if (i > 5) {
+                        tbody.appendChild(tr);
+                        tr = document.createElement("tr");
+                        i = 0;
+                    }
+                }
+
+                tbody.appendChild(tr);
+                table.replaceChild(tbody, table.querySelector("tbody"));
+            });
+        };
+
+        return {
+            "init": function() {
+                table = document.querySelector("#pages-scores table");
+
+                update();
+                setInterval(update, 30 * 1000);
+            }
+        };
+    }();
+
+    var leaderboardPage = function() {
+        var table = undefined;
+        var teams = undefined;
+
+        var update = function() {
+            srobo.competition.scores("league", function(scores) {
+                var rows = [];
+                for (var tla in scores["game_points"]) {
+                    rows.push([tla, scores["game_points"][tla]]);
+                }
+
+                rows.sort(function(a, b) {
+                    return b[1] - a[1];
+                });
+
+                var tbody = document.createElement("tbody");
+                rows.forEach(function(row, i) {
+                    if (i >= 10) {
+                        return;
+                    }
+
+                    var tr = document.createElement("tr");
+                    var td0 = document.createElement("td");
+                    td0.textContent = row[0];
+                    tr.appendChild(td0);
+                    var td1 = document.createElement("td");
+                    td1.textContent = row[1];
+                    tr.appendChild(td1);
+                    tbody.appendChild(tr);
+                });
+
+                table.replaceChild(tbody, table.querySelector("tbody"));
+            });
+        };
+
+        return {
+            "init": function() {
+                table = document.querySelector("#pages-leaderboard table");
+
+                update();
+                setInterval(update, 30 * 1000);
             }
         };
     }();
@@ -88,7 +177,8 @@ var outside = (function(outside) {
         pages.init();
 
         srobo.init(function() {
-
+            scoresPage.init();
+            leaderboardPage.init();
         });
     };
 

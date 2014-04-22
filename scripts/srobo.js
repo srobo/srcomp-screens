@@ -78,6 +78,9 @@ var srobo = (function(srobo) {
                 }
 
                 get(url, callback);
+            },
+            "scores": function(type, callback) {
+                get("/scores/" + type, callback);
             }
         };
     }());
