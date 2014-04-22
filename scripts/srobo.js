@@ -47,6 +47,7 @@ var srobo = (function(srobo) {
                 });
             },
             "arenas": get.bind(undefined, "/arenas"),
+            "teams": get.bind(undefined, "/teams"),
             "corner": corner,
             "corners": function(arena, callback) {
                 // for forward-compatibility

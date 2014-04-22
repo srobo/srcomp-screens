@@ -153,8 +153,11 @@ var outside = (function(outside) {
                     td0.textContent = row[0];
                     tr.appendChild(td0);
                     var td1 = document.createElement("td");
-                    td1.textContent = row[1];
+                    td1.textContent = teams[row[0]];
                     tr.appendChild(td1);
+                    var td2 = document.createElement("td");
+                    td2.textContent = row[1];
+                    tr.appendChild(td2);
                     tbody.appendChild(tr);
                 });
 
@@ -166,8 +169,11 @@ var outside = (function(outside) {
             "init": function() {
                 table = document.querySelector("#pages-leaderboard table");
 
-                update();
-                setInterval(update, 30 * 1000);
+                srobo.competition.teams(function(teamsDef) {
+                    teams = teamsDef["teams"];
+                    update();
+                    setInterval(update, 30 * 1000);
+                });
             }
         };
     }();
