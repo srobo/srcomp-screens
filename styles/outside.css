@@ -7,8 +7,6 @@ body {
 body > main,
 body > footer {
     display: flex;
-    margin: 2px;
-    padding: 4px;
 }
 
 body > main {
@@ -20,6 +18,8 @@ body > footer {
     justify-content: space-between;
     border-top: 1px solid rgb(60, 60, 60);
     font-size: 1.5em;
+    padding: 2px;
+    background: url("../images/outside/status-background.png") no-repeat;
 }
 
 body > footer p {
