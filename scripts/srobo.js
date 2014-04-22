@@ -1,7 +1,7 @@
-var sr = (function(sr) {
+var srobo = (function(srobo) {
     "use strict";
 
-    sr.comp = (function() {
+    srobo.competition = (function() {
         var apiRoot = "";
         var detectCompApiRoot = function(callback) {
             var xhr = new XMLHttpRequest();
@@ -60,10 +60,10 @@ var sr = (function(sr) {
         };
     }());
 
-    sr.init = function(callback) {
+    srobo.init = function(callback) {
         console.log("Initialising SR…");
-        sr.comp.init(callback);
+        srobo.competition.init(callback);
     };
 
-    return sr;
-}(sr || {}));
+    return srobo;
+}(srobo || {}));
