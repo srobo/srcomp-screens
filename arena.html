@@ -279,13 +279,6 @@
       (function() {
         "use strict";
 
-        // you might want to set this to '' this in development.
-        var API_ROOT = '/comp-api';
-
-        var Corner = function(def) {
-          this.colour = def.colour;
-        };
-
         var Match = function(def) {
           this.teams = def.teams;
           this.number = this.id = def.number;
@@ -301,35 +294,8 @@
           return parseInt((this.endTime - new Date()) / 1000);
         };
 
-        var Resources = window.Resources = function() {
-
-        };
-
-        Resources.prototype.get = function(url, resource, callback) {
-          var xhr = new XMLHttpRequest();
-          xhr.open("GET", API_ROOT + url);
-          xhr.responseType = "json";
-          xhr.addEventListener("load", function(e) {
-            var res = new resource(e.target.response);
-            callback(res);
-          });
-          xhr.send();
-        };
-
-        Resources.prototype.getArenas = function(callback) {
-          this.get("/arenas", Object, callback);
-        };
-
-        Resources.prototype.getMatches = function(query, callback) {
-          this.get("/matches/" + query, Object, callback);
-        };
-
-        Resources.prototype.getCorner = function(id, callback) {
-          this.get("/corner/" + id, Corner, callback);
-        };
-
-        Resources.prototype.getCurrentAndNextMatch = function(arena, callback) {
-          this.getMatches(arena + "?numbers=current,next", function(res) {
+        window.getCurrentAndNextMatch = function(arena, callback) {
+          srobo.competition.matches(arena, "current,next", function(res) {
             var m = res.matches;
             var m0 = m[0].error ? null : new Match(m[0]);
             var m1 = m[1].error ? null : new Match(m[1]);
@@ -337,11 +303,11 @@
           });
         };
 
-        Resources.prototype.getAllCorners = function(callback) {
-          this.getCorner(0, function(corner0) {
-            this.getCorner(1, function(corner1) {
-              this.getCorner(2, function(corner2) {
-                this.getCorner(3, function(corner3) {
+        window.getAllCorners = function(callback) {
+          srobo.competition.corner(0, function(corner0) {
+            srobo.competition.corner(1, function(corner1) {
+              srobo.competition.corner(2, function(corner2) {
+                srobo.competition.corner(3, function(corner3) {
                   callback([corner0, corner1, corner2, corner3]);
                 }.bind(this));
               }.bind(this));
@@ -354,12 +320,12 @@
     <script>
       // work around slightly older Firefox (<23) not having requestAnimationFrame.
       window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame;
-      (function() {
-        var resources = new Resources();
+
+      srobo.init(function() {
         var badCorner = function(cornerDefs) {
           var buttonsDiv = document.createElement("div");
           var showButtons = function(cornerDefs) {
-            resources.getArenas(function(arenas) {
+            srobo.competition.arenas(function(arenas) {
               arenas = arenas.arenas;
               for (var i = 0; i < arenas.length; i++) {
                 var arena = arenas[i];
@@ -378,7 +344,7 @@
           if (cornerDefs != null) {
             showButtons(cornerDefs);
           } else {
-            resources.getAllCorners(showButtons);
+            getAllCorners(showButtons);
           }
           var h2 = document.createElement("h2");
           h2.textContent = "Invalid arena corner specified";
@@ -404,8 +370,8 @@
           return;
         }
 
-        var loadCorners = function(resources, mainCorner, callback) {
-          resources.getAllCorners(function(cornerDefs) {
+        var loadCorners = function(mainCorner, callback) {
+          getAllCorners(function(cornerDefs) {
             if (mainCorner > cornerDefs.length) {
               badCorner(cornerDefs);
               return;
@@ -416,7 +382,7 @@
           });
         };
 
-        loadCorners(resources, cornerId, function(corners) {
+        loadCorners(cornerId, function(corners) {
           var countdownView = new BigView();
           countdownView.element.hidden = true; // start hidden
           document.body.appendChild(countdownView.element);
@@ -428,7 +394,7 @@
 
           // timer to update the match data at regular intervals
           var updateModel = function() {
-            resources.getCurrentAndNextMatch(arenaId, function(current, next) {
+            getCurrentAndNextMatch(arenaId, function(current, next) {
               if (currentMatch === undefined) {
                 window.requestAnimationFrame(updateView);
               }
@@ -459,11 +425,7 @@
           };
 
         });
-      }());
-    </script>
-
-    <script>
-        srobo.init(function() {});
+      });
     </script>
   </body>
 

@@ -30,6 +30,8 @@ var srobo = (function(srobo) {
             xhr.addEventListener("load", function(e) {
                 callback(e.target.response);
             });
+
+            xhr.send();
         };
 
         return {
