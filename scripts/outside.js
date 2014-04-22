@@ -97,15 +97,15 @@ var outside = (function(outside) {
 
                     var td0 = document.createElement("th");
                     td0.textContent = tla;
-                    td0.style.paddingLeft = "32px";
+                    td0.style.paddingLeft = "48px";
                     tr.appendChild(td0);
                     var td1 = document.createElement("td");
                     td1.textContent = score;
-                    td1.style.paddingRight = "32px";
+                    td1.style.paddingRight = "48px";
                     tr.appendChild(td1);
 
                     i++;
-                    if (i > 5) {
+                    if (i > 4) {
                         tbody.appendChild(tr);
                         tr = document.createElement("tr");
                         i = 0;
