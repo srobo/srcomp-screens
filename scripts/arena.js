@@ -51,8 +51,8 @@ var arena = (function(arena) {
         updateElementIfNecessary(this.timeLeftElement, utils.formatTimeDelta(delay));
 
         if (team) {
-            updateElementIfNecessary(this.teamElement, team,
-                                     team.length === 4 ? "small" : "");
+            var className = team.length === 4 ? "small" : "";
+            updateElementIfNecessary(this.teamElement, team, className);
         } else {
             updateElementIfNecessary(this.teamElement, "", "");
         }
@@ -141,18 +141,6 @@ var arena = (function(arena) {
         });
     };
 
-    var getAllCorners = function(callback) {
-        srobo.competition.corner(0, function(corner0) {
-            srobo.competition.corner(1, function(corner1) {
-                srobo.competition.corner(2, function(corner2) {
-                    srobo.competition.corner(3, function(corner3) {
-                        callback([corner0, corner1, corner2, corner3]);
-                    }.bind(this));
-                }.bind(this));
-            }.bind(this));
-        }.bind(this));
-    };
-
     arena.init = function() {
         srobo.init(function() {
             var badCorner = function(cornerDefs) {
@@ -178,7 +166,7 @@ var arena = (function(arena) {
                 if (cornerDefs != null) {
                     showButtons(cornerDefs);
                 } else {
-                    getAllCorners(showButtons);
+                    srobo.competition.corners(showButtons);
                 }
 
                 var h2 = document.createElement("h2");
@@ -206,7 +194,7 @@ var arena = (function(arena) {
             }
 
             var loadCorners = function(mainCorner, callback) {
-                getAllCorners(function(cornerDefs) {
+                srobo.competition.corners(function(cornerDefs) {
                     if (mainCorner > cornerDefs.length) {
                         badCorner(cornerDefs);
                         return;

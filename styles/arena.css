@@ -6,8 +6,6 @@ section.view {
     left: 0;
     width: 100%;
     height: 100%;
-    color: rgb(255, 255, 255);
-    background: rgb(0, 0, 0);
 }
 
 section.corners {
@@ -19,6 +17,8 @@ section.corners {
 
 section.corners > main {
     flex: 1 0 auto;
+    display: flex;
+    align-items: stretch;
 }
 
 section.corners > aside {
@@ -44,10 +44,10 @@ section.big h1 {
 
 .corner {
     width: 100%;
-    height: 100%;
     background: rgb(0, 0, 0);
     display: flex;
     align-items: stretch;
+    flex: 1 1 auto;
 }
 
 .corner aside {
