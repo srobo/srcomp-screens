@@ -12,6 +12,7 @@
     <link href="styles/all.css" type="text/css" rel="stylesheet" />
     <link href="styles/arena.css" type="text/css" rel="stylesheet" />
 
+    <script src="scripts/utils.js"></script>
     <script src="scripts/srobo.js"></script>
   </head>
 
@@ -19,23 +20,6 @@
     <script>
       (function() {
         "use strict";
-
-        var pad = function(value) {
-          var num = parseInt(value, 10);
-          return num < 10 ? "0" + num : num.toString();
-        };
-
-        var formatTimeLeft = function(delta) {
-          var prefix = "";
-          if (delta < 0) {
-            delta = -delta;
-            prefix = "Starting in ";
-          }
-
-          var minutesLeft = parseInt(delta/60, 10);
-          var secondsLeft = delta - parseInt(delta/60, 10) * 60;
-          return prefix + minutesLeft + ":" + pad(secondsLeft);
-        };
 
         var updateElementIfNecessary = function(element, textContent, className) {
           if (element) {
@@ -84,7 +68,7 @@
 
         Corner.prototype.update = function(team, matchNumber, delay) {
           updateElementIfNecessary(this.matchNumberElement, "Match " + matchNumber);
-          updateElementIfNecessary(this.timeLeftElement, formatTimeLeft(delay));
+          updateElementIfNecessary(this.timeLeftElement, utils.formatTimeDelta(delay));
 
           if (team) {
             updateElementIfNecessary(this.teamElement, team, team.length === 4 ? "small" : "");
