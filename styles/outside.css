@@ -8,7 +8,7 @@ body > main,
 body > footer {
     display: flex;
     margin: 2px;
-    padding: 2px;
+    padding: 4px;
 }
 
 body > main {
@@ -19,6 +19,7 @@ body > footer {
     flex: 0 1 auto;
     justify-content: space-between;
     border-top: 1px solid rgb(60, 60, 60);
+    font-size: 1.5em;
 }
 
 body > footer p {
