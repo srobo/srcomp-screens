@@ -3,7 +3,7 @@ html, body {
 }
 
 body {
-    font-family: "Arimo", sans-serif;
+    font-family: "Noto Sans", sans-serif;
     background: black;
     color: white;
     font-size: 2vw;  /* these are on displays so the font should be big */
