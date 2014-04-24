@@ -277,30 +277,34 @@ var outside = (function(outside) {
                         var matchA = resA["matches"][i];
                         var matchB = resB["matches"][i];
                         var startTime = new Date(matchA["start_time"]);
+                        var isPrevious = i === 0;
+                        var isCurrent = i === 1;
 
                         if (!matchA["error"] && !matchB["error"]) {
                             var tr = document.createElement("tr");
+                            if (isPrevious) {
+                                tr.style.fontStyle = "oblique";
+                            }
+                            if (isCurrent) {
+                                tr.style.fontWeight = "bold";
+                            }
 
                             utils.simpleTableCell(tr, utils.formatTime(startTime));
                             utils.simpleTableCell(tr, matchA["number"]);
 
-                            if (matchA["error"]) {
-                                utils.simpleTableCell(tr, "—").colspan = 4;
-                            } else {
-                                matchA["teams"].forEach(function(team, i) {
-                                    var td = utils.simpleTableCell(tr, team || "—");
-                                    td.style.color = corners[i].colour;
-                                });
-                            }
+                            var addMatch = function(match) {
+                                if (match["error"]) {
+                                    utils.simpleTableCell(tr, "—").colspan = 4;
+                                } else {
+                                    match["teams"].forEach(function(team, i) {
+                                        var td = utils.simpleTableCell(tr, team || "—");
+                                        td.style.color = corners[i].colour;
+                                    });
+                                }
+                            };
 
-                            if (matchB["error"]) {
-                                utils.simpleTableCell(tr, "—").colspan = 4;
-                            } else {
-                                matchB["teams"].forEach(function(team, i) {
-                                    var td = utils.simpleTableCell(tr, team || "—");
-                                    td.style.color = corners[i].colour;
-                                });
-                            }
+                            addMatch(matchA);
+                            addMatch(matchB);
 
                             tbody.appendChild(tr);
                         }
