@@ -179,6 +179,8 @@ var outside = (function(outside) {
     }();
 
     var knockoutPage = function() {
+        var page = undefined;
+
         var process_knockout_round = function() {
             var describe_match = function(num_in_round, match_num, rounds_after_this) {
                 var description = "Match " + match_num;
@@ -196,7 +198,7 @@ var outside = (function(outside) {
             var build_game = function(info) {
                 return {
                     "arena": info.arena,
-                    "teams": ensure_whole_arena(info.teams)
+                    "teams": info.teams
                 };
             };
             var group_games = function(games) {
@@ -257,9 +259,39 @@ var outside = (function(outside) {
             return output;
         };
 
+        var update = function() {
+            srobo.competition.matches("knockouts", function(res) {
+                utils.removeAllChildren(page);
+
+                var rounds = processKnockouts(res.rounds);
+                rounds.forEach(function(round) {
+                    var roundDiv = document.createElement("div");
+                    roundDiv.className = "round";
+                    round.forEach(function(match) {
+                        var matchDiv = document.createElement("div");
+                        var h1 = document.createElement("h1");
+                        h1.textContent = match.description;
+                        matchDiv.appendChild(h1);
+
+                        match.games.forEach(function(game) {
+                            var p = document.createElement("p");
+                            p.textContent = game.arena + " — " + game.teams.join(", ");
+                            matchDiv.appendChild(p);
+                        });
+
+                        roundDiv.appendChild(matchDiv);
+                    });
+                    page.appendChild(roundDiv);
+                });
+            });
+        };
+
         return {
             "init": function() {
+                page = document.querySelector("#pages-knockouts");
 
+                update();
+                setInterval(update, 30 * 1000);
             }
         };
     }();
@@ -322,7 +354,7 @@ var outside = (function(outside) {
 
                 srobo.competition.corners(function(res) {
                     corners = res["corners"];
-                    setInterval(update, 10 * 1000);
+                    setInterval(update, 30 * 1000);
                     update();
                 });
             }

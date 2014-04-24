@@ -34,6 +34,15 @@ body > footer p {
 
 .page {
     flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.round {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 th {

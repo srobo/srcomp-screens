@@ -33,5 +33,11 @@ var utils = (function(utils) {
         return td;
     };
 
+    var removeAllChildren = utils.removeAllChildren = function(node) {
+        while (node.firstChild) {
+            node.removeChild(node.firstChild);
+        }
+    };
+
     return utils;
 }(utils || {}));
