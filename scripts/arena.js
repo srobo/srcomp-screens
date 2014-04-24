@@ -58,14 +58,14 @@ var arena = (function(arena) {
         }
     };
 
-    var CornersView = function(cornerDefs, mainCorner) {
+    var CornersView = function(corners, mainCorner) {
         var main = document.createElement("main");
         var aside = document.createElement("aside");
 
         this.corners = [];
-        cornerDefs.forEach(function(cornerDef, i) {
+        for (var i = 0; i < Object.keys(corners).length; i++) {
             var small = i !== mainCorner;
-            var corner = new Corner(cornerDef.colour, small);
+            var corner = new Corner(corners[i]["colour"], small);
             if (small) {
                 aside.appendChild(corner.element);
             } else {
@@ -73,7 +73,7 @@ var arena = (function(arena) {
             }
 
             this.corners.push(corner);
-        }.bind(this));
+        }
 
         this.element = document.createElement("section");
         this.element.classList.add("view");
@@ -151,7 +151,7 @@ var arena = (function(arena) {
                         for (var i = 0; i < arenas.length; i++) {
                             var arena = arenas[i];
                             var para = document.createElement("p");
-                            for (var c = 0; c < cornerDefs.length; c++) {
+                            for (var c = 0; c < Object.keys(cornerDefs.corners).length; c++) {
                                 var link = document.createElement("a");
                                 link.href = "?arena=" + arena + "&corner=" + c;
                                 link.textContent = arena + ":" + c;
@@ -194,13 +194,13 @@ var arena = (function(arena) {
             }
 
             var loadCorners = function(mainCorner, callback) {
-                srobo.competition.corners(function(cornerDefs) {
-                    if (mainCorner > cornerDefs.length) {
-                        badCorner(cornerDefs);
+                srobo.competition.corners(function(res) {
+                    if (mainCorner > Object.keys(res.corners).length) {
+                        badCorner(res);
                         return;
                     }
 
-                    var corners = new CornersView(cornerDefs, mainCorner);
+                    var corners = new CornersView(res.corners, mainCorner);
                     document.body.appendChild(corners.element);
                     callback(corners);
                 });

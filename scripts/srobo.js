@@ -34,10 +34,6 @@ var srobo = (function(srobo) {
             xhr.send();
         };
 
-        var corner = function(index, callback) {
-            get("/corner/" + index, callback);
-        };
-
         return {
             "init": function(callback) {
                 detectCompApiRoot(function(root) {
@@ -48,25 +44,10 @@ var srobo = (function(srobo) {
             },
             "arenas": get.bind(undefined, "/arenas"),
             "teams": get.bind(undefined, "/teams"),
-            "corner": corner,
-            "corners": function(arena, callback) {
-                // for forward-compatibility
-                if (callback === undefined) {
-                    callback = arena;
-                    arena = "A";
-                }
-
-                // TODO: query arena
-                corner(0, function(c0) {
-                    corner(1, function(c1) {
-                        corner(2, function(c2) {
-                            corner(3, function(c3) {
-                                callback([c0, c1, c2, c3]);
-                            });
-                        });
-                    });
-                });
+            "corner": function(index, callback) {
+                get("/corner/" + index, callback);
             },
+            "corners": get.bind(undefined, "/corners"),
             "matches": function(arena, numbers, callback) {
                 if (callback === undefined) {
                     callback = numbers;
@@ -75,7 +56,7 @@ var srobo = (function(srobo) {
 
                 var url = "/matches/" + arena;
                 if (numbers) {
-                    url += "?numbers=" + numbers;
+                    url += "?numbers=" + encodeURIComponent(numbers);
                 }
 
                 get(url, callback);

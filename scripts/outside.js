@@ -178,6 +178,153 @@ var outside = (function(outside) {
         };
     }();
 
+    var knockoutPage = function() {
+        var process_knockout_round = function() {
+            var describe_match = function(num_in_round, match_num, rounds_after_this) {
+                var description = "Match " + match_num;
+                if (rounds_after_this == 2) {
+                    description = "Quarter " + num_in_round + " (#" + match_num + ")";
+                }
+                if (rounds_after_this == 1) {
+                    description = "Semi " + num_in_round + " (#" + match_num + ")";
+                }
+                if (rounds_after_this == 0) {
+                    description = "Final (#" + match_num + ")";
+                }
+                return description;
+            };
+            var build_game = function(info) {
+                return {
+                    "arena": info.arena,
+                    "teams": ensure_whole_arena(info.teams)
+                };
+            };
+            var group_games = function(games) {
+                // group the given games by number, assuming they're in order.
+                var game_groups = [];
+                var last_group = null;
+                var last_num = null;
+
+                for (var i=0; i<games.length; i++) {
+                    var game = games[i];
+                    if (last_num == game.num) {
+                        last_group.push(game);
+                    } else {
+                        last_group = [game];
+                        last_num   = game.num;
+                        game_groups.push(last_group);
+                    }
+                }
+
+                return game_groups;
+            }
+            return function(round, rounds_after_this) {
+
+                var game_groups = group_games(round);
+
+                var matches = [];
+                for (var i=0; i<game_groups.length; i++) {
+                    var match_games = game_groups[i];
+                    var number, time;
+                    var game_details = [];
+                    for (var j=0; j<match_games.length; j++) {
+                        var game = match_games[j];
+                        if (j == 0) {
+                            number = game.num;
+                            time = new Date(game.start_time);
+                        }
+                        game_details.push(build_game(game));
+                    }
+
+                    matches.push({
+                        'number': number,
+                        'description': describe_match(i, number, rounds_after_this),
+                        'time': time,
+                        'games': game_details
+                    });
+                }
+                return matches;
+            };
+        }();
+
+        var processKnockouts = function(rounds) {
+            var output = [];
+            for (var i = 0; i < rounds.length; i++) {
+                var roundsAfterThis = rounds.length - i - 1;
+                output.push(process_knockout_round(rounds[i], roundsAfterThis));
+            }
+
+            return output;
+        };
+
+        return {
+            "init": function() {
+
+            }
+        };
+    }();
+
+    var schedulePage = function() {
+        var table = undefined;
+        var corners = undefined;
+
+        var update = function() {
+            srobo.competition.matches("A", "previous,current,next,next+1,next+2,next+3", function(resA) {
+                srobo.competition.matches("B", "previous,current,next,next+1,next+2,next+3", function(resB) {
+                    var tbody = document.createElement("tbody");
+                    var noMatches = Math.max(resA["matches"].length, resB["matches"].length);
+                    for (var i = 0; i < noMatches; i++) {
+                        var matchA = resA["matches"][i];
+                        var matchB = resB["matches"][i];
+                        var startTime = new Date(matchA["start_time"]);
+
+                        if (!matchA["error"] && !matchB["error"]) {
+                            var tr = document.createElement("tr");
+
+                            utils.simpleTableCell(tr, utils.formatTime(startTime));
+                            utils.simpleTableCell(tr, matchA["number"]);
+
+                            if (matchA["error"]) {
+                                utils.simpleTableCell(tr, "—").colspan = 4;
+                            } else {
+                                matchA["teams"].forEach(function(team, i) {
+                                    var td = utils.simpleTableCell(tr, team || "—");
+                                    td.style.color = corners[i].colour;
+                                });
+                            }
+
+                            if (matchB["error"]) {
+                                utils.simpleTableCell(tr, "—").colspan = 4;
+                            } else {
+                                matchB["teams"].forEach(function(team, i) {
+                                    var td = utils.simpleTableCell(tr, team || "—");
+                                    td.style.color = corners[i].colour;
+                                });
+                            }
+
+                            tbody.appendChild(tr);
+                        }
+
+                    }
+
+                    table.replaceChild(tbody, table.querySelector("tbody"));
+                });
+            });
+        };
+
+        return {
+            "init": function() {
+                table = document.querySelector("#pages-schedule table");
+
+                srobo.competition.corners(function(res) {
+                    corners = res["corners"];
+                    setInterval(update, 10 * 1000);
+                    update();
+                });
+            }
+        };
+    }();
+
     outside.init = function() {
         status.init();
         pages.init();
@@ -185,6 +332,8 @@ var outside = (function(outside) {
         srobo.init(function() {
             scoresPage.init();
             leaderboardPage.init();
+            knockoutPage.init();
+            schedulePage.init();
         });
     };
 

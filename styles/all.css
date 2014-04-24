@@ -1,9 +1,21 @@
+@font-face {
+    font-family: Carlito;
+    font-weight: normal;
+    src: url("../fonts/Carlito-Regular.ttf");
+}
+
+@font-face {
+    font-family: Carlito;
+    font-weight: bold;
+    src: url("../fonts/Carlito-Bold.ttf");
+}
+
 html, body {
     height: 100%;
 }
 
 body {
-    font-family: "Noto Sans", sans-serif;
+    font-family: "Carlito", "Noto Sans", sans-serif;
     background: black;
     color: white;
     font-size: 2vw;  /* these are on displays so the font should be big */
