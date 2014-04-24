@@ -180,6 +180,7 @@ var outside = (function(outside) {
 
     var knockoutPage = function() {
         var page = undefined;
+        var corners = undefined;
 
         var process_knockout_round = function() {
             var describe_match = function(num_in_round, match_num, rounds_after_this) {
@@ -275,7 +276,18 @@ var outside = (function(outside) {
 
                         match.games.forEach(function(game) {
                             var p = document.createElement("p");
-                            p.textContent = game.arena + " — " + game.teams.join(", ");
+                            var html = game.arena + ": ";
+
+                            game.teams.forEach(function(team, i) {
+                                html += " <span style=\"color: ";
+                                html += corners[i]["colour"];
+                                html += "\">";
+                                html += team || "—";
+                                html += "</span> ";
+                            });
+
+                            p.innerHTML = html;
+
                             matchDiv.appendChild(p);
                         });
 
@@ -290,8 +302,11 @@ var outside = (function(outside) {
             "init": function() {
                 page = document.querySelector("#pages-knockouts");
 
-                update();
-                setInterval(update, 30 * 1000);
+                srobo.competition.corners(function(res) {
+                    corners = res["corners"];
+                    update();
+                    setInterval(update, 30 * 1000);
+                });
             }
         };
     }();

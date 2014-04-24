@@ -40,9 +40,13 @@ body > footer p {
 }
 
 .round {
-    margin: 10px;
+    margin: 0 10px;
     display: flex;
     flex-direction: column;
+}
+
+.round > div {
+    margin: 3px 0;
 }
 
 th {
