@@ -87,7 +87,7 @@ var outside = (function(outside) {
         var table = undefined;
 
         var update = function() {
-            srobo.competition.scores("all", function(scores) {
+            srobo.competition.scores("league", function(scores) {
                 var tbody = document.createElement("tbody");
 
                 var i = 0;
