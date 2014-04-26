@@ -28,7 +28,12 @@ var srobo = (function(srobo) {
             xhr.responseType = "json";
 
             xhr.addEventListener("load", function(e) {
-                callback(e.target.response);
+                var r = e.target.response;
+                if (typeof(r) === "string") {
+                    callback(JSON.parse(r));
+                } else {
+                    callback(r);
+                }
             });
 
             xhr.send();
