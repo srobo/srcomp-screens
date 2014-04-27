@@ -129,6 +129,7 @@ var outside = (function(outside) {
 
     var leaderboardPage = function() {
         var table = undefined;
+        var upToDateMatch = undefined;
         var teams = undefined;
 
         var update = function() {
@@ -162,12 +163,16 @@ var outside = (function(outside) {
                 });
 
                 table.replaceChild(tbody, table.querySelector("tbody"));
+
+                console.log(scores);
+                upToDateMatch.textContent = scores["last_scored"];
             });
         };
 
         return {
             "init": function() {
                 table = document.querySelector("#pages-leaderboard table");
+                upToDateMatch = document.querySelector("#pages-leaderboard-match");
 
                 srobo.competition.teams(function(teamsDef) {
                     teams = teamsDef["teams"];
