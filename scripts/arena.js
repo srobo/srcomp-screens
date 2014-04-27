@@ -111,27 +111,19 @@ var arena = (function(arena) {
         this.element.appendChild(main);
     };
 
-    BigView.prototype.show = function() {
-        if (this.element.hidden) {
-            this.element.hidden = false;
-        }
-    };
-
-    BigView.prototype.hide = function() {
-        if (!this.element.hidden) {
-            this.element.hidden = true;
-        }
-    };
-
     BigView.prototype.update = function(text, timeToStart) {
-        if (this.h1.textContent !== text) {
+        if (this.h1.textContent != text) {
             this.h1.textContent = text;
         }
 
-        if (timeToStart <= 5 && timeToStart >= 0) {
-            this.show();
+        if (timeToStart >= 0 && timeToStart <= 5) {
+            if (this.element.hidden) {
+                this.element.hidden = false;
+            }
         } else {
-            this.hide();
+            if (!this.element.hidden) {
+                this.element.hidden = true;
+            }
         }
     };
 
@@ -251,9 +243,9 @@ var arena = (function(arena) {
 
                 // timer to redraw the UI faster than the data is updated
                 var updateView = function() {
+                    corners.update(currentMatch, nextMatch);
                     var timeToStart = nextMatch.secondsToStart();
                     countdownView.update(timeToStart, timeToStart);
-                    corners.update(currentMatch, nextMatch);
                     window.requestAnimationFrame(updateView);
                 };
             });

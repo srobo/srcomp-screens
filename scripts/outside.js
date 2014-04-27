@@ -92,8 +92,8 @@ var outside = (function(outside) {
 
                 var i = 0;
                 var tr = document.createElement("tr");
-                for (var tla in scores["game_points"]) {
-                    var score = scores["game_points"][tla];
+                for (var tla in scores["league_points"]) {
+                    var score = scores["league_points"][tla];
 
                     var td0 = document.createElement("th");
                     td0.textContent = tla;
@@ -135,8 +135,8 @@ var outside = (function(outside) {
         var update = function() {
             srobo.competition.scores("league", function(scores) {
                 var rows = [];
-                for (var tla in scores["game_points"]) {
-                    rows.push([tla, scores["game_points"][tla]]);
+                for (var tla in scores["league_points"]) {
+                    rows.push([tla, scores["league_points"][tla]]);
                 }
 
                 rows.sort(function(a, b) {
