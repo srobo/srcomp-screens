@@ -218,7 +218,6 @@ var arena = (function(arena) {
 
             loadCorners(cornerId, function(corners) {
                 var countdownView = new BigView();
-                countdownView.hide();
                 document.body.appendChild(countdownView.element);
 
                 countdownView.update("5");
