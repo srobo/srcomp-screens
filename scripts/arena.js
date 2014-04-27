@@ -97,7 +97,7 @@ var arena = (function(arena) {
                                 timeToEnd);
                 }
             }
-        });
+        }.bind(this));
     };
 
     var BigView = function() {
@@ -111,9 +111,27 @@ var arena = (function(arena) {
         this.element.appendChild(main);
     };
 
-    BigView.prototype.update = function(text) {
+    BigView.prototype.show = function() {
+        if (this.element.hidden) {
+            this.element.hidden = false;
+        }
+    };
+
+    BigView.prototype.hide = function() {
+        if (!this.element.hidden) {
+            this.element.hidden = true;
+        }
+    };
+
+    BigView.prototype.update = function(text, timeToStart) {
         if (this.h1.textContent !== text) {
             this.h1.textContent = text;
+        }
+
+        if (timeToStart <= 5 && timeToStart >= 0) {
+            this.show();
+        } else {
+            this.hide();
         }
     };
 
@@ -208,7 +226,7 @@ var arena = (function(arena) {
 
             loadCorners(cornerId, function(corners) {
                 var countdownView = new BigView();
-                countdownView.element.hidden = true; // start hidden
+                countdownView.hide();
                 document.body.appendChild(countdownView.element);
 
                 countdownView.update("5");
@@ -234,17 +252,7 @@ var arena = (function(arena) {
                 // timer to redraw the UI faster than the data is updated
                 var updateView = function() {
                     var timeToStart = nextMatch.secondsToStart();
-                    if (timeToStart <= 5 && timeToStart > 0) {
-                        if (countdownView.element.hidden) {
-                            countdownView.element.hidden = false;
-                        }
-                        countdownView.update(timeToStart);
-                    } else {
-                        if (!countdownView.element.hidden) {
-                            countdownView.element.hidden = true;
-                        }
-                    }
-
+                    countdownView.update(timeToStart, timeToStart);
                     corners.update(currentMatch, nextMatch);
                     window.requestAnimationFrame(updateView);
                 };
