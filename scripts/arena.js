@@ -243,8 +243,10 @@ var arena = (function(arena) {
                 // timer to redraw the UI faster than the data is updated
                 var updateView = function() {
                     corners.update(currentMatch, nextMatch);
-                    var timeToStart = nextMatch.secondsToStart();
-                    countdownView.update(timeToStart, timeToStart);
+                    if (nextMatch) {
+                        var timeToStart = nextMatch.secondsToStart();
+                        countdownView.update(timeToStart, timeToStart);
+                    }
                     window.requestAnimationFrame(updateView);
                 };
             });
