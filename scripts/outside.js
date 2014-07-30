@@ -317,65 +317,105 @@ var outside = (function(outside) {
     }();
 
     var schedulePage = function() {
-        var table = undefined;
         var corners = undefined;
+        var arenas = undefined;
+        var tables = undefined;
 
-        var update = function() {
-            srobo.competition.matches("A", "previous,current,next,next+1,next+2,next+3", function(resA) {
-                srobo.competition.matches("B", "previous,current,next,next+1,next+2,next+3", function(resB) {
-                    var tbody = document.createElement("tbody");
-                    var noMatches = Math.max(resA["matches"].length, resB["matches"].length);
-                    for (var i = 0; i < noMatches; i++) {
-                        var matchA = resA["matches"][i];
-                        var matchB = resB["matches"][i];
-                        var startTime = new Date(matchA["start_time"]);
-                        var isPrevious = i === 0;
-                        var isCurrent = i === 1;
+        var updateTable = function(arena, table) {
+            srobo.competition.matches(arena, "previous,current,next,next+1,next+2,next+3", function(res) {
+                var tbody = document.createElement("tbody");
 
-                        if (!matchA["error"] && !matchB["error"]) {
-                            var tr = document.createElement("tr");
-                            if (isPrevious) {
-                                tr.style.fontStyle = "oblique";
-                            }
-                            if (isCurrent) {
-                                tr.style.fontWeight = "bold";
-                            }
-
-                            utils.simpleTableCell(tr, utils.formatTime(startTime));
-                            utils.simpleTableCell(tr, matchA["number"]);
-
-                            var addMatch = function(match) {
-                                if (match["error"]) {
-                                    utils.simpleTableCell(tr, "—").colspan = 4;
-                                } else {
-                                    match["teams"].forEach(function(team, i) {
-                                        var td = utils.simpleTableCell(tr, team || "—");
-                                        td.style.color = corners[i].colour;
-                                    });
-                                }
-                            };
-
-                            addMatch(matchA);
-                            addMatch(matchB);
-
-                            tbody.appendChild(tr);
-                        }
-
+                res["matches"].forEach(function(match, i) {
+                    var tr = document.createElement("tr");
+                    if (i === 0) {  // previous
+                        tr.style.fontStyle = "oblique";
+                    }
+                    if (i === 1) {  // next
+                        tr.style.fontWeight = "bold";
                     }
 
-                    table.replaceChild(tbody, table.querySelector("tbody"));
+                    if (!match["error"]) {
+                        utils.simpleTableCell(tr, match["number"]);
+
+                        var startTime = new Date(match["start_time"]);
+                        utils.simpleTableCell(tr, utils.formatTime(startTime));
+
+                        match["teams"].forEach(function(team, i) {
+                            var td = utils.simpleTableCell(tr, team || "—");
+                            td.style.color = corners[i].colour;
+                        });
+                    }
+
+                    tbody.appendChild(tr);
                 });
+
+                table.replaceChild(tbody, table.querySelector("tbody"));
             });
+        };
+
+        var update = function() {
+            for (var i = 0; i < arenas.length; i++) {
+                updateTable(arenas[i], tables[i]);
+            }
+        };
+
+        var createArenaTable = function(arena, arenasCount) {
+            var table = document.createElement("table");
+
+            var thead = document.createElement("thead");
+
+            var tr1 = document.createElement("tr");
+            var tr2 = document.createElement("tr");
+
+            var th = document.createElement("th");
+            th.textContent = "Arena " + arena;
+            th.colSpan = 6;
+            tr1.appendChild(th);
+
+            th = document.createElement("th");
+            th.textContent = "№";
+            tr2.appendChild(th);
+
+            th = document.createElement("th");
+            th.textContent = "Time";
+            tr2.appendChild(th);
+
+            th = document.createElement("th");
+            th.textContent = "Teams";
+            th.colSpan = 4;
+            tr2.appendChild(th);
+
+            if (arenasCount > 1) {
+                thead.appendChild(tr1);
+            }
+
+            thead.appendChild(tr2);
+
+            table.appendChild(thead);
+            table.appendChild(document.createElement("tbody"));
+
+            return table;
         };
 
         return {
             "init": function() {
-                table = document.querySelector("#pages-schedule table");
+                var page = document.querySelector("#pages-schedule");
 
                 srobo.competition.corners(function(res) {
                     corners = res["corners"];
-                    setInterval(update, 30 * 1000);
-                    update();
+
+                    srobo.competition.arenas(function(res) {
+                        arenas = res["arenas"];
+
+                        tables = arenas.map(function(arena) {
+                            var table = createArenaTable(arena, arenas.length);
+                            page.appendChild(table);
+                            return table;
+                        });
+
+                        setInterval(update, 30 * 1000);
+                        update();
+                    });
                 });
             }
         };
