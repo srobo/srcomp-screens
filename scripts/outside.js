@@ -281,7 +281,10 @@ var outside = (function(outside) {
 
                         match.games.forEach(function(game) {
                             var p = document.createElement("p");
-                            var html = game.arena + ": ";
+                            var html = "";
+                            if (match.games.length > 1) {
+                                html = game.arena + ": ";
+                            }
 
                             game.teams.forEach(function(team, i) {
                                 html += " <span style=\"color: ";
