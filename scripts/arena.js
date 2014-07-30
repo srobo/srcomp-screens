@@ -58,6 +58,12 @@ var arena = (function(arena) {
         }
     };
 
+    Corner.prototype.clear = function() {
+        updateElementIfNecessary(this.matchNumberElement, null);
+        updateElementIfNecessary(this.timeLeftElement, null);
+        updateElementIfNecessary(this.teamElement, "");
+    };
+
     var CornersView = function(corners, mainCorner) {
         var main = document.createElement("main");
         var aside = document.createElement("aside");
@@ -86,24 +92,22 @@ var arena = (function(arena) {
         // How long a match actually lasts (ie, not including changeover time)
         var MATCH_DURATION = 180;
         this.corners.forEach(function(corner, i) {
-            if (!currentMatch && !nextMatch) {
-                // TODO: implement
+            if (currentMatch) {
+                // matches begin at the start of their slot
+                // add because the time 'to' the start will be negative
+                var timeLeft = MATCH_DURATION + currentMatch.secondsToStart();
+                if (timeLeft > 0) {
+                    corner.update(currentMatch.teams[i], currentMatch.number,
+                                  timeLeft);
+                    return;
+                }
+            }
+            if (nextMatch) {
+                var timeToStart = nextMatch.secondsToStart();
+                corner.update(nextMatch.teams[i], nextMatch.number,
+                            -timeToStart);
             } else {
-                if (currentMatch) {
-                    // matches begin at the start of their slot
-                    // add because the time 'to' the start will be negative
-                    var timeLeft = MATCH_DURATION + currentMatch.secondsToStart();
-                    if (timeLeft > 0) {
-                        corner.update(currentMatch.teams[i], currentMatch.number,
-                                      timeLeft);
-                        return;
-                    }
-                }
-                if (nextMatch) {
-                    var timeToStart = nextMatch.secondsToStart();
-                    corner.update(nextMatch.teams[i], nextMatch.number,
-                                -timeToStart);
-                }
+                corner.clear();
             }
         }.bind(this));
     };
