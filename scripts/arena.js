@@ -254,6 +254,8 @@ var arena = (function(arena) {
                     if (nextMatch) {
                         var timeToStart = nextMatch.secondsToStart();
                         countdownView.update(timeToStart, timeToStart);
+                    } else { // no next match after the start of the final
+                        countdownView.update(null, -1);
                     }
                     window.requestAnimationFrame(updateView);
                 };
