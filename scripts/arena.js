@@ -83,18 +83,26 @@ var arena = (function(arena) {
     };
 
     CornersView.prototype.update = function(currentMatch, nextMatch) {
+        // How long a match actually lasts (ie, not including changeover time)
+        var MATCH_DURATION = 180;
         this.corners.forEach(function(corner, i) {
             if (!currentMatch && !nextMatch) {
                 // TODO: implement
             } else {
-                var timeToStart = nextMatch.secondsToStart();
-                if (timeToStart <= 120 || !currentMatch) {
+                if (currentMatch) {
+                    // matches begin at the start of their slot
+                    // add because the time 'to' the start will be negative
+                    var timeLeft = MATCH_DURATION + currentMatch.secondsToStart();
+                    if (timeLeft > 0) {
+                        corner.update(currentMatch.teams[i], currentMatch.number,
+                                      timeLeft);
+                        return;
+                    }
+                }
+                if (nextMatch) {
+                    var timeToStart = nextMatch.secondsToStart();
                     corner.update(nextMatch.teams[i], nextMatch.number,
                                 -timeToStart);
-                } else {
-                    var timeToEnd = currentMatch.secondsToEnd() - 120;
-                    corner.update(currentMatch.teams[i], currentMatch.number,
-                                timeToEnd);
                 }
             }
         }.bind(this));
