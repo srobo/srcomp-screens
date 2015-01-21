@@ -1,0 +1,64 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-scores">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                font-family: sans-serif;
+                font-size: 1.2em;
+            }
+
+            table {
+                padding: 1em;
+            }
+
+            td, th {
+                padding: 0.3em 0.4em;
+            }
+        </style>
+
+        <table>
+            <template repeat="{{ teams in teamsChunks }}">
+                <tr>
+                    <template repeat="{{ team in teams }}">
+                        <td style="text-align: right;">{{ team.name }}</td>
+                        <th style="text-align: left;">{{ team.league_points }}</th>
+                    </template>
+                </tr>
+            </template>
+        </table>
+    </template>
+
+    <script>
+        Polymer({
+            comp: null,
+            leaderboard: {},
+            teamsChunks: [],
+            compChanged: function() {
+                this.comp.stream.addEventListener('team', function(e) {
+                    this.leaderboard[e.detail.tla] = e.detail;
+
+                    var teams = [];
+                    for (var key in this.leaderboard) {
+                        teams.push(this.leaderboard[key]);
+                    }
+
+                    var teamsChunks = [];
+
+                    var i,j,temparray,chunk = 5;
+                    for (i=0,j=teams.length; i<j; i+=chunk) {
+                        temparray = teams.slice(i,i+chunk);
+                        teamsChunks.push(temparray);
+                    }
+
+                    this.teamsChunks = teamsChunks;
+                }.bind(this));
+            }
+        });
+    </script>
+</polymer-element>
