@@ -41,19 +41,36 @@
     <body>
         <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
-        <sr-corner arena="A" corner="0" show="all"></sr-corner>
+        <sr-corner show="all"></sr-corner>
 
         <div>
-            <sr-corner arena="A" corner="1" show="tla"></sr-corner>
-            <sr-corner arena="A" corner="2" show="tla"></sr-corner>
-            <sr-corner arena="A" corner="3" show="tla"></sr-corner>
+            <sr-corner show="tla"></sr-corner>
+            <sr-corner show="tla"></sr-corner>
+            <sr-corner show="tla"></sr-corner>
         </div>
 
         <script>
+            var parseArguments = function() {
+                var fragment = window.location.search;
+                var tokens = fragment.substr(1).split(',');
+                return {arena: tokens[0], corner: tokens[1]};
+            };
+
             document.addEventListener('polymer-ready', function() {
+                var args = parseArguments();
+
+                var otherCorners = [0, 1, 2, 3];
+                otherCorners.splice(args.corner, 1);
+
                 var comp = document.querySelector('#comp');
                 var corners = document.querySelectorAll('sr-corner');
                 for (var i = 0; i < corners.length; i++) {
+                    corners[i].arena = args.arena;
+                    if (i == 0) {
+                        corners[i].corner = args.corner;
+                    } else {
+                        corners[i].corner = otherCorners[i - 1];
+                    }
                     corners[i].comp = comp;
                 }
             });
