@@ -1,8 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<link rel="import" href="../sr-corner-tla/component.html" />
 <link rel="import" href="../sr-corner-clock/component.html" />
 <link rel="import" href="../sr-corner-match/component.html" />
+<link rel="import" href="../sr-corner-tla/component.html" />
 
 <polymer-element name="sr-corner" attributes="arena corner stream">
     <template>
@@ -26,17 +26,13 @@
                 align-items: center;
                 align-content: center;
             }
-
-            h1, h2 {
-                color: white;
-            }
         </style>
 
         <aside class="bar"></aside>
 
         <main>
-            <sr-corner-tla id="tla" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-tla>
             <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
+            <sr-corner-tla id="tla" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-tla>
             <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
         </main>
 
@@ -51,9 +47,9 @@
                     this.colour = corner.colour;
                 }.bind(this));
 
-                this.$.tla.stream = this.comp.stream;
                 this.$.clock.stream = this.comp.stream;
                 this.$.match.stream = this.comp.stream;
+                this.$.tla.stream = this.comp.stream;
             }
         });
     </script>
