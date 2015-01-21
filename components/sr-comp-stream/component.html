@@ -6,7 +6,7 @@
             attached: function() {
                 this.eventSource = new EventSource(this.url);
                 this.eventSource.addEventListener('match', function(e) {
-                    this.fire('match', e.data);
+                    this.fire('match', JSON.parse(e.data));
                 }.bind(this));
             }
         });

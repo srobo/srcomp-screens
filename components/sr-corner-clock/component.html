@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-corner-clock" attributes="arena">
+    <template>
+        <style>
+            h1 {
+                color: white;
+            }
+        </style>
+
+        <h1>{{ text }}</h1>
+    </template>
+
+    <script>
+        Polymer({
+            stream: null,
+            currentGameStart: null,
+            currentGameEnd: null,
+            currentPeriodStart: null,
+            currentPeriodEnd: null,
+            ready: function() {
+                this.updateDisplay();
+            },
+            streamChanged: function() {
+                this.stream.addEventListener('match', function(e) {
+                    var match = null;
+                    for (var i = 0; i < e.detail.length; i++) {
+                        if (e.detail[i].arena == this.arena) {
+                            match = e.detail[i];
+                        }
+                    }
+
+                    this.currentGameStart = match.times.game.start;
+                    this.currentGameEnd = match.times.game.end;
+                    this.currentPeriodStart = match.times.period.start;
+                    this.currentPeriodEnd = match.times.period.end;
+                }.bind(this));
+            },
+            pad: function(value) {
+                var num = parseInt(value, 10);
+                return num < 10 ? "0" + num : num.toString();
+            },
+            formatTimeDelta: function(delta) {
+                var prefix = "";
+                if (delta < 0) {
+                    delta = -delta;
+                    prefix = "Starting in ";
+                }
+
+                var minutesLeft = parseInt(delta / 60, 10);
+                var secondsLeft = delta - parseInt(delta / 60, 10) * 60;
+                return prefix + minutesLeft + ":" + this.pad(secondsLeft);
+            },
+            updateDisplay: function() {
+                var currentTime = new Date()
+                var gameStartTime = new Date(this.currentGameStart)
+                var gameEndTime = new Date(this.currentGameEnd)
+
+                if (currentTime >= gameEndTime) {
+                    // next period starting in 0-30 seconds
+                    this.text = 'Finished';
+                } else if (currentTime >= gameStartTime) {
+                    // game ending in 0-180 seconds
+                    var t = (gameEndTime - currentTime) / 1000;
+                    this.text = this.formatTimeDelta(t);
+                } else if (currentTime <= gameStartTime) {
+                    // game starting in 0-90 seconds
+                    var t = (gameStartTime - currentTime) / 1000;
+                    this.text = this.formatTimeDelta(-t);
+                }
+
+                window.requestAnimationFrame(this.updateDisplay.bind(this));
+
+            }
+        });
+    </script>
+</polymer-element>

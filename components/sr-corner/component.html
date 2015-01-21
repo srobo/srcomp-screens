@@ -1,6 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-corner" attributes="corner stream">
+<link rel="import" href="../sr-corner-tla/component.html" />
+<link rel="import" href="../sr-corner-clock/component.html" />
+<link rel="import" href="../sr-corner-match/component.html" />
+
+<polymer-element name="sr-corner" attributes="arena corner stream">
     <template>
         <style>
             :host {
@@ -17,13 +21,23 @@
             main {
                 flex: 1 1 auto;
                 background: black;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                align-content: center;
+            }
+
+            h1, h2 {
+                color: white;
             }
         </style>
 
         <aside class="bar"></aside>
 
         <main>
-            <content></content>
+            <sr-corner-tla id="tla" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-tla>
+            <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
+            <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
         </main>
 
         <aside class="bar"></aside>
@@ -36,6 +50,10 @@
                 this.comp.api.getCorner(this.corner, function(corner) {
                     this.colour = corner.colour;
                 }.bind(this));
+
+                this.$.tla.stream = this.comp.stream;
+                this.$.clock.stream = this.comp.stream;
+                this.$.match.stream = this.comp.stream;
             }
         });
     </script>
