@@ -40,9 +40,13 @@
                     }
 
                     this.tla = match.teams[this.corner];
-                    this.comp.api.getTeam(this.tla, function(team) {
-                        this.name = team.name;
-                    }.bind(this));
+                    if (this.tla == null) {
+                        this.tla = '—';
+                    } else {
+                        this.comp.api.getTeam(this.tla, function(team) {
+                            this.name = team.name;
+                        }.bind(this));
+                    }
                 }.bind(this));
             }
         });
