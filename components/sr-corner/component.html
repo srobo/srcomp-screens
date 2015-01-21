@@ -31,15 +31,11 @@
 
     <script>
         Polymer({
-            stream: null,
-            api: null,
-            apiChanged: function() {
-                this.api.getCorner(this.corner, function(corner) {
+            comp: null,
+            compChanged: function() {
+                this.comp.api.getCorner(this.corner, function(corner) {
                     this.colour = corner.colour;
                 }.bind(this));
-            },
-            streamChanged: function(oldValue, newValue) {
-
             }
         });
     </script>

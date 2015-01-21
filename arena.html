@@ -6,8 +6,7 @@
 
         <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 
-        <link rel="import" href="components/sr-comp-api/component.html" />
-        <link rel="import" href="components/sr-comp-stream/component.html" />
+        <link rel="import" href="components/sr-comp/component.html" />
         <link rel="import" href="components/sr-corner/component.html" />
 
         <style>
@@ -40,8 +39,7 @@
     </head>
 
     <body>
-        <sr-comp-stream id="stream" url="http://localhost:5001"></sr-comp-stream>
-        <sr-comp-api id="api" url="http://localhost:5112"></sr-comp-api>
+        <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
         <sr-corner corner="0"></sr-corner>
 
@@ -53,12 +51,10 @@
 
         <script>
             document.addEventListener('polymer-ready', function() {
-                var stream = document.querySelector('#stream');
-                var api = document.querySelector('#api');
+                var comp = document.querySelector('#comp');
                 var corners = document.querySelectorAll('sr-corner');
                 for (var i = 0; i < corners.length; i++) {
-                    corners[i].stream = stream;
-                    corners[i].api = api;
+                    corners[i].comp = comp;
                 }
             });
         </script>

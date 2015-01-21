@@ -1,0 +1,20 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<link rel="import" href="../sr-comp-api/component.html" />
+<link rel="import" href="../sr-comp-stream/component.html" />
+
+<polymer-element name="sr-comp" attributes="apiurl streamurl">
+    <template>
+        <sr-comp-api id="api" url="{{ apiurl }}"></sr-comp-api>
+        <sr-comp-stream id="stream" url="{{ streamurl }}"></sr-comp-stream>
+    </template>
+
+    <script>
+        Polymer({
+            ready: function() {
+                this.api = this.$.api;
+                this.stream = this.$.stream;
+            }
+        });
+    </script>
+</polymer-element>
