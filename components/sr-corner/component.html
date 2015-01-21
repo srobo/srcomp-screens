@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-corner" attributes="corner">
+<polymer-element name="sr-corner" attributes="corner stream">
     <template>
         <style>
             :host {
@@ -30,15 +30,16 @@
     </template>
 
     <script>
-        Polymer('sr-corner', {
-            attached: function() {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'http://localhost:5112/corners/' + this.corner);
-                xhr.responseType = 'json';
-                xhr.onload = function(e) {
-                    this.colour = xhr.response.colour;
-                }.bind(this);
-                xhr.send();
+        Polymer({
+            stream: null,
+            api: null,
+            apiChanged: function() {
+                this.api.getCorner(this.corner, function(corner) {
+                    this.colour = corner.colour;
+                }.bind(this));
+            },
+            streamChanged: function(oldValue, newValue) {
+
             }
         });
     </script>

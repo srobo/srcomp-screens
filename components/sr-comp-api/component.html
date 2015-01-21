@@ -1,0 +1,17 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-comp-api" attributes="url">
+    <script>
+        Polymer({
+            getCorner: function(index, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', this.url + '/corners/' + index);
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    callback(xhr.response);
+                }.bind(this);
+                xhr.send();
+            }
+        });
+    </script>
+</polymer-element>
