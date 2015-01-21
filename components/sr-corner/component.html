@@ -4,7 +4,7 @@
 <link rel="import" href="../sr-corner-match/component.html" />
 <link rel="import" href="../sr-corner-tla/component.html" />
 
-<polymer-element name="sr-corner" attributes="arena corner stream">
+<polymer-element name="sr-corner" attributes="arena corner stream show">
     <template>
         <style>
             :host {
@@ -24,16 +24,22 @@
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                align-content: center;
+                justify-content: center;
             }
         </style>
 
         <aside class="bar"></aside>
 
         <main>
-            <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
+            <template if="{{ show == 'all' }}">
+                <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
+            </template>
+
             <sr-corner-tla id="tla" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-tla>
-            <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
+
+            <template if="{{ show == 'all' }}">
+                <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
+            </template>
         </main>
 
         <aside class="bar"></aside>
@@ -47,9 +53,15 @@
                     this.colour = corner.colour;
                 }.bind(this));
 
-                this.$.clock.stream = this.comp.stream;
-                this.$.match.stream = this.comp.stream;
                 this.$.tla.stream = this.comp.stream;
+
+                if (this.$.clock) {
+                    this.$.clock.stream = this.comp.stream;
+                }
+
+                if (this.$.match) {
+                    this.$.match.stream = this.comp.stream;
+                }
             }
         });
     </script>
