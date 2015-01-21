@@ -1,0 +1,45 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-corner" attributes="corner">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .bar {
+                flex: 0 0 auto;
+                width: 20%;
+                background: {{ colour }};
+            }
+
+            main {
+                flex: 1 1 auto;
+                background: black;
+            }
+        </style>
+
+        <aside class="bar"></aside>
+
+        <main>
+            <content></content>
+        </main>
+
+        <aside class="bar"></aside>
+    </template>
+
+    <script>
+        Polymer('sr-corner', {
+            attached: function() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://localhost:5112/corners/' + this.corner);
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    this.colour = xhr.response.colour;
+                }.bind(this);
+                xhr.send();
+            }
+        });
+    </script>
+</polymer-element>
