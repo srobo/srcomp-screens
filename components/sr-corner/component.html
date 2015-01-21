@@ -2,7 +2,7 @@
 
 <link rel="import" href="../sr-corner-clock/component.html" />
 <link rel="import" href="../sr-corner-match/component.html" />
-<link rel="import" href="../sr-corner-tla/component.html" />
+<link rel="import" href="../sr-corner-team/component.html" />
 
 <polymer-element name="sr-corner" attributes="arena corner stream show">
     <template>
@@ -33,12 +33,12 @@
         <main>
             <template if="{{ show == 'all' }}">
                 <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
+                <sr-corner-team id="team" arena="{{ arena }}" corner="{{ corner }}" show="all"></sr-corner-team>
+                <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
             </template>
 
-            <sr-corner-tla id="tla" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-tla>
-
-            <template if="{{ show == 'all' }}">
-                <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
+            <template if="{{ show == 'tla' }}">
+                <sr-corner-team id="team" arena="{{ arena }}" corner="{{ corner }}" show="tla"></sr-corner-team>
             </template>
         </main>
 
@@ -53,7 +53,7 @@
                     this.colour = corner.colour;
                 }.bind(this));
 
-                this.$.tla.stream = this.comp.stream;
+                this.$.team.comp = this.comp;
 
                 if (this.$.clock) {
                     this.$.clock.stream = this.comp.stream;

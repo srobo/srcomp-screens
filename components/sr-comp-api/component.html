@@ -11,6 +11,15 @@
                     callback(xhr.response);
                 }.bind(this);
                 xhr.send();
+            },
+            getTeam: function(tla, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', this.url + '/teams/' + tla);
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    callback(xhr.response);
+                }.bind(this);
+                xhr.send();
             }
         });
     </script>
