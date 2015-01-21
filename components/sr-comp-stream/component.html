@@ -5,8 +5,13 @@
         Polymer({
             attached: function() {
                 this.eventSource = new EventSource(this.url);
+
                 this.eventSource.addEventListener('match', function(e) {
                     this.fire('match', JSON.parse(e.data));
+                }.bind(this));
+
+                this.eventSource.addEventListener('team', function(e) {
+                    this.fire('team', JSON.parse(e.data));
                 }.bind(this));
             }
         });
