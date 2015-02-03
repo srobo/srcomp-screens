@@ -3,6 +3,15 @@
 <polymer-element name="sr-comp-api" attributes="url">
     <script>
         Polymer({
+            getArenas: function(callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', this.url + '/arenas');
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    callback(xhr.response.arenas);
+                }.bind(this);
+                xhr.send();
+            },
             getCorner: function(index, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', this.url + '/corners/' + index);
@@ -12,12 +21,30 @@
                 }.bind(this);
                 xhr.send();
             },
+            getCorners: function(callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', this.url + '/corners');
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    callback(xhr.response.corners);
+                }.bind(this);
+                xhr.send();
+            },
             getTeam: function(tla, callback) {
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', this.url + '/teams/' + tla);
                 xhr.responseType = 'json';
                 xhr.onload = function(e) {
                     callback(xhr.response);
+                }.bind(this);
+                xhr.send();
+            },
+            getMatches: function(startTime, endTime, callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', this.url + '/matches?start_time=' + encodeURIComponent(startTime) + '..' + encodeURIComponent(endTime));
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    callback(xhr.response.matches);
                 }.bind(this);
                 xhr.send();
             }

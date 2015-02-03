@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-schedule">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                font-family: sans-serif;
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            table {
+
+            }
+
+            td, th {
+                padding: 0.2em 0.4em;
+            }
+        </style>
+
+        <table>
+            <tr>
+                <th>Match Number</th>
+                <th>Time</th>
+                <template repeat="{{ arena in arenas }}">
+                    <th colspan="4">{{ arena }}</th>
+                </template>
+            </tr>
+
+            <template repeat="{{ match in schedule }}">
+                <tr class="{{ match.arenas[0] | formatMatchClass }}">
+                    <td>{{ match.num }}</td>
+                    <td>{{ match.arenas[0].start_time | fromNow }}</td>
+                    <template repeat="{{ arena in match.arenas }}">
+                        <template repeat="{{ team, corner in arena.teams }}">
+                            <td><span style="color: {{ corners[corner].colour }}">{{ team || '—' }}</span></td>
+                        </template>
+                    </template>
+                </tr>
+            </template>
+        </table>
+    </template>
+
+    <script src="../../bower_components/moment/moment.js"></script>
+
+    <script>
+        Polymer({
+            comp: null,
+            arenas: [],
+            schedule: {},
+            corners: {},
+            compChanged: function() {
+                this.comp.api.getArenas(function(arenas) {
+                    this.arenas = Object.keys(arenas);
+
+                    this.comp.api.getCorners(function(corners) {
+                        this.corners = corners;
+
+                        this.comp.stream.addEventListener('match', function(e) {
+                            this.updateSchedule();
+                        }.bind(this));
+                    }.bind(this));
+                }.bind(this));
+            },
+            updateSchedule: function() {
+                this.comp.api.getMatches(moment().subtract(5, 'minutes').toISOString(),
+                                         moment().add(30, 'minutes').toISOString(),
+                                         function(matches) {
+
+                    var schedule = {};
+
+                    matches.forEach(function(match) {
+                        if (!schedule[match.num]) {
+                            schedule[match.num] = [];
+                        }
+
+                        schedule[match.num][this.arenas.indexOf(match.arena)] = match;
+                    }.bind(this));
+
+                    var formattedSchedule = [];
+                    for (var matchNumber in schedule) {
+                        formattedSchedule.push({num: matchNumber, arenas: schedule[matchNumber]})
+                    }
+
+                    this.schedule = formattedSchedule;
+                }.bind(this));
+            },
+            fromNow: function(str) {
+                return moment(str).fromNow();
+            },
+            formatMatchClass: function(match) {
+                if (moment(match.start_time) < new Date()) {
+                    return 'old';
+                } else {
+                    return 'current';
+                }
+            }
+        });
+    </script>
+</polymer-element>
