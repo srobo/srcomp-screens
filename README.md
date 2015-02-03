@@ -13,7 +13,7 @@ install them in the normal way:
 The best way to test these screens is to run an HTTP server in the root of your
 clone and navigate to it with your web browser.
 
-    $ python -m http.serve
+    $ python3 -m http.server
 
 **Note:** Currently, the screens assume that you will have an `srcomp-stream`
 and `srcomp-http` instance running locally on ports 5112 and 5001 respectively.
