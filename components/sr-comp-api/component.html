@@ -29,11 +29,11 @@
                 this._apiCall('/teams/' + tla, callback);
             },
             getMatches: function(startTime, endTime, callback) {
-                var targetPath = ('/matches?start_time=' +
-                                  encodeURIComponent(startTime) +
-                                  '..' +
-                                  encodeURIComponent(endTime));
-                this._apiCall(targetPath, function(response) {
+                var url = ('/matches?game_start_time=' +
+                           encodeURIComponent(startTime) +
+                           '..' +
+                           encodeURIComponent(endTime));
+                this._apiCall(url, function(response) {
                     callback(response.matches);
                 });
             }
