@@ -5,6 +5,7 @@
         <title>SR Outside Screen</title>
 
         <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+        <link rel="import" href="bower_components/core-pages/core-pages.html" />
 
         <link rel="import" href="components/sr-comp/component.html" />
         <link rel="import" href="components/sr-clock/component.html" />
@@ -33,13 +34,22 @@
                 flex-direction: column;
             }
 
-            body > main {
+            body > core-pages {
                 flex: 1 1 auto;
                 overflow: auto;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
+            }
+
+            body > core-pages > * {
+                display: none;
+                position: static !important;  /* wrestle with core-pages */
+            }
+
+            body > core-pages > .core-selected {
+                display: block;
             }
 
             body > sr-progress {
@@ -51,15 +61,15 @@
     <body>
         <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
-        <main>
-            <!-- <sr-schedule id="schedule" data-needs-comp></sr-schedule> -->
-            <!-- <sr-leaderboard id="leaderboard" data-needs-comp></sr-leaderboard> -->
-            <!-- <sr-scores id="scores" data-needs-comp></sr-scores> -->
-            <sr-knockout-diagram data-needs-comp></sr-knockout-diagram>
-        </main>
+        <core-pages id="pages" selected="0">
+            <sr-schedule id="schedule" data-title="Schedule" data-needs-comp></sr-schedule>
+            <sr-leaderboard id="leaderboard" data-title="Leaderboard" data-needs-comp></sr-leaderboard>
+            <sr-scores id="scores" data-title="Scores" data-needs-comp></sr-scores>
+            <sr-knockout-diagram data-title="Knockout Diagram" data-needs-comp></sr-knockout-diagram>
+        </core-pages>
 
-        <sr-progress id="progress" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
-            <h1 style="margin: 0.3em; flex: 1 1 auto;">Knockout Diagram</h1>
+        <sr-progress id="progress" progress="1" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
+            <h1 id="progress-title" style="margin: 0.3em; flex: 1 1 auto;"></h1>
             <sr-clock style="margin: 0.3em;"></sr-clock>
         </sr-progress>
 
@@ -72,11 +82,16 @@
                 }
             });
 
+            var pages = document.querySelector('#pages');
             var progress = document.querySelector('#progress');
+            var progressTitle = document.querySelector('#progress-title');
+
             setInterval(function() {
                 progress.progress += 0.001;
                 if (progress.progress >= 1) {
                     progress.progress = 0;
+                    pages.selected = (pages.selected + 1) % pages.children.length;
+                    progressTitle.textContent = pages.children[pages.selected].dataset.title;
                 }
             }, 50);
         </script>
