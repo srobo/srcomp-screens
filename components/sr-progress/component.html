@@ -16,7 +16,7 @@
         Polymer({
             progress: 0,
             progressChanged: function() {
-                var p = parseInt(this.progress * 100);
+                var p = this.progress * 100;
                 this.style.backgroundSize = p + '% 100%';
             }
         });
