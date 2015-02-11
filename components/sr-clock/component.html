@@ -2,6 +2,13 @@
 
 <polymer-element name="sr-clock" attributes="hours minutes">
     <template>
+        <style>
+            h1 {
+                margin: inherit;
+                color: inherit;
+            }
+        </style>
+
         <h1>{{ hours | padTimeComponent }}:{{ minutes | padTimeComponent }}</h1>
     </template>
 
