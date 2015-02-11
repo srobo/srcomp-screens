@@ -9,6 +9,9 @@
         <link rel="import" href="components/sr-comp/component.html" />
         <link rel="import" href="components/sr-clock/component.html" />
         <link rel="import" href="components/sr-progress/component.html" />
+        <link rel="import" href="components/sr-schedule/component.html" />
+        <link rel="import" href="components/sr-leaderboard/component.html" />
+        <link rel="import" href="components/sr-scores/component.html" />
 
         <style>
             body {
@@ -31,8 +34,9 @@
 
             body > main {
                 flex: 1 1 auto;
-                overflow: hidden;
+                overflow: auto;
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
             }
@@ -47,20 +51,23 @@
         <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
         <main>
-            <h1>Yay Robots!</h1>
+            <sr-schedule id="schedule" data-needs-comp></sr-schedule>
+            <!--<sr-leaderboard id="leaderboard" data-needs-comp></sr-leaderboard>
+            <sr-scores id="scores" data-needs-comp></sr-scores>-->
         </main>
 
         <sr-progress id="progress" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
-            <h1 style="margin: 0.3em; flex: 1 1 auto;">Page name here</h1>
+            <h1 style="margin: 0.3em; flex: 1 1 auto;">Schedule</h1>
             <sr-clock style="margin: 0.3em;"></sr-clock>
         </sr-progress>
 
         <script>
             document.addEventListener('polymer-ready', function() {
                 var comp = document.querySelector('#comp');
-                var component = document.querySelector('#component');
-
-                component.comp = comp;
+                var needsComp = document.querySelectorAll('[data-needs-comp]');
+                for (var i = 0; i < needsComp.length; i++) {
+                    needsComp[i].comp = comp;
+                }
             });
 
             var progress = document.querySelector('#progress');
