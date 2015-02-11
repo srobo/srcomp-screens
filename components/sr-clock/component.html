@@ -18,6 +18,7 @@
             hours: 0,
             minutes: 0,
             ready: function() {
+                this.updateTime();
                 setInterval(function() {
                     this.updateTime();
                 }.bind(this), 1000);
