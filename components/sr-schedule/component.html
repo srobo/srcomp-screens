@@ -9,7 +9,6 @@
                 align-items: center;
                 justify-content: center;
 
-                font-family: sans-serif;
                 font-size: 1.5em;
                 text-align: center;
             }
@@ -19,14 +18,28 @@
             }
 
             td, th {
-                padding: 0.2em 0.4em;
+                padding: 0.25em 0.5em;
+            }
+
+            tr.old {
+                opacity: 0.5;
+                font-size: 0.9em;
+            }
+
+            tr.current {
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            tr.next {
+                opacity: 0.8;
             }
         </style>
 
         <table>
             <tr>
-                <th>Match Number</th>
-                <th>Time</th>
+                <th></th>
+                <th></th>
                 <template repeat="{{ arena in arenas }}">
                     <th colspan="4">{{ arena }}</th>
                 </template>
