@@ -12,6 +12,7 @@
         <link rel="import" href="components/sr-schedule/component.html" />
         <link rel="import" href="components/sr-leaderboard/component.html" />
         <link rel="import" href="components/sr-scores/component.html" />
+        <link rel="import" href="components/sr-knockout-diagram/component.html" />
 
         <style>
             body {
@@ -51,13 +52,14 @@
         <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
         <main>
-            <sr-schedule id="schedule" data-needs-comp></sr-schedule>
-            <!--<sr-leaderboard id="leaderboard" data-needs-comp></sr-leaderboard>
-            <sr-scores id="scores" data-needs-comp></sr-scores>-->
+            <!-- <sr-schedule id="schedule" data-needs-comp></sr-schedule> -->
+            <!-- <sr-leaderboard id="leaderboard" data-needs-comp></sr-leaderboard> -->
+            <!-- <sr-scores id="scores" data-needs-comp></sr-scores> -->
+            <sr-knockout-diagram data-needs-comp></sr-knockout-diagram>
         </main>
 
         <sr-progress id="progress" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
-            <h1 style="margin: 0.3em; flex: 1 1 auto;">Schedule</h1>
+            <h1 style="margin: 0.3em; flex: 1 1 auto;">Knockout Diagram</h1>
             <sr-clock style="margin: 0.3em;"></sr-clock>
         </sr-progress>
 
