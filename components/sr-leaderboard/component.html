@@ -4,30 +4,21 @@
     <template>
         <style>
             :host {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-
-                font-family: sans-serif;
+                display: block;
                 font-size: 1.5em;
                 text-align: center;
             }
 
-            table {
-
-            }
-
             td, th {
-                padding: 0.2em 0.4em;
+                padding: 0.25em 0.5em;
             }
         </style>
 
         <table>
             <tr>
-                <th>TLA</th>
+                <th width="30%">TLA</th>
                 <th>Name</th>
-                <th>League Points</th>
+                <th width="30%">League Points</th>
             </tr>
 
             <template repeat="{{ team in sortedTeams }}">
