@@ -5,7 +5,7 @@
         <style>
             :host {
                 display: block;
-                font-size: 1.1em;
+                font-size: 1.4em;
             }
 
             table {
@@ -45,8 +45,8 @@
 
                     var teamsChunks = [];
 
-                    for (var i = 0; i < teams.length; i += 5) {
-                        teamsChunks.push(teams.slice(i, i + 5));
+                    for (var i = 0; i < teams.length; i += 4) {
+                        teamsChunks.push(teams.slice(i, i + 4));
                     }
 
                     this.teamsChunks = teamsChunks;

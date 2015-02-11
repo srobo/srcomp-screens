@@ -62,15 +62,15 @@
         <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
         <core-pages id="pages" selected="0">
-            <sr-schedule id="schedule" data-title="Schedule" data-needs-comp></sr-schedule>
-            <sr-leaderboard id="leaderboard" data-title="Leaderboard" data-needs-comp></sr-leaderboard>
-            <sr-scores id="scores" data-title="Scores" data-needs-comp></sr-scores>
+            <sr-schedule data-title="Schedule" data-needs-comp></sr-schedule>
+            <sr-leaderboard data-title="Leaderboard" data-needs-comp></sr-leaderboard>
+            <sr-scores data-title="Scores" data-needs-comp></sr-scores>
             <sr-knockout-diagram data-title="Knockout Diagram" data-needs-comp></sr-knockout-diagram>
         </core-pages>
 
-        <sr-progress id="progress" progress="1" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
-            <h1 id="progress-title" style="margin: 0.3em; flex: 1 1 auto;"></h1>
-            <sr-clock style="margin: 0.3em;"></sr-clock>
+        <sr-progress id="progress" progress="1" style="display: flex; align-items: center; border-top: 1px solid rgb(100, 100, 100);">
+            <h1 id="progress-title" style="font-size: 2.6em; color: rgb(200, 200, 200); margin: 0.1em 0.3em; flex: 1 1 auto;"></h1>
+            <sr-clock style="font-size: 2.6em; margin: 0.1em 0.3em;"></sr-clock>
         </sr-progress>
 
         <script>

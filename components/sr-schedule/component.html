@@ -5,8 +5,12 @@
         <style>
             :host {
                 display: block;
-                font-size: 1.5em;
+                font-size: 1.6em;
                 text-align: center;
+            }
+
+            table {
+
             }
 
             td, th {
@@ -15,16 +19,17 @@
 
             tr.old {
                 opacity: 0.5;
-                font-size: 0.9em;
+                font-size: 1.2em;
             }
 
             tr.current {
                 font-weight: bold;
-                font-size: 1.2em;
+                font-size: 1.5em;
             }
 
             tr.next {
                 opacity: 0.8;
+                font-size: 1.3em;
             }
 
             tr td:nth-of-type(4n+3) {
@@ -104,7 +109,7 @@
                 }
 
                 this.comp.api.getMatches(this.currentMatch - 2,
-                                         this.currentMatch + 7,
+                                         this.currentMatch + 9,
                                          function(matches) {
 
                     var schedule = {};
