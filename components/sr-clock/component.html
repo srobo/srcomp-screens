@@ -1,0 +1,32 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-clock" attributes="hours minutes">
+    <template>
+        <h1>{{ hours | padTimeComponent }}:{{ minutes | padTimeComponent }}</h1>
+    </template>
+
+    <script>
+        Polymer({
+            page: null,
+            hours: 0,
+            minutes: 0,
+            ready: function() {
+                setInterval(function() {
+                    this.updateTime();
+                }.bind(this), 1000);
+            },
+            updateTime: function() {
+                var date = new Date();
+                this.hours = date.getHours();
+                this.minutes = date.getMinutes();
+            },
+            padTimeComponent: function(value) {
+                if (value <= 9) {
+                    return '0' + value;
+                } else {
+                    return '' + value;
+                }
+            },
+        });
+    </script>
+</polymer-element>
