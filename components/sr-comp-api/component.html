@@ -43,6 +43,11 @@
                     }
                  });
             },
+            getKnockout: function(callback) {
+                this._apiCall('/knockout', function(response) {
+                    callback(response['rounds']);
+                });
+            },
             getMatches: function(startNum, endNum, callback) {
                 var url = ('/matches?num=' +
                            encodeURIComponent(startNum) +
