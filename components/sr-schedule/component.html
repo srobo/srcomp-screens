@@ -87,8 +87,8 @@
                     return;  // wait until they're set
                 }
 
-                this.comp.api.getMatches(moment().subtract(5, 'minutes').toISOString(),
-                                         moment().add(30, 'minutes').toISOString(),
+                this.comp.api.getMatches(moment().subtract(15, 'minutes').toISOString(),
+                                         moment().add(40, 'minutes').toISOString(),
                                          function(matches) {
 
                     var schedule = {};
