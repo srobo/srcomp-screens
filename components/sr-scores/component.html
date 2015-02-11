@@ -45,10 +45,8 @@
 
                     var teamsChunks = [];
 
-                    var i,j,temparray,chunk = 5;
-                    for (i=0,j=teams.length; i<j; i+=chunk) {
-                        temparray = teams.slice(i,i+chunk);
-                        teamsChunks.push(temparray);
+                    for (var i = 0; i < teams.length; i += 5) {
+                        teamsChunks.push(teams.slice(i, i + 5));
                     }
 
                     this.teamsChunks = teamsChunks;
