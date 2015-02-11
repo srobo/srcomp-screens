@@ -80,20 +80,37 @@
                 for (var i = 0; i < needsComp.length; i++) {
                     needsComp[i].comp = comp;
                 }
+
+                var knockoutTime = undefined;
+                comp.api.getKnockoutMatches(function(matches) {
+                    if (matches.length > 0) {
+                        knockoutTime = moment(matches[0].times.period.start).subtract(1, 'hours');
+                    } else {
+                        knockoutTime = undefined;
+                    }
+                });
+
+                var pages = document.querySelector('#pages');
+                var progress = document.querySelector('#progress');
+                var progressTitle = document.querySelector('#progress-title');
+
+                setInterval(function() {
+                    progress.progress += 0.001;
+                    if (progress.progress >= 1) {
+                        progress.progress = 0;
+
+                        var length = pages.children.length;
+                        if (knockoutTime !== undefined) {
+                            if (moment().isBefore(knockoutTime)) {
+                                length -= 1;
+                            }
+                        }
+
+                        pages.selected = (pages.selected + 1) % length;
+                        progressTitle.textContent = pages.children[pages.selected].dataset.title;
+                    }
+                }, 50);
             });
-
-            var pages = document.querySelector('#pages');
-            var progress = document.querySelector('#progress');
-            var progressTitle = document.querySelector('#progress-title');
-
-            setInterval(function() {
-                progress.progress += 0.001;
-                if (progress.progress >= 1) {
-                    progress.progress = 0;
-                    pages.selected = (pages.selected + 1) % pages.children.length;
-                    progressTitle.textContent = pages.children[pages.selected].dataset.title;
-                }
-            }, 50);
         </script>
     </body>
 </html>

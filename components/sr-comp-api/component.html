@@ -45,7 +45,12 @@
             },
             getKnockout: function(callback) {
                 this._apiCall('/knockout', function(response) {
-                    callback(response['rounds']);
+                    callback(response.rounds);
+                });
+            },
+            getKnockoutMatches: function(callback) {
+                this._apiCall('/matches?type=knockout', function(response) {
+                    callback(response.matches);
                 });
             },
             getMatches: function(startNum, endNum, callback) {
