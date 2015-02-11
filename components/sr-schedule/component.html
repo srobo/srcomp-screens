@@ -52,7 +52,7 @@
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match.arenas[0] | formatMatchClass }}">
                     <td>{{ match.num }}</td>
-                    <td>{{ match.arenas[0].times.period.start | fromNow }}</td>
+                    <td><time datetime="{{ match.arenas[0].times.period.start }}"></time></td>
                     <template repeat="{{ arena in match.arenas }}">
                         <template repeat="{{ team, corner in arena.teams }}">
                             <td><span style="color: {{ corners[corner].colour }}">{{ team || '—' }}</span></td>
@@ -72,6 +72,16 @@
             corners: undefined,
             currentMatch: undefined,
             schedule: {},
+            ready: function() {
+                setInterval(this._updateDisplayedTimes.bind(this), 5000);
+            },
+            _updateDisplayedTimes: function() {
+                var dates = this.shadowRoot.querySelectorAll('time');
+                dates.array().forEach(function(elem) {
+                    var epoch = moment(elem.getAttribute('datetime'));
+                    elem.textContent = epoch.fromNow();
+                });
+            },
             compChanged: function() {
                 this.comp.api.getArenas(function(arenas) {
                     this.arenas = Object.keys(arenas);
@@ -113,10 +123,8 @@
                     }
 
                     this.schedule = formattedSchedule;
+                    this.async(this._updateDisplayedTimes);
                 }.bind(this));
-            },
-            fromNow: function(str) {
-                return moment(str).fromNow();
             },
             formatMatchClass: function(match) {
                 if (moment(match.times.period.end) < new Date()) {
