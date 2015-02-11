@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-corner-match" attributes="arena corner">
+    <template>
+        <style>
+            h1 {
+                font-family: sans-serif;
+                font-size: 4em;
+                color: white;
+            }
+        </style>
+
+        <h1>Match {{ text }}</h1>
+    </template>
+
+    <script>
+        Polymer({
+            stream: null,
+            streamChanged: function() {
+                this.stream.addEventListener('match', function(e) {
+                    var match = null;
+                    for (var i = 0; i < e.detail.length; i++) {
+                        if (e.detail[i].arena == this.arena) {
+                            match = e.detail[i];
+                        }
+                    }
+
+                    this.text = match.num;
+                }.bind(this));
+            }
+        });
+    </script>
+</polymer-element>

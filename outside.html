@@ -1,71 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-        <meta charset="utf-8" />
+        <meta charset="UTF-8" />
+        <title>SR Outside Screen</title>
 
-        <title>Outside &mdash; SR Screens</title>
+        <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+        <link rel="import" href="bower_components/core-pages/core-pages.html" />
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="import" href="components/sr-comp/component.html" />
+        <link rel="import" href="components/sr-clock/component.html" />
+        <link rel="import" href="components/sr-progress/component.html" />
+        <link rel="import" href="components/sr-schedule/component.html" />
+        <link rel="import" href="components/sr-leaderboard/component.html" />
+        <link rel="import" href="components/sr-scores/component.html" />
+        <link rel="import" href="components/sr-knockout-diagram/component.html" />
 
-        <link href="styles/reset.css" type="text/css" rel="stylesheet" />
-        <link href="styles/all.css" type="text/css" rel="stylesheet" />
-        <link href="styles/outside.css" type="text/css" rel="stylesheet" />
+        <style>
+            body {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                margin: 0;
 
-        <script src="scripts/utils.js"></script>
-        <script src="scripts/srobo.js"></script>
-        <script src="scripts/outside.js"></script>
+                font-family: 'Open Sans', sans-serif;
+                background: black;
+                color: white;
+
+                display: flex;
+                flex-direction: column;
+            }
+
+            body > core-pages {
+                flex: 1 1 auto;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            body > core-pages > * {
+                display: none;
+                position: static !important;  /* wrestle with core-pages */
+            }
+
+            body > core-pages > .core-selected {
+                display: block;
+            }
+
+            body > sr-progress {
+                flex: 0 0 auto;
+            }
+        </style>
     </head>
 
     <body>
-        <main id="pages">
-            <section id="pages-knockouts" class="page" data-name="Knockout Diagram">
+        <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
-            </section>
+        <core-pages id="pages" selected="0">
+            <sr-schedule id="schedule" data-title="Schedule" data-needs-comp></sr-schedule>
+            <sr-leaderboard id="leaderboard" data-title="Leaderboard" data-needs-comp></sr-leaderboard>
+            <sr-scores id="scores" data-title="Scores" data-needs-comp></sr-scores>
+            <sr-knockout-diagram data-title="Knockout Diagram" data-needs-comp></sr-knockout-diagram>
+        </core-pages>
 
-            <section id="pages-leaderboard" class="page" data-name="Leaderboard">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>TLA</th>
-                            <th>Team</th>
-                            <th>Score</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                    </tbody>
-
-                    <tfoot>
-                        <tr>
-                            <th colspan="3">
-                                Scores up to date from match <span id="pages-leaderboard-match"></span>.
-                            </th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </section>
-
-            <section id="pages-scores" class="page" data-name="Scores">
-                <table>
-                    <tbody>
-                    </tbody>
-                </table>
-            </section>
-
-            <section id="pages-schedule" class="page" data-name="Match Schedule">
-
-            </section>
-        </main>
-
-        <footer id="status">
-            <p id="status-page"></p>
-            <p id="status-index"><span></span> of <span></span></p>
-        </footer>
+        <sr-progress id="progress" progress="1" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
+            <h1 id="progress-title" style="margin: 0.3em; flex: 1 1 auto;"></h1>
+            <sr-clock style="margin: 0.3em;"></sr-clock>
+        </sr-progress>
 
         <script>
-            outside.init();
+            document.addEventListener('polymer-ready', function() {
+                var comp = document.querySelector('#comp');
+                var needsComp = document.querySelectorAll('[data-needs-comp]');
+                for (var i = 0; i < needsComp.length; i++) {
+                    needsComp[i].comp = comp;
+                }
+
+                var knockoutTime = undefined;
+                comp.api.getKnockoutMatches(function(matches) {
+                    if (matches.length > 0) {
+                        knockoutTime = moment(matches[0].times.period.start).subtract(1, 'hours');
+                    } else {
+                        knockoutTime = undefined;
+                    }
+                });
+
+                var pages = document.querySelector('#pages');
+                var progress = document.querySelector('#progress');
+                var progressTitle = document.querySelector('#progress-title');
+
+                setInterval(function() {
+                    progress.progress += 0.001;
+                    if (progress.progress >= 1) {
+                        progress.progress = 0;
+
+                        var length = pages.children.length;
+                        if (knockoutTime !== undefined) {
+                            if (moment().isBefore(knockoutTime)) {
+                                length -= 1;
+                            }
+                        }
+
+                        pages.selected = (pages.selected + 1) % length;
+                        progressTitle.textContent = pages.children[pages.selected].dataset.title;
+                    }
+                }, 50);
+            });
         </script>
     </body>
-
 </html>

@@ -1,0 +1,61 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-leaderboard">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            td, th {
+                padding: 0.25em 0.5em;
+            }
+        </style>
+
+        <table>
+            <tr>
+                <th width="30%">TLA</th>
+                <th>Name</th>
+                <th width="30%">League Points</th>
+            </tr>
+
+            <template repeat="{{ team in sortedTeams }}">
+                <tr>
+                    <td>{{ team.tla }}</td>
+                    <td>{{ team.name }}</td>
+                    <td>{{ team.league_points }}</td>
+                </tr>
+            </template>
+        </table>
+    </template>
+
+    <script>
+        Polymer({
+            comp: null,
+            leaderboard: {},
+            sortedTeams: [],
+            compChanged: function() {
+                this.comp.stream.addEventListener('team', function(e) {
+                    this.leaderboard[e.detail.tla] = e.detail;
+                    this.updateTable();
+                }.bind(this));
+            },
+            updateTable: function() {
+                var teams = [];
+                for (var key in this.leaderboard) {
+                    teams.push(this.leaderboard[key]);
+                }
+
+                teams.sort(function(a, b) {
+                    return b.league_points - a.league_points;
+                });
+
+                teams.splice(10);
+
+                this.sortedTeams = teams;
+            }
+        });
+    </script>
+</polymer-element>

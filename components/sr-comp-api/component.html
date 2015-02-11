@@ -1,0 +1,67 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-comp-api" attributes="url">
+    <script>
+        Polymer({
+            _apiCall: function(path, callback, errback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', this.url + path);
+                xhr.responseType = 'json';
+                xhr.onload = function(e) {
+                    if (xhr.status == 200) {
+                        callback(xhr.response);
+                    } else if (errback != null) {
+                        errback(xhr.status);
+                    }
+                };
+                xhr.send();
+            },
+            getArenas: function(callback) {
+                this._apiCall('/arenas', function(response) {
+                    callback(response.arenas);
+                });
+            },
+            getCorner: function(index, callback) {
+                this._apiCall('/corners/' + index, callback);
+            },
+            getCorners: function(callback) {
+                this._apiCall('/corners', function(response) {
+                    callback(response.corners);
+                });
+            },
+            getCurrentMatches: function(callback) {
+                this._apiCall('/current', function(response) {
+                    callback(response['matches']);
+                });
+            },
+            getTeam: function(tla, callback) {
+                 this._apiCall('/teams/' + tla, callback, function(status) {
+                    if (status == 404) {
+                        callback({'tla': tla,
+                                  'name': 'Team ' + tla,
+                                  'scores': {'game': 0, 'league': 0}});
+                    }
+                 });
+            },
+            getKnockout: function(callback) {
+                this._apiCall('/knockout', function(response) {
+                    callback(response.rounds);
+                });
+            },
+            getKnockoutMatches: function(callback) {
+                this._apiCall('/matches?type=knockout', function(response) {
+                    callback(response.matches);
+                });
+            },
+            getMatches: function(startNum, endNum, callback) {
+                var url = ('/matches?num=' +
+                           encodeURIComponent(startNum) +
+                           '..' +
+                           encodeURIComponent(endNum));
+                this._apiCall(url, function(response) {
+                    callback(response.matches);
+                });
+            }
+        });
+    </script>
+</polymer-element>

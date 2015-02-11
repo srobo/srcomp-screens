@@ -1,0 +1,73 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<link rel="import" href="../sr-corner-clock/component.html" />
+<link rel="import" href="../sr-corner-match/component.html" />
+<link rel="import" href="../sr-corner-team/component.html" />
+
+<polymer-element name="sr-corner" attributes="arena corner stream show">
+    <template>
+        <style>
+            :host {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .bar {
+                flex: 0 0 auto;
+                width: 15%;
+                background: {{ colour }};
+            }
+
+            main {
+                flex: 1 1 auto;
+                background: black;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+        </style>
+
+        <aside class="bar"></aside>
+
+        <main>
+            <template if="{{ show == 'all' }}">
+                <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
+                <sr-corner-team id="team" arena="{{ arena }}" corner="{{ corner }}" show="all"></sr-corner-team>
+                <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
+            </template>
+
+            <template if="{{ show == 'tla' }}">
+                <sr-corner-team id="team" arena="{{ arena }}" corner="{{ corner }}" show="tla"></sr-corner-team>
+            </template>
+        </main>
+
+        <aside class="bar"></aside>
+    </template>
+
+    <script>
+        var reload = function() {
+            if (this.comp == null || this.corner == null) {
+                return;
+            }
+            this.comp.api.getCorner(this.corner, function(corner) {
+                this.colour = corner.colour;
+            }.bind(this));
+
+            this.$.team.comp = this.comp;
+
+            if (this.$.clock) {
+                this.$.clock.stream = this.comp.stream;
+            }
+
+            if (this.$.match) {
+                this.$.match.stream = this.comp.stream;
+            }
+        };
+        Polymer({
+            comp: null,
+            compChanged: reload,
+            cornerChanged: reload
+        });
+    </script>
+</polymer-element>

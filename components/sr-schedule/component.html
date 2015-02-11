@@ -1,0 +1,140 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-schedule">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            td, th {
+                padding: 0.25em 0.5em;
+            }
+
+            tr.old {
+                opacity: 0.5;
+                font-size: 0.9em;
+            }
+
+            tr.current {
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            tr.next {
+                opacity: 0.8;
+            }
+
+            tr td:nth-of-type(4n+3) {
+                padding-left: 1em;
+            }
+
+            tr td:nth-of-type(4n+6) {
+                padding-right: 1em;
+            }
+        </style>
+
+        <table>
+            <tr>
+                <th></th>
+                <th></th>
+                <template repeat="{{ arena in arenas }}">
+                    <th colspan="4">{{ arena }}</th>
+                </template>
+            </tr>
+
+            <template repeat="{{ match in schedule }}">
+                <tr class="{{ match.arenas[0] | formatMatchClass }}">
+                    <td>{{ match.num }}</td>
+                    <td><time datetime="{{ match.arenas[0].times.game.start }}"></time></td>
+                    <template repeat="{{ arena in match.arenas }}">
+                        <template repeat="{{ team, corner in arena.teams }}">
+                            <td><span style="color: {{ corners[corner].colour }}">{{ team || '—' }}</span></td>
+                        </template>
+                    </template>
+                </tr>
+            </template>
+        </table>
+    </template>
+
+    <script src="../../bower_components/moment/moment.js"></script>
+
+    <script>
+        Polymer({
+            comp: null,
+            arenas: undefined,
+            corners: undefined,
+            currentMatch: undefined,
+            schedule: {},
+            ready: function() {
+                setInterval(this._updateDisplayedTimes.bind(this), 5000);
+            },
+            _updateDisplayedTimes: function() {
+                var dates = this.shadowRoot.querySelectorAll('time');
+                dates.array().forEach(function(elem) {
+                    var epoch = moment(elem.getAttribute('datetime'));
+                    elem.textContent = epoch.fromNow();
+                });
+            },
+            compChanged: function() {
+                this.comp.api.getArenas(function(arenas) {
+                    this.arenas = Object.keys(arenas);
+                    this.updateSchedule();
+                }.bind(this));
+
+                this.comp.api.getCorners(function(corners) {
+                    this.corners = corners;
+                    this.updateSchedule();
+                }.bind(this));
+
+                this.comp.stream.addEventListener('match', function(e) {
+                    var detectedMatch = undefined;
+                    e.detail.forEach(function(matchRecord) {
+                        detectedMatch = matchRecord.num;
+                    });
+                    this.currentMatch = detectedMatch;
+                    this.updateSchedule();
+                }.bind(this));
+            },
+            updateSchedule: function() {
+                if (this.arenas == null || this.corners == null || this.currentMatch == null) {
+                    return;  // wait until they're set
+                }
+
+                this.comp.api.getMatches(this.currentMatch - 2,
+                                         this.currentMatch + 7,
+                                         function(matches) {
+
+                    var schedule = {};
+
+                    matches.forEach(function(match) {
+                        if (!schedule[match.num]) {
+                            schedule[match.num] = [];
+                        }
+
+                        schedule[match.num][this.arenas.indexOf(match.arena)] = match;
+                    }.bind(this));
+
+                    var formattedSchedule = [];
+                    for (var matchNumber in schedule) {
+                        formattedSchedule.push({num: matchNumber, arenas: schedule[matchNumber]})
+                    }
+
+                    this.schedule = formattedSchedule;
+                    this.async(this._updateDisplayedTimes);
+                }.bind(this));
+            },
+            formatMatchClass: function(match) {
+                if (moment(match.times.period.end) < new Date()) {
+                    return 'old';
+                } else if (moment(match.times.period.start) > new Date()) {
+                    return 'next';
+                } else {
+                    return 'current';
+                }
+            }
+        });
+    </script>
+</polymer-element>

@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-
     <head>
-        <meta charset="utf-8" />
+        <meta charset="UTF-8" />
+        <title>SR Arena Screen</title>
 
-        <title>Arena &mdash; SR Screens</title>
+        <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="import" href="components/sr-comp/component.html" />
+        <link rel="import" href="components/sr-arena/component.html" />
 
-        <link href="styles/reset.css" type="text/css" rel="stylesheet" />
-        <link href="styles/all.css" type="text/css" rel="stylesheet" />
-        <link href="styles/arena.css" type="text/css" rel="stylesheet" />
+        <style>
+            body {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                margin: 0;
+            }
 
-        <script src="scripts/utils.js"></script>
-        <script src="scripts/srobo.js"></script>
-        <script src="scripts/arena.js"></script>
+            #arena {
+                height: 100%;
+            }
+        </style>
     </head>
 
     <body>
+        <sr-comp id="comp" apiurl="http://localhost:5112/comp-api" streamurl="http://localhost:5001"></sr-comp>
+        <sr-arena id="arena"></sr-arena>
+
         <script>
-            arena.init();
+            var parseArguments = function() {
+                var fragment = window.location.search;
+                var tokens = fragment.substr(1).split(',');
+                return {arena: tokens[0], corner: tokens[1]};
+            };
+
+            document.addEventListener('polymer-ready', function() {
+                var args = parseArguments();
+
+                var comp = document.querySelector('#comp');
+                var arena = document.querySelector('#arena');
+
+                arena.arena = args.arena;
+                arena.maincorner = args.corner;
+                arena.comp = comp;
+            });
         </script>
     </body>
-
 </html>
