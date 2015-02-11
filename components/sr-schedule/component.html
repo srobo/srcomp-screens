@@ -94,7 +94,11 @@
                 }.bind(this));
 
                 this.comp.stream.addEventListener('match', function(e) {
-                    this.currentMatch = e.detail[0].num;
+                    var detectedMatch = undefined;
+                    e.detail.forEach(function(matchRecord) {
+                        detectedMatch = matchRecord.num;
+                    });
+                    this.currentMatch = detectedMatch;
                     this.updateSchedule();
                 }.bind(this));
             },
