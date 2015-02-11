@@ -51,23 +51,29 @@
     <script>
         Polymer({
             comp: null,
-            arenas: [],
+            arenas: null,
+            corners: null,
             schedule: {},
-            corners: {},
             compChanged: function() {
                 this.comp.api.getArenas(function(arenas) {
                     this.arenas = Object.keys(arenas);
+                    this.updateSchedule();
+                }.bind(this));
 
-                    this.comp.api.getCorners(function(corners) {
-                        this.corners = corners;
+                this.comp.api.getCorners(function(corners) {
+                    this.corners = corners;
+                    this.updateSchedule();
+                }.bind(this));
 
-                        this.comp.stream.addEventListener('match', function(e) {
-                            this.updateSchedule();
-                        }.bind(this));
-                    }.bind(this));
+                this.comp.stream.addEventListener('match', function(e) {
+                    this.updateSchedule();
                 }.bind(this));
             },
             updateSchedule: function() {
+                if (!this.arenas || !this.corners) {
+                    return;  // wait until they're set
+                }
+
                 this.comp.api.getMatches(moment().subtract(5, 'minutes').toISOString(),
                                          moment().add(30, 'minutes').toISOString(),
                                          function(matches) {
