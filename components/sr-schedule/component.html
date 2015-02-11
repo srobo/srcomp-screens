@@ -35,7 +35,7 @@
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match.arenas[0] | formatMatchClass }}">
                     <td>{{ match.num }}</td>
-                    <td>{{ match.arenas[0].start_time | fromNow }}</td>
+                    <td>{{ match.arenas[0].times.period.start | fromNow }}</td>
                     <template repeat="{{ arena in match.arenas }}">
                         <template repeat="{{ team, corner in arena.teams }}">
                             <td><span style="color: {{ corners[corner].colour }}">{{ team || '—' }}</span></td>
@@ -100,8 +100,10 @@
                 return moment(str).fromNow();
             },
             formatMatchClass: function(match) {
-                if (moment(match.start_time) < new Date()) {
+                if (moment(match.times.period.end) < new Date()) {
                     return 'old';
+                } else if (moment(match.times.period.start) > new Date()) {
+                    return 'next';
                 } else {
                     return 'current';
                 }
