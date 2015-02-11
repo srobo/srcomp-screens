@@ -28,11 +28,11 @@
             getTeam: function(tla, callback) {
                 this._apiCall('/teams/' + tla, callback);
             },
-            getMatches: function(startTime, endTime, callback) {
-                var url = ('/matches?game_start_time=' +
-                           encodeURIComponent(startTime) +
+            getMatches: function(startNum, endNum, callback) {
+                var url = ('/matches?num=' +
+                           encodeURIComponent(startNum) +
                            '..' +
-                           encodeURIComponent(endTime));
+                           encodeURIComponent(endNum));
                 this._apiCall(url, function(response) {
                     callback(response.matches);
                 });

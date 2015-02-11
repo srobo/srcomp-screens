@@ -64,8 +64,9 @@
     <script>
         Polymer({
             comp: null,
-            arenas: null,
-            corners: null,
+            arenas: undefined,
+            corners: undefined,
+            currentMatch: undefined,
             schedule: {},
             compChanged: function() {
                 this.comp.api.getArenas(function(arenas) {
@@ -79,16 +80,17 @@
                 }.bind(this));
 
                 this.comp.stream.addEventListener('match', function(e) {
+                    this.currentMatch = e.detail[0].num;
                     this.updateSchedule();
                 }.bind(this));
             },
             updateSchedule: function() {
-                if (!this.arenas || !this.corners) {
+                if (this.arenas == null || this.corners == null || this.currentMatch == null) {
                     return;  // wait until they're set
                 }
 
-                this.comp.api.getMatches(moment().subtract(15, 'minutes').toISOString(),
-                                         moment().add(40, 'minutes').toISOString(),
+                this.comp.api.getMatches(this.currentMatch - 2,
+                                         this.currentMatch + 7,
                                          function(matches) {
 
                     var schedule = {};
