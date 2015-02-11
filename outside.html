@@ -23,11 +23,22 @@
 
                 font-family: 'Open Sans', sans-serif;
                 background: black;
+                color: white;
+
+                display: flex;
+                flex-direction: column;
             }
 
-            sr-progress {
-                position: fixed;
-                bottom: 0;
+            body > main {
+                flex: 1 1 auto;
+                overflow: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            body > sr-progress {
+                flex: 0 0 auto;
             }
         </style>
     </head>
@@ -35,9 +46,13 @@
     <body>
         <sr-comp id="comp" apiurl="http://localhost:5112" streamurl="http://localhost:5001"></sr-comp>
 
-        <sr-progress id="progress" style="display: flex; width: 100%; border-top: 1px solid rgb(100, 100, 100);">
-            <h1 style="margin: 0.3em; color: white; flex: 1 1 auto;">Page name here</h1>
-            <sr-clock style="margin: 0.3em; color: white;"></sr-clock>
+        <main>
+            <h1>Yay Robots!</h1>
+        </main>
+
+        <sr-progress id="progress" style="display: flex; border-top: 1px solid rgb(100, 100, 100);">
+            <h1 style="margin: 0.3em; flex: 1 1 auto;">Page name here</h1>
+            <sr-clock style="margin: 0.3em;"></sr-clock>
         </sr-progress>
 
         <script>
