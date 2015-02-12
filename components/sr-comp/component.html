@@ -5,15 +5,53 @@
 
 <polymer-element name="sr-comp" attributes="apiurl streamurl">
     <template>
+        <style>
+            #error {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                z-index: 100000000000;
+            }
+
+            #error h1 {
+                position: absolute;
+                margin: 0;
+                right: 1em;
+                bottom: 1em;
+                font-family: monospace;
+                font-size: 2em;
+                color: rgb(200, 200, 200);
+            }
+        </style>
+
         <sr-comp-api id="api" url="{{ apiurl }}"></sr-comp-api>
         <sr-comp-stream id="stream" url="{{ streamurl }}"></sr-comp-stream>
+
+        <aside id="error">
+            <h1>Lost connection. Please wait…</h1>
+        </aside>
     </template>
 
     <script>
         Polymer({
+            connected: false,
             ready: function() {
                 this.api = this.$.api;
                 this.stream = this.$.stream;
+                this.stream.addEventListener('open', function() {
+                    this.connected = true;
+                }.bind(this));
+                this.stream.addEventListener('error', function() {
+                    this.connected = false;
+                }.bind(this));
+            },
+            connectedChanged: function() {
+                this.$.error.hidden = this.connected;
             }
         });
     </script>
