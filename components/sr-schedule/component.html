@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-schedule" attributes="onlyarena">
+<polymer-element name="sr-schedule" attributes="onlyarena back forward">
     <template>
         <style>
             :host {
@@ -75,6 +75,8 @@
             comp: null,
             arenas: undefined,
             corners: undefined,
+            back: 2,
+            forward: 9,
             schedule: {},
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
@@ -95,6 +97,12 @@
                         this.updateSchedule();
                     }.bind(this));
                 }
+            },
+            backChanged: function() {
+                this.updateSchedule();
+            },
+            forwardChanged: function() {
+                this.updateSchedule();
             },
             onlyarenaChanged: function() {
                 this.updateArenas();
@@ -154,11 +162,11 @@
                             currentIndex = ix;
                         }
                     });
-                    var firstMatchIx = currentIndex - 2;
+                    var firstMatchIx = currentIndex - this.back;
                     if (firstMatchIx < 0) {
                         firstMatchIx = 0;
                     }
-                    var lastMatchIx = currentIndex + 10;
+                    var lastMatchIx = currentIndex + this.forward + 1;
                     if (lastMatchIx > formattedSchedule.length) {
                         lastMatchIx = formattedSchedule.length;
                     }
