@@ -32,13 +32,13 @@
 
         <main>
             <template if="{{ show == 'all' }}">
-                <sr-corner-match id="match" arena="{{ arena }}" corner="{{ corner }}"></sr-corner-match>
-                <sr-corner-team id="team" arena="{{ arena }}" corner="{{ corner }}" show="all"></sr-corner-team>
-                <sr-corner-clock id="clock" arena="{{ arena }}"></sr-corner-clock>
+                <sr-corner-match id="match"></sr-corner-match>
+                <sr-corner-team id="team" corner="{{ corner }}" show="all"></sr-corner-team>
+                <sr-corner-clock id="clock"></sr-corner-clock>
             </template>
 
             <template if="{{ show == 'tla' }}">
-                <sr-corner-team id="team" arena="{{ arena }}" corner="{{ corner }}" show="tla"></sr-corner-team>
+                <sr-corner-team id="team" corner="{{ corner }}" show="tla"></sr-corner-team>
             </template>
         </main>
 
@@ -47,27 +47,51 @@
 
     <script>
         var reload = function() {
-            if (this.comp == null || this.corner == null) {
+            if (this.comp == null || this.corner == null || this.arena == null) {
                 return;
             }
+
             this.comp.api.getCorner(this.corner, function(corner) {
                 this.colour = corner.colour;
             }.bind(this));
 
             this.$.team.comp = this.comp;
 
-            if (this.$.clock) {
-                this.$.clock.stream = this.comp.stream;
-            }
+            this.comp.stream.addEventListener('match', function(e) {
+                var matches = e.detail.filter(function(match) {
+                    return match.arena === this.arena;
+                }.bind(this));
 
-            if (this.$.match) {
-                this.$.match.stream = this.comp.stream;
-            }
+                if (matches.length) {
+                    this.match = matches[0];
+                } else {
+                    this.match = null;
+
+                    this.comp.api.getUpcomingMatches(function(matches) {
+                        if (this.match == null && matches.length) {
+                            this.match = matches[0];
+                        }
+                    }.bind(this));
+                }
+            }.bind(this));
         };
         Polymer({
             comp: null,
             compChanged: reload,
-            cornerChanged: reload
+            arenaChanged: reload,
+            cornerChanged: reload,
+            match: undefined,
+            matchChanged: function() {
+                if (this.$.match) {
+                    this.$.match.match = this.match;
+                }
+
+                this.$.team.match = this.match;
+
+                if (this.$.clock) {
+                    this.$.clock.match = this.match;
+                }
+            }
         });
     </script>
 </polymer-element>

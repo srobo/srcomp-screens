@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-corner-team" attributes="arena corner show">
+<polymer-element name="sr-corner-team" attributes="corner match show">
     <template>
         <style>
             h1, h2 {
@@ -28,20 +28,17 @@
     </template>
 
     <script>
-        var updateFromMatchList = function(matchList) {
-            var match = null;
-            for (var i = 0; i < matchList.length; i++) {
-                if (matchList[i].arena == this.arena) {
-                    match = matchList[i];
-                }
+        var reload = function() {
+            if (this.comp == null || this.corner == null || this.match == null) {
+                return;
             }
 
-            if (match == null) {
+            if (this.match == null) {
                 // no current match
                 this.tla = '';
                 this.name = '';
             } else {
-                this.tla = match.teams[this.corner];
+                this.tla = this.match.teams[this.corner];
                 if (this.tla == null) {
                     this.tla = '—';
                     this.name = '';
@@ -52,27 +49,12 @@
                 }
             }
         };
-        var reload = function() {
-            if (this.comp == null || this.arena == null || this.corner == null) {
-                return;
-            }
-            var receivedEvent = false;
-            var update = updateFromMatchList.bind(this);
-            this.comp.api.getCurrentMatches(function(matches) {
-                if (!receivedEvent) {
-                    update(matches);
-                }
-            });
-            this.comp.stream.addEventListener('match', function(e) {
-                receivedEvent = true;
-                update(e.detail);
-            });
-        };
         Polymer({
             comp: null,
+            match: undefined,
             compChanged: reload,
-            arenaChanged: reload,
-            cornerChanged: reload
+            cornerChanged: reload,
+            matchChanged: reload
         });
     </script>
 </polymer-element>

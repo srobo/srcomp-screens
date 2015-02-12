@@ -100,6 +100,16 @@
                         detectedMatch = matchRecord.num;
                     });
                     this.currentMatch = detectedMatch;
+
+                    if (this.currentMatch === undefined) {
+                        this.comp.api.getUpcomingMatches(function(matches) {
+                            if (this.currentMatch == null && matches.length) {
+                                this.currentMatch = matches[0].num;
+                                this.updateSchedule();
+                            }
+                        }.bind(this));
+                    }
+
                     this.updateSchedule();
                 }.bind(this));
             },

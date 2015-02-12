@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-corner-match" attributes="arena corner">
+<polymer-element name="sr-corner-match" attributes="match">
     <template>
         <style>
             h1 {
@@ -10,23 +10,18 @@
             }
         </style>
 
-        <h1>Match {{ text }}</h1>
+        <h1>{{ text }}</h1>
     </template>
 
     <script>
         Polymer({
-            stream: null,
-            streamChanged: function() {
-                this.stream.addEventListener('match', function(e) {
-                    var match = null;
-                    for (var i = 0; i < e.detail.length; i++) {
-                        if (e.detail[i].arena == this.arena) {
-                            match = e.detail[i];
-                        }
-                    }
-
-                    this.text = match.num;
-                }.bind(this));
+            match: undefined,
+            matchChanged: function() {
+                if (this.match) {
+                    this.text = 'Match ' + this.match.num;
+                } else {
+                    this.text = '';
+                }
             }
         });
     </script>
