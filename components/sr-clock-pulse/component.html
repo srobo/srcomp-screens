@@ -7,8 +7,8 @@
                 var tick = function() {
                     var now = new Date();
                     this.fire('pulse', now);
-                    var nextPulse = 1000 - now.getMilliseconds();
-                    if (nextPulse < 50) {
+                    var nextPulse = 1050 - now.getMilliseconds();
+                    if (nextPulse < 100) {
                         nextPulse += 1000;
                     }
                     setTimeout(tick, nextPulse);
