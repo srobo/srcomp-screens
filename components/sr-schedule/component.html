@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-schedule" attributes="onlyarena back forward">
+<polymer-element name="sr-schedule" attributes="onlyarena back forward headings">
     <template>
         <style>
             :host {
@@ -42,13 +42,15 @@
         </style>
 
         <table>
-            <tr>
-                <th></th>
-                <th></th>
-                <template repeat="{{ arena in arenas }}">
-                    <th colspan="4">{{ arena }}</th>
-                </template>
-            </tr>
+            <template if="{{ headings }}">
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <template repeat="{{ arena in arenas }}">
+                        <th colspan="4">{{ arena }}</th>
+                    </template>
+                </tr>
+            </template>
 
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match | formatMatchClass }}">
@@ -75,6 +77,7 @@
             comp: null,
             arenas: undefined,
             corners: undefined,
+            headings: true,
             back: 2,
             forward: 9,
             schedule: {},
