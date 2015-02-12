@@ -51,9 +51,9 @@
             </tr>
 
             <template repeat="{{ match in schedule }}">
-                <tr class="{{ match.arenas[0] | formatMatchClass }}">
+                <tr class="{{ match | formatMatchClass }}">
                     <td>{{ match.num }}</td>
-                    <td><time datetime="{{ match.arenas[0].times.game.start }}"></time></td>
+                    <td><time datetime="{{ match.gameStart }}"></time></td>
                     <template repeat="{{ arena in match.arenas }}">
                         <template repeat="{{ team, corner in arena.teams }}">
                             <td><span style="color: {{ corners[corner].colour }}">{{ team || '—' }}</span></td>
@@ -71,7 +71,6 @@
             comp: null,
             arenas: undefined,
             corners: undefined,
-            currentMatch: undefined,
             schedule: {},
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
@@ -95,34 +94,20 @@
                 }.bind(this));
 
                 this.comp.stream.addEventListener('match', function(e) {
-                    var detectedMatch = undefined;
-                    e.detail.forEach(function(matchRecord) {
-                        detectedMatch = matchRecord.num;
-                    });
-                    this.currentMatch = detectedMatch;
-
-                    if (this.currentMatch === undefined) {
-                        this.comp.api.getUpcomingMatches(function(matches) {
-                            if (this.currentMatch == null && matches.length) {
-                                this.currentMatch = matches[0].num;
-                                this.updateSchedule();
-                            }
-                        }.bind(this));
-                    }
-
                     this.updateSchedule();
                 }.bind(this));
             },
             updateSchedule: function() {
-                if (this.arenas == null || this.corners == null || this.currentMatch == null) {
+                if (this.arenas == null || this.corners == null) {
                     return;  // wait until they're set
                 }
 
-                this.comp.api.getMatches(this.currentMatch - 2,
-                                         this.currentMatch + 9,
-                                         function(matches) {
-
+                var receiveMatchList = function(matches) {
+                    console.log(matches);
                     var schedule = {};
+                    var startTimes = {};
+                    var endTimes = {};
+                    var gameStartTimes = {};
 
                     matches.forEach(function(match) {
                         if (!schedule[match.num]) {
@@ -130,21 +115,47 @@
                         }
 
                         schedule[match.num][this.arenas.indexOf(match.arena)] = match;
+                        startTimes[match.num] = match.times.period.start;
+                        endTimes[match.num] = match.times.period.end;
+                        gameStartTimes[match.num] = match.times.game.start;
                     }.bind(this));
 
                     var formattedSchedule = [];
                     for (var matchNumber in schedule) {
-                        formattedSchedule.push({num: matchNumber, arenas: schedule[matchNumber]})
+                        formattedSchedule.push({num: matchNumber,
+                                                arenas: schedule[matchNumber],
+                                                start: startTimes[matchNumber],
+                                                end: endTimes[matchNumber],
+                                                gameStart: gameStartTimes[matchNumber]})
                     }
 
-                    this.schedule = formattedSchedule;
+                    // shrink the schedule to the matches around the current match
+                    var now = new Date();
+                    var currentIndex = 0;
+                    formattedSchedule.forEach(function(match, ix) {
+                        if (moment(match.start) < now) {
+                            currentIndex = ix;
+                        }
+                    });
+                    var firstMatchIx = currentIndex - 2;
+                    if (firstMatchIx < 0) {
+                        firstMatchIx = 0;
+                    }
+                    var lastMatchIx = currentIndex + 10;
+                    if (lastMatchIx > formattedSchedule.length) {
+                        lastMatchIx = formattedSchedule.length;
+                    }
+
+                    this.schedule = formattedSchedule.slice(firstMatchIx, lastMatchIx);
                     this.async(this._updateDisplayedTimes);
-                }.bind(this));
+                }.bind(this);
+
+                this.comp.api.getMatches(receiveMatchList);
             },
             formatMatchClass: function(match) {
-                if (moment(match.times.period.end) < new Date()) {
+                if (moment(match.end) < new Date()) {
                     return 'old';
-                } else if (moment(match.times.period.start) > new Date()) {
+                } else if (moment(match.start) > new Date()) {
                     return 'next';
                 } else {
                     return 'current';

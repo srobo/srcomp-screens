@@ -53,19 +53,8 @@
                     callback(response.matches);
                 });
             },
-            getMatches: function(startNum, endNum, callback) {
-                var url = ('/matches?num=' +
-                           encodeURIComponent(startNum) +
-                           '..' +
-                           encodeURIComponent(endNum));
-                this._apiCall(url, function(response) {
-                    callback(response.matches);
-                });
-            },
-            getUpcomingMatches: function(callback) {
-                var url = ('/matches?period_start_time=' +
-                           encodeURIComponent(new Date().toISOString()) +
-                           '..');
+            getMatches: function(callback) {
+                var url = ('/matches');
                 this._apiCall(url, function(response) {
                     callback(response.matches);
                 });
