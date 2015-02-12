@@ -100,6 +100,10 @@
                 this.comp.stream.addEventListener('match', function(e) {
                     this.updateSchedule();
                 }.bind(this));
+
+                this.comp.stream.addEventListener('knockout', function() {
+                    this.updateSchedule();
+                }.bind(this));
             },
             updateSchedule: function() {
                 if (this.arenas == null || this.corners == null) {

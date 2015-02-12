@@ -14,6 +14,10 @@
                     this.fire('team', JSON.parse(e.data));
                 }.bind(this));
 
+                this.eventSource.addEventListener('knockout', function(e) {
+                    this.fire('knockout', JSON.parse(e.data));
+                }.bind(this));
+
                 this.eventSource.addEventListener('error',
                     this.fire.bind(this, 'error'));
 
