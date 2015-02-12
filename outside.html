@@ -82,11 +82,14 @@
                 }
 
                 var knockoutTime = undefined;
+                var noLeaderboardTime = undefined;
                 comp.api.getKnockoutMatches(function(matches) {
                     if (matches.length > 0) {
                         knockoutTime = moment(matches[0].times.period.start).subtract(1, 'hours');
+                        noLeaderboardTime = moment(matches[0].times.game.start);
                     } else {
                         knockoutTime = undefined;
+                        noLeaderboardTime = undefined;
                     }
                 });
 
@@ -94,28 +97,36 @@
                 var progress = document.querySelector('#progress');
                 var progressTitle = document.querySelector('#progress-title');
 
-                setInterval(function() {
-                    progress.progress += 0.001;
-                    if (progress.progress >= 1) {
-                        progress.progress = 0;
-
-                        var length = pages.children.length;
-                        if (knockoutTime !== undefined) {
-                            if (moment().isBefore(knockoutTime)) {
-                                length -= 1;
-                            }
-                        }
-
-                        pages.selected = (pages.selected + 1) % length;
-                        progressTitle.textContent = pages.children[pages.selected].dataset.title;
-                    }
-                }, 50);
-
-                document.addEventListener('click', function() {
+                var nextPage = function() {
                     pages.selected = (pages.selected + 1) % pages.children.length;
                     progressTitle.textContent = pages.children[pages.selected].dataset.title;
                     progress.progress = 0;
-                });
+                };
+
+                var shouldSelectAutomatically = function(index) {
+                    if (index == 3) {  // knockouts
+                        if (knockoutTime != null && moment().isBefore(knockoutTime)) {
+                            return false;
+                        }
+                    }
+                    if (index == 1) {  // leaderboard
+                        if (noLeaderboardTime != null && moment().isAfter(noLeaderboardTime)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+
+                setInterval(function() {
+                    progress.progress += 0.001;
+                    if (progress.progress >= 1) {
+                        do {
+                            nextPage();
+                        } while (!shouldSelectAutomatically(pages.selected));
+                    }
+                }, 50);
+
+                document.addEventListener('click', nextPage);
             });
         </script>
     </body>
