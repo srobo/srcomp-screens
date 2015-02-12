@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-schedule">
+<polymer-element name="sr-schedule" attributes="onlyarena">
     <template>
         <style>
             :host {
@@ -86,11 +86,21 @@
                     elem.textContent = epoch.fromNow();
                 });
             },
+            updateArenas: function() {
+                if (this.onlyarena != null) {
+                    this.arenas = [this.onlyarena];
+                } else {
+                    this.comp.api.getArenas(function(arenas) {
+                        this.arenas = Object.keys(arenas);
+                        this.updateSchedule();
+                    }.bind(this));
+                }
+            },
+            onlyarenaChanged: function() {
+                this.updateArenas();
+            },
             compChanged: function() {
-                this.comp.api.getArenas(function(arenas) {
-                    this.arenas = Object.keys(arenas);
-                    this.updateSchedule();
-                }.bind(this));
+                this.updateArenas();
 
                 this.comp.api.getCorners(function(corners) {
                     this.corners = corners;
