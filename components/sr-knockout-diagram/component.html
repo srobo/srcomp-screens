@@ -146,6 +146,9 @@
                 this.comp.stream.addEventListener('match',
                     this.updateDiagram.bind(this));
 
+                this.comp.stream.addEventListener('knockouts',
+                    this.updateDiagram.bind(this));
+
                 this.comp.api.getArenas(function(arenas) {
                     this.arenas = Object.keys(arenas);
                     this.updateDiagram();
