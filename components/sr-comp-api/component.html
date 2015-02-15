@@ -54,7 +54,7 @@
                 });
             },
             getUpcomingMatches: function(callback) {
-                var url = '/matches?period_start_time=' + encodeURIComponent(new Date().toISOString()) + '..';
+                var url = '/matches?slot_start_time=' + encodeURIComponent(new Date().toISOString()) + '..';
                 this._apiCall(url, function(response) {
                     callback(response.matches);
                 });

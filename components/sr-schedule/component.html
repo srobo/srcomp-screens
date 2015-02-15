@@ -143,8 +143,8 @@
                         }
 
                         schedule[match.num][match.arena] = match;
-                        startTimes[match.num] = match.times.period.start;
-                        endTimes[match.num] = match.times.period.end;
+                        startTimes[match.num] = match.times.slot.start;
+                        endTimes[match.num] = match.times.slot.end;
                         gameStartTimes[match.num] = match.times.game.start;
                     }.bind(this));
 

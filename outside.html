@@ -85,7 +85,7 @@
                 var noLeaderboardTime = undefined;
                 comp.api.getKnockoutMatches(function(matches) {
                     if (matches.length > 0) {
-                        knockoutTime = moment(matches[0].times.period.start).subtract(1, 'hours');
+                        knockoutTime = moment(matches[0].times.slot.start).subtract(1, 'hours');
                         noLeaderboardTime = moment(matches[0].times.game.start);
                     } else {
                         knockoutTime = undefined;
