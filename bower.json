@@ -16,6 +16,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#~0.5.2",
     "core-pages": "Polymer/core-pages#~0.5.2",
-    "moment": "~2.9.0"
+    "moment": "~2.9.0",
+    "core-ajax": "Polymer/core-ajax#~0.5.4"
   }
 }

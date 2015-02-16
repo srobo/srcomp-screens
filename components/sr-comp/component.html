@@ -49,6 +49,12 @@
                 this.stream.addEventListener('error', function() {
                     this.connected = false;
                 }.bind(this));
+                // This isn't probably necessary, but clear the API cache
+                // anyway whenever we hear anything from the stream.
+                var clearCache = this.api.clearCache.bind(this.api);
+                this.stream.addEventListener('team', clearCache);
+                this.stream.addEventListener('match', clearCache);
+                this.stream.addEventListener('knockouts', clearCache);
             },
             connectedChanged: function() {
                 this.$.error.hidden = this.connected;
