@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../../bower_components/core-ajax/core-ajax.html" />
+<link rel="import" href="../moment/component.html" />
 
 <polymer-element name="sr-comp-api" attributes="url">
     <template>
@@ -106,7 +107,10 @@
                 });
             },
             getUpcomingMatches: function(callback) {
-                var url = '/matches?slot_start_time=' + encodeURIComponent(new Date().toISOString()) + '..';
+                var nowFormatted = moment().format('YYYY-MM-DDTHH:mm:ssZZ');
+                var url = ('/matches?slot_start_time=' +
+                           encodeURIComponent(nowFormatted) +
+                           '..');
                 this._apiCall(url, function(response) {
                     callback(response.matches);
                 });
