@@ -50,10 +50,12 @@
                 }
 
                 teams.sort(function(a, b) {
-                    if (a.league_points == b.league_points) {
+                    // smaller league pos at the top
+                    var diff = a.league_pos - b.league_pos;
+                    if (diff == 0) {
                         return naturalSort(a.tla, b.tla);
                     } else {
-                        return b.league_points - a.league_points;
+                        return diff;
                     }
                 });
 
