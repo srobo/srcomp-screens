@@ -43,6 +43,10 @@
                         teams.push(this.leaderboard[key]);
                     }
 
+                    teams.sort(function(a, b) {
+                        return a.tla < b.tla ? -1 : 1;
+                    });
+
                     var teamsChunks = [];
 
                     for (var i = 0; i < teams.length; i += 4) {
