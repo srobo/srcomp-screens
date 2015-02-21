@@ -21,6 +21,10 @@
             main {
                 flex: 1 1 auto;
                 background: black;
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -30,7 +34,7 @@
 
         <aside class="bar"></aside>
 
-        <main>
+        <main id="main">
             <template if="{{ show == 'all' }}">
                 <sr-corner-match id="match"></sr-corner-match>
                 <sr-corner-team id="team" corner="{{ corner }}" show="all"></sr-corner-team>
@@ -91,6 +95,19 @@
 
                 if (this.$.clock) {
                     this.$.clock.match = this.match;
+                }
+
+                if (this.match) {
+                    var tla = this.match.teams[this.corner];
+                    this.comp.api.getTeam(tla, function(team) {
+                        if (team.image_url) {
+                            this.$.main.style.backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(' + team.image_url + ')';
+                        } else {
+                            this.$.main.style.backgroundImage = null;
+                        }
+                    }.bind(this));
+                } else {
+                    this.$.main.style.backgroundImage = null;
                 }
             }
         });
