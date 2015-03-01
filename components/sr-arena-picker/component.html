@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-arena-picker">
+    <template>
+        <style>
+            :host {
+                display: block;
+                font-family: inherit;
+                color: inherit;
+                padding: 1em;
+            }
+
+            h1 {
+                margin: 0 0 0.5em 0;
+                font-size: 1.5em;
+            }
+
+            a {
+                font-size: 1.2em;
+                font-weight: bold;
+                padding: 1em;
+                display: inline-block;
+                text-decoration: none;
+            }
+
+            a:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+        </style>
+
+        <h1>Pick an arena and a corner:</h1>
+
+        <template repeat="{{ arena in arenas }}">
+            <div>
+                <template repeat="{{ corner in corners }}">
+                    <a href="?{{ arena.name }},{{ corner.number }}"><span style="color: {{ arena.colour }}">{{ arena.display_name }}</span> <span style="color: {{ corner.colour }}">{{ corner.number }}</span></a>
+                </template>
+            </div>
+        </template>
+    </template>
+
+    <script>
+        Polymer({
+            comp: null,
+            arenas: null,
+            corners: null,
+            _getValues: function(obj) {
+                var values = [];
+                for (var key in obj) {
+                    values.push(obj[key]);
+                }
+                return values;
+            },
+            compChanged: function() {
+                this.comp.api.getArenas(function(arenas) {
+                    this.arenas = this._getValues(arenas);
+                }.bind(this));
+
+                this.comp.api.getCorners(function(corners) {
+                    this.corners = this._getValues(corners);
+                }.bind(this));
+            },
+            go: function() {
+
+            }
+        });
+    </script>
+</polymer-element>
