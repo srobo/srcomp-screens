@@ -112,11 +112,12 @@
                     callback(response.matches);
                 });
             },
-            getUpcomingMatches: function(callback) {
+            getUpcomingMatches: function(arena, callback) {
                 var nowFormatted = moment().format('YYYY-MM-DDTHH:mm:ssZZ');
                 var url = ('/matches?slot_start_time=' +
                            encodeURIComponent(nowFormatted) +
-                           '..');
+                           '..' +
+                           '&arena=' + encodeURIComponent(arena));
                 this._apiCall(url, function(response) {
                     callback(response.matches);
                 });
