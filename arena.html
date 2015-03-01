@@ -8,6 +8,7 @@
 
         <link rel="import" href="components/sr-comp/component.html" />
         <link rel="import" href="components/sr-arena/component.html" />
+        <link rel="import" href="components/sr-arena-picker/component.html" />
 
         <style>
             body {
@@ -33,7 +34,9 @@
 
     <body>
         <sr-comp id="comp" apiurl="http://localhost:5112/comp-api" streamurl="http://localhost:5001"></sr-comp>
-        <sr-arena id="arena"></sr-arena>
+
+        <sr-arena-picker id="picker" hidden></sr-arena-picker>
+        <sr-arena id="arena" hidden></sr-arena>
 
         <script>
             var parseArguments = function() {
@@ -46,11 +49,18 @@
                 var args = parseArguments();
 
                 var comp = document.querySelector('#comp');
-                var arena = document.querySelector('#arena');
 
-                arena.arena = args.arena;
-                arena.maincorner = args.corner;
-                arena.comp = comp;
+                if (args.arena == null || args.corner == null) {
+                    var picker = document.querySelector('#picker');
+                    picker.hidden = false;
+                    picker.comp = comp;
+                } else {
+                    var arena = document.querySelector('#arena');
+                    arena.hidden = false;
+                    arena.arena = args.arena;
+                    arena.maincorner = args.corner;
+                    arena.comp = comp;
+                }
             });
         </script>
     </body>
