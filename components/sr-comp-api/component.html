@@ -40,6 +40,12 @@
                             }
                         });
                     });
+                    element.addEventListener('core-error', function(evt) {
+                        element.interestedParties.forEach(function(party) {
+                            var eb = party[1];
+                            eb(element.error.response);
+                        });
+                    });
                     root.appendChild(element);
                     element.go();
                 } else {
@@ -71,13 +77,24 @@
                 // Cache responses for up to 5 seconds.
                 setInterval(this.clearCache.bind(this), 5000);
             },
+            getArena: function(name, callback) {
+                this._apiCall('/arenas/' + name, function(arena) {
+                    callback(arena, undefined);
+                }, function(err) {
+                    callback(undefined, err);
+                });
+            },
             getArenas: function(callback) {
                 this._apiCall('/arenas', function(response) {
                     callback(response.arenas);
                 });
             },
             getCorner: function(index, callback) {
-                this._apiCall('/corners/' + index, callback);
+                this._apiCall('/corners/' + index, function(corner) {
+                    callback(corner, undefined);
+                }, function(err) {
+                    callback(undefined, err);
+                });
             },
             getCorners: function(callback) {
                 this._apiCall('/corners', function(response) {
