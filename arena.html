@@ -55,11 +55,21 @@
                     picker.hidden = false;
                     picker.comp = comp;
                 } else {
-                    var arena = document.querySelector('#arena');
-                    arena.hidden = false;
-                    arena.arena = args.arena;
-                    arena.maincorner = args.corner;
-                    arena.comp = comp;
+                    comp.api.getArena(args.arena, function(compArena) {
+                        comp.api.getCorner(args.corner, function(compCorner) {
+                            if (compArena && compCorner) {
+                                var arena = document.querySelector('#arena');
+                                arena.hidden = false;
+                                arena.arena = args.arena;
+                                arena.maincorner = args.corner;
+                                arena.comp = comp;
+                            } else {
+                                var picker = document.querySelector('#picker');
+                                picker.hidden = false;
+                                picker.comp = comp;
+                            }
+                        });
+                    });
                 }
             });
         </script>
