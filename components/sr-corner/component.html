@@ -71,7 +71,7 @@
                 } else {
                     this.match = null;
 
-                    this.comp.api.getUpcomingMatches(function(matches) {
+                    this.comp.api.getUpcomingMatches(this.arena, function(matches) {
                         // only update if we haven't since updated the match
                         if (this.match == null && matches.length) {
                             this.match = matches[0];
