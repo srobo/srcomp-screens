@@ -67,6 +67,12 @@
 
             this.comp.api.getCorner(this.corner, function(corner) {
                 this.colour = corner.colour;
+
+                // Polymer Polyfill cannot bind variables in the CSS.
+                var bars = this.shadowRoot.querySelectorAll('.bar');
+                for (var i = 0; i < bars.length; i++) {
+                    bars[i].style.backgroundColor = this.colour;
+                }
             }.bind(this));
 
             this.$.team.comp = this.comp;
