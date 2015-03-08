@@ -48,7 +48,7 @@
 
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match | formatMatchClass }}">
-                    <td>{{ match.num }}</td>
+                    <td>{{ match.displayName }}</td>
                     <td><time datetime="{{ match.gameStart }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
@@ -142,12 +142,14 @@
                     var startTimes = {};
                     var endTimes = {};
                     var gameStartTimes = {};
+                    var displayNames = {};
 
                     matches.forEach(function(match) {
                         if (!schedule[match.num]) {
                             schedule[match.num] = {};
                         }
 
+                        displayNames[match.num] = match.display_name;
                         schedule[match.num][match.arena] = match;
                         startTimes[match.num] = match.times.slot.start;
                         endTimes[match.num] = match.times.slot.end;
@@ -157,6 +159,7 @@
                     var formattedSchedule = [];
                     for (var matchNumber in schedule) {
                         formattedSchedule.push({num: matchNumber,
+                                                displayName: displayNames[matchNumber],
                                                 arenas: schedule[matchNumber],
                                                 start: startTimes[matchNumber],
                                                 end: endTimes[matchNumber],
