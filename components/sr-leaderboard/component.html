@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../natural-sort/component.html" />
+<link rel="import" href="../sr-last-scored/component.html" />
 
 <polymer-element name="sr-leaderboard">
     <template>
@@ -12,6 +13,11 @@
 
             td, th {
                 padding: 0.25em 0.5em;
+            }
+
+            #last-scored {
+                color: grey;
+                margin-top: 1em;
             }
         </style>
 
@@ -30,6 +36,8 @@
                 </tr>
             </template>
         </table>
+
+        <sr-last-scored id="last-scored"></sr-last-scored>
     </template>
 
     <script>
@@ -42,6 +50,8 @@
                     this.leaderboard[e.detail.tla] = e.detail;
                     this.updateTable();
                 }.bind(this));
+
+                this.$['last-scored'].comp = this.comp;
             },
             updateTable: function() {
                 var teams = [];

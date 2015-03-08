@@ -16,6 +16,13 @@
             td, th {
                 padding: 0.3em 0.4em;
             }
+
+            #last-scored {
+                width: 50%;
+                margin: 1em auto 0 auto;
+                text-align: center;
+                color: grey;
+            }
         </style>
 
         <table>
@@ -28,6 +35,8 @@
                 </tr>
             </template>
         </table>
+
+        <sr-last-scored id="last-scored"></sr-last-scored>
     </template>
 
     <script>
@@ -55,6 +64,8 @@
                     }
 
                     this.teamsChunks = teamsChunks;
+
+                    this.$['last-scored'].comp = this.comp;
                 }.bind(this));
             }
         });
