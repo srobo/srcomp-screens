@@ -28,12 +28,14 @@
 
             .round h1 {
                 font-size: 2.5em;
-                margin: 0.2em;
+                margin: 0.2em 0;
+                padding: 0 0.2em;
             }
 
             .round p {
                 font-size: 2.5em;
-                margin: 0.2em;
+                margin: 0.2em 0;
+                padding: 0 0.2em;
             }
 
             .match span {
@@ -48,7 +50,7 @@
                         <div class="match">
                             <h1>{{ match.description }}</h1>
                             <template repeat="{{ game in match.games }}">
-                                <p>
+                                <p style="background-color: {{ arenas[game.arena].colour | formatArenaColour }}">
                                     <strong>{{ arenas[game.arena].display_name }}</strong>
                                     <template repeat="{{ team, corner in game.teams }}">
                                         <span style="color: {{ corners[corner].colour }}">{{ team || '—' }}</span>
@@ -170,7 +172,15 @@
                 this.comp.api.getKnockout(function(rounds) {
                     this.rounds = processKnockouts(rounds.slice(1));
                 }.bind(this));
-            }
+            },
+            formatArenaColour: function(val) {
+                if (val) {
+                    var r = parseInt(val.substr(1, 2), 16);
+                    var g = parseInt(val.substr(3, 2), 16);
+                    var b = parseInt(val.substr(5, 2), 16);
+                    return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.1)';
+                }
+            },
         });
     </script>
 </polymer-element>
