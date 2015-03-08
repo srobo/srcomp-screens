@@ -27,24 +27,34 @@
                 color: white;
 
                 display: flex;
+                display: -webkit-flex;
                 flex-direction: column;
+                -webkit-flex-direction: column;
                 justify-content: center;
+                -webkit-justify-content: center;
                 align-content: center;
+                -webkit-align-content: center;
             }
 
             #schedule {
                 flex: 1 1 auto;
+                -webkit-flex: 1 1 auto;
+
                 margin: 1em auto;
             }
 
             #corners {
                 height: 20%;
+
                 display: flex;
+                display: -webkit-flex;
                 flex-direction: row;
+                -webkit-flex-direction: row;
             }
 
             #corners > sr-corner {
                 flex: 1 1 auto;
+                -webkit-flex: 1 1 auto;
             }
 
             #strap {
@@ -61,15 +71,18 @@
 
     <body>
         <sr-comp id="comp" apiurl="http://localhost:5112/comp-api" streamurl="http://localhost:5001"></sr-comp>
+
         <div id="corners">
             <sr-corner show="tla" corner="0" id="corner0"></sr-corner>
             <sr-corner show="tla" corner="1" id="corner1"></sr-corner>
             <sr-corner show="tla" corner="2" id="corner2"></sr-corner>
             <sr-corner show="tla" corner="3" id="corner3"></sr-corner>
         </div>
+
         <sr-schedule id="schedule"
                      back="1" forward="15"
                      headings="false"></sr-schedule>
+
         <div id="strap">
             <sr-clock></sr-clock>
         </div>
@@ -89,6 +102,8 @@
                     corner.arena = arena;
                     corner.comp = comp;
                 }
+
+                comp.stream.load();
             });
         </script>
     </body>
