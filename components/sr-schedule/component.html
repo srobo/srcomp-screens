@@ -32,14 +32,6 @@
                 opacity: 0.8;
                 font-size: 1.3em;
             }
-
-            tr td:nth-of-type(4n+3) {
-                padding-left: 1em;
-            }
-
-            tr td:nth-of-type(4n+6) {
-                padding-right: 1em;
-            }
         </style>
 
         <table>
@@ -48,7 +40,8 @@
                     <th></th>
                     <th></th>
                     <template repeat="{{ arena in arenasList }}">
-                        <th colspan="4">{{ arenas[arena].display_name }}</th>
+                        <th></th>
+                        <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
                     </template>
                 </tr>
             </template>
@@ -58,8 +51,9 @@
                     <td>{{ match.num }}</td>
                     <td><time datetime="{{ match.gameStart }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
+                        <td style="width: 0.1em;"></td>
                         <template repeat="{{ corner in [0, 1, 2, 3] }}">
-                            <td>
+                            <td style="background-color: {{ arenas[arena].colour | arenaColour }}">
                                 <span style="color: {{ corners[corner].colour }}">
                                     {{ match.arenas[arena].teams[corner] || '—' }}
                                 </span>
@@ -92,6 +86,14 @@
                     var epoch = moment(elem.getAttribute('datetime'));
                     elem.textContent = epoch.fromNow();
                 });
+            },
+            arenaColour: function(val) {
+                if (val) {
+                    var r = parseInt(val.substr(1, 2), 16);
+                    var g = parseInt(val.substr(3, 2), 16);
+                    var b = parseInt(val.substr(5, 2), 16);
+                    return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.1)';
+                }
             },
             updateArenas: function() {
                 this.arenasList = [this.onlyarena];
