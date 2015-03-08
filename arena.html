@@ -56,6 +56,7 @@
                     var picker = document.querySelector('#picker');
                     picker.hidden = false;
                     picker.comp = comp;
+                    comp.stream.load();
                 } else {
                     comp.api.getArena(args.arena, function(compArena) {
                         comp.api.getCorner(args.corner, function(compCorner) {
@@ -70,6 +71,7 @@
                                 picker.hidden = false;
                                 picker.comp = comp;
                             }
+                            comp.stream.load();
                         });
                     });
                 }

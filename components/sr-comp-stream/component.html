@@ -3,7 +3,7 @@
 <polymer-element name="sr-comp-stream" attributes="url">
     <script>
         Polymer({
-            attached: function() {
+            load: function() {
                 this.eventSource = new EventSource(this.url);
 
                 this.eventSource.addEventListener('match', function(e) {
