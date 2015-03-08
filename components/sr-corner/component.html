@@ -9,26 +9,36 @@
         <style>
             :host {
                 display: flex;
+                display: -webkit-flex;
                 flex-direction: row;
+                -webkit-flex-direction: row;
             }
 
             .bar {
                 flex: 0 0 auto;
+                -webkit-flex: 0 0 auto;
+
                 width: 15%;
                 background: {{ colour }};
             }
 
             main {
                 flex: 1 1 auto;
+                -webkit-flex: 1 1 auto;
+
                 background: black;
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: center;
 
                 display: flex;
+                display: -webkit-flex;
                 flex-direction: column;
+                -webkit-flex-direction: column;
                 align-items: center;
+                -webkit-align-items: center;
                 justify-content: center;
+                -webkit-justify-content: center;
             }
         </style>
 
