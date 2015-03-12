@@ -4,7 +4,7 @@
     <script>
         Polymer({
             load: function() {
-                this.eventSource = new EventSource(this.url);
+                this.eventSource = new EventSource(this.realUrl);
 
                 this.eventSource.addEventListener('match', function(e) {
                     this.fire('match', JSON.parse(e.data));
@@ -27,6 +27,16 @@
 
                 this.eventSource.addEventListener('open',
                     this.fire.bind(this, 'open'));
+            },
+            urlChanged: function() {
+                this.realUrl = this.url;
+
+                if (this.realUrl === 'auto') {
+                    var url = window.location.protocol + '//' +
+                        window.location.hostname + ':5001';
+                    console.log('Stream URL detected as:', url);
+                    this.realUrl = url;
+                }
             }
         });
     </script>
