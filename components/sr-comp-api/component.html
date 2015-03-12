@@ -66,14 +66,11 @@
                 }
             },
             urlChanged: function() {
-                this.realUrl = this.url;
-
-                if (this.realUrl === 'auto') {
-                    var url = window.location.protocol + '//' +
-                        window.location.host + '/comp-api';
-                    console.log('API URL detected as:', url);
-                    this.realUrl = url;
-                }
+                this.realUrl = this.url.replace(/\{([^{}]*)\}/g,
+                                                function (match, p1) {
+                                                    return window.location[p1];
+                                                });
+                console.log('API URL is:', this.realUrl);
             },
             clearCache: function() {
                 // Remove all the cached core-ajax queries.

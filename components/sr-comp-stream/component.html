@@ -29,14 +29,11 @@
                     this.fire.bind(this, 'open'));
             },
             urlChanged: function() {
-                this.realUrl = this.url;
-
-                if (this.realUrl === 'auto') {
-                    var url = window.location.protocol + '//' +
-                        window.location.hostname + ':5001';
-                    console.log('Stream URL detected as:', url);
-                    this.realUrl = url;
-                }
+                this.realUrl = this.url.replace(/\{([^{}]*)\}/g,
+                                                function (match, p1) {
+                                                    return window.location[p1];
+                                                });
+                console.log('Stream URL is:', this.realUrl);
             }
         });
     </script>

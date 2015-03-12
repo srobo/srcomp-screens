@@ -40,8 +40,8 @@
     <script>
         Polymer({
             connected: false,
-            apiurl: 'auto',
-            streamurl: 'auto',
+            apiurl: '{protocol}//{host}/comp-api',
+            streamurl: '{protocol}//{hostname}:5001',
             ready: function() {
                 this.api = this.$.api;
                 this.stream = this.$.stream;
