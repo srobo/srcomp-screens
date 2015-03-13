@@ -57,6 +57,7 @@
                 this.stream.addEventListener('team', clearCache);
                 this.stream.addEventListener('match', clearCache);
                 this.stream.addEventListener('knockouts', clearCache);
+                this.stream.addEventListener('last-scored-match', clearCache);
             },
             connectedChanged: function() {
                 this.$.error.hidden = this.connected;
