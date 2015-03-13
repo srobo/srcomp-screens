@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
-<polymer-element name="sr-arena-picker">
+<polymer-element name="sr-arena-picker" attributes="includecorners">
     <template>
         <style>
             :host {
@@ -28,14 +28,31 @@
             }
         </style>
 
-        <h1>Pick an arena and a corner:</h1>
+        <template if="{{ includecorners }}">
+            <h1>Pick an arena and a corner:</h1>
 
-        <template repeat="{{ arena in arenas }}">
-            <div>
-                <template repeat="{{ corner in corners }}">
-                    <a href="?{{ arena.name }},{{ corner.number }}"><span style="color: {{ arena.colour }}">{{ arena.display_name }}</span> <span style="color: {{ corner.colour }}">{{ corner.number }}</span></a>
-                </template>
-            </div>
+            <template repeat="{{ arena in arenas }}">
+                <div>
+                    <template repeat="{{ corner in corners }}">
+                        <a href="?{{ arena.name }},{{ corner.number }}">
+                            <span style="color: {{ arena.colour }}">{{ arena.display_name }}</span>
+                            <span style="color: {{ corner.colour }}">{{ corner.number }}</span>
+                        </a>
+                    </template>
+                </div>
+            </template>
+        </template>
+
+        <template if="{{ !includecorners }}">
+            <h1>Pick an arena:</h1>
+
+            <template repeat="{{ arena in arenas }}">
+                <div>
+                    <a href="?{{ arena.name }}">
+                        <span style="color: {{ arena.colour }}">{{ arena.display_name }}</span>
+                    </a>
+                </div>
+            </template>
         </template>
     </template>
 
@@ -44,6 +61,7 @@
             comp: null,
             arenas: null,
             corners: null,
+            includecorners: null,
             _getValues: function(obj) {
                 var values = [];
                 for (var key in obj) {
