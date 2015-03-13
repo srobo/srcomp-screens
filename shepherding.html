@@ -102,8 +102,13 @@
         <script>
             var parseArguments = function() {
                 var fragment = window.location.search;
-                var tokens = fragment.substr(1).split(',');
-                return {arena: tokens[0]};
+
+                var arena = fragment.substr(1);
+                if (arena) {
+                    return {arena: arena};
+                } else {
+                    return {arena: null};
+                }
             };
 
             document.addEventListener('polymer-ready', function() {
