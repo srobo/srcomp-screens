@@ -7,6 +7,7 @@
         <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 
         <link rel="import" href="components/sr-comp/component.html" />
+        <link rel="import" href="components/sr-arena-picker/component.html" />
         <link rel="import" href="components/sr-schedule/component.html" />
         <link rel="import" href="components/sr-corner/component.html" />
         <link rel="import" href="components/sr-clock/component.html" />
@@ -72,7 +73,9 @@
     <body>
         <sr-comp id="comp"></sr-comp>
 
-        <div id="corners">
+        <sr-arena-picker id="picker" hidden></sr-arena-picker>
+
+        <div id="corners" hidden>
             <sr-corner show="tla" corner="0" id="corner0"></sr-corner>
             <sr-corner show="tla" corner="1" id="corner1"></sr-corner>
             <sr-corner show="tla" corner="2" id="corner2"></sr-corner>
@@ -81,29 +84,80 @@
 
         <sr-schedule id="schedule"
                      back="1" forward="15"
-                     headings="false"></sr-schedule>
+                     headings="false" hidden></sr-schedule>
 
-        <div id="strap">
+        <div id="strap" hidden>
             <sr-clock></sr-clock>
         </div>
 
         <script>
+            var parseArguments = function() {
+                var fragment = window.location.search;
+                var tokens = fragment.substr(1).split(',');
+                return {arena: tokens[0]};
+            };
+
             document.addEventListener('polymer-ready', function() {
-                var arena = window.location.search.substr(1);
+                var args = parseArguments();
 
-                var comp = document.getElementById('comp');
-                var schedule = document.getElementById('schedule');
+                var comp = document.querySelector('#comp');
 
-                schedule.onlyarena = arena;
-                schedule.comp = document.getElementById('comp');
+                if (args.arena == null) {
+                    var picker = document.querySelector('#picker');
+                    picker.hidden = false;
+                    picker.comp = comp;
+                    comp.stream.load();
+                } else {
+                    comp.api.getArena(args.arena, function(compArena) {
+                        if (compArena) {
+                            var corners = document.getElementById('corners');
+                            var schedule = document.getElementById('schedule');
+                            var strap = document.getElementById('strap');
 
-                for (var i = 0; i < 4; ++i) {
-                    var corner = document.getElementById('corner' + i);
-                    corner.arena = arena;
-                    corner.comp = comp;
+                            // show everything
+                            corners.hidden = false;
+                            schedule.hidden = false;
+                            strap.hidden = false;
+
+                            schedule.onlyarena = args.arena;
+                            schedule.comp = comp;
+
+                            for (var i = 0; i < 4; ++i) {
+                                var corner = document.getElementById('corner' + i);
+                                corner.arena = args.arena;
+                                corner.comp = comp;
+                            }
+                        } else {
+                            var picker = document.querySelector('#picker');
+                            picker.hidden = false;
+                            picker.comp = comp;
+                        }
+
+                        /* Work around an issue with Firefox. When the arena
+                           fields above are set, the changed callback should
+                           get called immediately giving time for listeners to
+                           be registered on the stream before it is loaded
+                           below. However, in Firefox, the changed callbacks
+                           happen *after* this call below. Therefore, we wrap
+                           it in a 'setTimeout' to ensure it happens in the
+                           next tick, after the changed callbacks.
+
+                           This problem only seems to occur on the arena
+                           screens, which is particularly odd. I think it's
+                           possibly related to multiple levels of field changed
+                           callbacks having to happen.
+
+                           Rather concerningly, using a value of 0ms in the
+                           'setTimeout' doesn't solve the problem. Therefore
+                           the 500ms as it is currently might have to be
+                           increased for the Raspberry Pis which have a lower
+                           processing speed than my laptop. */
+
+                        setTimeout(function() {
+                            comp.stream.load();
+                        }, 500);
+                    });
                 }
-
-                comp.stream.load();
             });
         </script>
     </body>
