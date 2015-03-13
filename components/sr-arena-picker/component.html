@@ -47,11 +47,11 @@
             <h1>Pick an arena:</h1>
 
             <template repeat="{{ arena in arenas }}">
-                <div>
+                <span>
                     <a href="?{{ arena.name }}">
                         <span style="color: {{ arena.colour }}">{{ arena.display_name }}</span>
                     </a>
-                </div>
+                </span>
             </template>
         </template>
     </template>
