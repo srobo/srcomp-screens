@@ -4,29 +4,39 @@
     <script>
         Polymer({
             load: function() {
+                console.log('Connecting to the stream…');
+
                 this.eventSource = new EventSource(this.realUrl);
 
                 this.eventSource.addEventListener('match', function(e) {
+                    console.log("Got a 'match' event from the stream.");
                     this.fire('match', JSON.parse(e.data));
                 }.bind(this));
 
                 this.eventSource.addEventListener('team', function(e) {
+                    console.log("Got a 'team' event from the stream.");
                     this.fire('team', JSON.parse(e.data));
                 }.bind(this));
 
                 this.eventSource.addEventListener('knockouts', function(e) {
+                    console.log("Got a 'knockouts' event from the stream.");
                     this.fire('knockouts', JSON.parse(e.data));
                 }.bind(this));
 
                 this.eventSource.addEventListener('last-scored-match', function(e) {
+                    console.log("Got a 'last-scored-match' event from the stream.");
                     this.fire('last-scored-match', JSON.parse(e.data));
                 }.bind(this));
 
-                this.eventSource.addEventListener('error',
-                    this.fire.bind(this, 'error'));
+                this.eventSource.addEventListener('error', function() {
+                    console.log('Disconnected from the stream.');
+                    this.fire('error');
+                }.bind(this));
 
-                this.eventSource.addEventListener('open',
-                    this.fire.bind(this, 'open'));
+                this.eventSource.addEventListener('open', function() {
+                    console.log('Connected to the stream.');
+                    this.fire('open');
+                }.bind(this));
             },
             urlChanged: function() {
                 this.realUrl = this.url.replace(/\{([^{}]*)\}/g,
