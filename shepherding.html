@@ -18,14 +18,21 @@
                 width: 100%;
                 height: 100%;
                 top: 0;
-                left: 0;
-                bottom: 0;
                 right: 0;
+                bottom: 0;
+                left: 0;
                 margin: 0;
+                padding: 0;
 
                 font-family: 'Open Sans', sans-serif;
                 background: black;
                 color: white;
+                font-size: 100%;
+            }
+
+            #shepherding {
+                width: 100%;
+                height: 100%;
 
                 display: flex;
                 display: -webkit-flex;
@@ -75,20 +82,22 @@
 
         <sr-arena-picker id="picker" hidden></sr-arena-picker>
 
-        <div id="corners" hidden>
-            <sr-corner show="tla" corner="0" id="corner0"></sr-corner>
-            <sr-corner show="tla" corner="1" id="corner1"></sr-corner>
-            <sr-corner show="tla" corner="2" id="corner2"></sr-corner>
-            <sr-corner show="tla" corner="3" id="corner3"></sr-corner>
-        </div>
+        <main id="shepherding" hidden>
+            <div id="corners">
+                <sr-corner show="tla" corner="0" id="corner0"></sr-corner>
+                <sr-corner show="tla" corner="1" id="corner1"></sr-corner>
+                <sr-corner show="tla" corner="2" id="corner2"></sr-corner>
+                <sr-corner show="tla" corner="3" id="corner3"></sr-corner>
+            </div>
 
-        <sr-schedule id="schedule"
-                     back="1" forward="15"
-                     headings="false" hidden></sr-schedule>
+            <sr-schedule id="schedule"
+                         back="1" forward="15"
+                         headings="false"></sr-schedule>
 
-        <div id="strap" hidden>
-            <sr-clock></sr-clock>
-        </div>
+            <div id="strap">
+                <sr-clock></sr-clock>
+            </div>
+        </main>
 
         <script>
             var parseArguments = function() {
@@ -110,15 +119,10 @@
                 } else {
                     comp.api.getArena(args.arena, function(compArena) {
                         if (compArena) {
-                            var corners = document.getElementById('corners');
+                            var shepherding = document.querySelector('#shepherding');
+                            shepherding.hidden = false;
+
                             var schedule = document.getElementById('schedule');
-                            var strap = document.getElementById('strap');
-
-                            // show everything
-                            corners.hidden = false;
-                            schedule.hidden = false;
-                            strap.hidden = false;
-
                             schedule.onlyarena = args.arena;
                             schedule.comp = comp;
 
