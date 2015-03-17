@@ -119,7 +119,9 @@
                 var noLeaderboardTime = undefined;
                 comp.api.getKnockoutMatches(function(matches) {
                     if (matches.length > 0) {
+                        // show the knockouts from 1 hour before the first knockout match
                         knockoutTime = moment(matches[0].times.slot.start).subtract(1, 'hours');
+                        // hide the leaderboard once the knockouts actually start
                         noLeaderboardTime = moment(matches[0].times.game.start);
                     } else {
                         knockoutTime = undefined;
@@ -160,6 +162,8 @@
                     }
                 }, 50);
 
+                // Advance to the next page on click; note that this
+                // always shows _all_ the pages
                 document.addEventListener('click', nextPage);
             });
         </script>
