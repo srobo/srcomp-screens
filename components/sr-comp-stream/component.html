@@ -28,15 +28,22 @@
                     this.fire('last-scored-match', JSON.parse(e.data));
                 }.bind(this));
 
-                this.eventSource.addEventListener('error', function() {
+                this.eventSource.onerror = function() {
                     console.log('Disconnected from the stream.');
                     this.fire('error');
-                }.bind(this));
 
-                this.eventSource.addEventListener('open', function() {
+                    this.eventSource.close();
+
+                    if (this.eventSource.readyState === 2) {
+                        this.load();
+                        setTimeout(this.load.bind(this), 10 * 1000);
+                    }
+                }.bind(this);
+
+                this.eventSource.onopen = function() {
                     console.log('Connected to the stream.');
                     this.fire('open');
-                }.bind(this));
+                }.bind(this);
             },
             urlChanged: function() {
                 this.realUrl = this.url.replace(/\{([^{}]*)\}/g,
