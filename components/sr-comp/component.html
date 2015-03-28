@@ -48,7 +48,7 @@
                 this.stream.addEventListener('open', function() {
                     this.connected = true;
                 }.bind(this));
-                this.stream.addEventListener('error', function() {
+                this.stream.addEventListener('close', function() {
                     this.connected = false;
                 }.bind(this));
                 // This isn't probably necessary, but clear the API cache

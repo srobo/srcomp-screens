@@ -30,7 +30,7 @@
 
                 this.eventSource.onerror = function() {
                     console.log('Disconnected from the stream.');
-                    this.fire('error');
+                    this.fire('close');
 
                     this.eventSource.close();
 
