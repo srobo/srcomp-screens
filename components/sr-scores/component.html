@@ -29,8 +29,8 @@
             <template repeat="{{ teams in teamsChunks }}">
                 <tr>
                     <template repeat="{{ team in teams }}">
-                        <td style="text-align: right;">{{ team.tla}}: {{ team.name }}</td>
-                        <th style="text-align: left;">{{ team.league_points }}</th>
+                        <td style="text-align: right;">{{ team.tla }}: {{ team.name }}</td>
+                        <th style="text-align: left;">{{ team.scores.league }}</th>
                     </template>
                 </tr>
             </template>
