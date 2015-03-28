@@ -84,6 +84,13 @@
                 // Cache responses for up to 5 seconds.
                 setInterval(this.clearCache.bind(this), 5000);
             },
+            getConfig: function(callback) {
+                this._apiCall('/config', function(res) {
+                    callback(res['config'], undefined);
+                }, function(err) {
+                    callback(undefined, err);
+                });
+            },
             getArena: function(name, callback) {
                 this._apiCall('/arenas/' + name, function(arena) {
                     callback(arena, undefined);

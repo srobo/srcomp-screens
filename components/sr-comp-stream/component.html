@@ -28,16 +28,12 @@
                     this.fire('last-scored-match', JSON.parse(e.data));
                 }.bind(this));
 
+                this.eventSource.addEventListener('ping', function(e) {
+                    this.fire('ping', JSON.parse(e.data));
+                }.bind(this));
+
                 this.eventSource.onerror = function() {
-                    console.log('Disconnected from the stream.');
-                    this.fire('close');
-
-                    this.eventSource.close();
-
-                    if (this.eventSource.readyState === 2) {
-                        this.load();
-                        setTimeout(this.load.bind(this), 10 * 1000);
-                    }
+                    this.close();
                 }.bind(this);
 
                 this.eventSource.onopen = function() {
@@ -51,6 +47,14 @@
                                                     return window.location[p1];
                                                 });
                 console.log('Stream URL is:', this.realUrl);
+            },
+            close: function() {
+                console.log('Disconnected from the stream.');
+                this.fire('close');
+
+                this.eventSource.close();
+
+                setTimeout(this.load.bind(this), 1000);
             }
         });
     </script>

@@ -42,6 +42,7 @@
             connected: false,
             apiurl: '{protocol}//{host}/comp-api',
             streamurl: '{protocol}//{hostname}:5001',
+            pingTimeout: undefined,
             ready: function() {
                 this.api = this.$.api;
                 this.stream = this.$.stream;
@@ -58,6 +59,18 @@
                 this.stream.addEventListener('match', clearCache);
                 this.stream.addEventListener('knockouts', clearCache);
                 this.stream.addEventListener('last-scored-match', clearCache);
+
+                this.stream.addEventListener('ping', function(e) {
+                    console.log('Got ping, cancelling pending disconnect.');
+                    clearTimeout(this.pingTimeout);
+
+                    this.api.getConfig(function(config, err) {
+                        var pingPeriod = err ? 1 : config['ping_period'] + 1;
+                        this.pingTimeout = setTimeout(function() {
+                            this.stream.close();
+                        }.bind(this), pingPeriod * 1000);
+                    }.bind(this));
+                }.bind(this));
             },
             connectedChanged: function() {
                 this.$.error.hidden = this.connected;
