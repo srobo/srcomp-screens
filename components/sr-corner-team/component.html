@@ -43,6 +43,7 @@
                     this.tla = '—';
                     this.name = '';
                 } else {
+                    this.name = '';
                     this.comp.api.getTeam(this.tla, function(team) {
                         this.name = team.name;
                     }.bind(this));
