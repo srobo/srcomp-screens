@@ -60,12 +60,19 @@
                 this.stream.addEventListener('knockouts', clearCache);
                 this.stream.addEventListener('last-scored-match', clearCache);
 
-                this.stream.addEventListener('ping', function(e) {
+                this.stream.addEventListener('ping', function() {
                     console.log('Got ping, cancelling pending disconnect.');
                     clearTimeout(this.pingTimeout);
+                    this.pingTimeout = null;
 
                     this.api.getConfig(function(config, err) {
-                        var pingPeriod = err ? 1 : config['ping_period'] + 1;
+                        if (this.pingTimeout !== null) {
+                            return;  // Timeout set by something else.
+                        }
+
+                        var pingPeriod = err ? 1 : config['ping_period'] * 2.5;
+                        console.log('Registering a disconnect in',
+                                    pingPeriod, 'seconds.');
                         this.pingTimeout = setTimeout(function() {
                             this.stream.close();
                         }.bind(this), pingPeriod * 1000);
