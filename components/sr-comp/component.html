@@ -48,9 +48,11 @@
                 this.stream = this.$.stream;
                 this.stream.addEventListener('open', function() {
                     this.connected = true;
+                    this.startPingTimeout();
                 }.bind(this));
                 this.stream.addEventListener('close', function() {
                     this.connected = false;
+                    this.cancelPingTimeout();
                 }.bind(this));
                 // This isn't probably necessary, but clear the API cache
                 // anyway whenever we hear anything from the stream.
@@ -61,22 +63,27 @@
                 this.stream.addEventListener('last-scored-match', clearCache);
 
                 this.stream.addEventListener('ping', function() {
-                    console.log('Got ping, cancelling pending disconnect.');
-                    clearTimeout(this.pingTimeout);
-                    this.pingTimeout = null;
+                    this.cancelPingTimeout();
+                    this.startPingTimeout();
+                }.bind(this));
+            },
+            cancelPingTimeout: function() {
+                console.log('Cancelling pending ping disconnect.');
+                clearTimeout(this.pingTimeout);
+                this.pingTimeout = null;
+            },
+            startPingTimeout: function() {
+                this.api.getConfig(function(config, err) {
+                    if (this.pingTimeout !== null) {
+                        return;  // Timeout set by something else.
+                    }
 
-                    this.api.getConfig(function(config, err) {
-                        if (this.pingTimeout !== null) {
-                            return;  // Timeout set by something else.
-                        }
-
-                        var pingPeriod = err ? 1 : config['ping_period'] * 2.5;
-                        console.log('Registering a disconnect in',
-                                    pingPeriod, 'seconds.');
-                        this.pingTimeout = setTimeout(function() {
-                            this.stream.close();
-                        }.bind(this), pingPeriod * 1000);
-                    }.bind(this));
+                    var pingPeriod = err ? 1 : config['ping_period'] * 2.5;
+                    console.log('Registering a disconnect in',
+                                pingPeriod, 'seconds.');
+                    this.pingTimeout = setTimeout(function() {
+                        this.stream.close();
+                    }.bind(this), pingPeriod * 1000);
                 }.bind(this));
             },
             connectedChanged: function() {
