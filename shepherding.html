@@ -173,11 +173,6 @@
                            it in a 'setTimeout' to ensure it happens in the
                            next tick, after the changed callbacks.
 
-                           This problem only seems to occur on the arena
-                           screens, which is particularly odd. I think it's
-                           possibly related to multiple levels of field changed
-                           callbacks having to happen.
-
                            Rather concerningly, using a value of 0ms in the
                            'setTimeout' doesn't solve the problem. Therefore
                            the 500ms as it is currently might have to be
