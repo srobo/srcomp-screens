@@ -1,6 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
 <polymer-element name="sr-comp-stream" attributes="url">
+    <template>
+        <style>
+            :host {
+                display: none;
+            }
+        </style>
+    </template>
     <script>
         Polymer({
             load: function() {
