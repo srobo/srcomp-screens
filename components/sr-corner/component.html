@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 
 <link rel="import" href="../sr-corner-clock/component.html" />
+<link rel="import" href="../sr-corner-clock-countdown/component.html" />
 <link rel="import" href="../sr-corner-match/component.html" />
 <link rel="import" href="../sr-corner-team/component.html" />
 
@@ -49,6 +50,7 @@
                 <sr-corner-match id="match"></sr-corner-match>
                 <sr-corner-team id="team" corner="{{ corner }}" show="all"></sr-corner-team>
                 <sr-corner-clock id="clock"></sr-corner-clock>
+                <sr-corner-clock-countdown id="clock-countdown"></sr-corner-clock-countdown>
             </template>
 
             <template if="{{ show == 'tla' }}">
@@ -111,6 +113,10 @@
 
                 if (this.$.clock) {
                     this.$.clock.match = this.match;
+                }
+
+                if (this.$['clock-countdown']) {
+                    this.$['clock-countdown'].match = this.match;
                 }
 
                 if (this.match) {

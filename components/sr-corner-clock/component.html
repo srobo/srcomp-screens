@@ -10,34 +10,9 @@
                 color: white;
                 text-align: center;
             }
-
-            .big {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: black;
-
-                display: flex;
-                display: -webkit-flex;
-                align-items: center;
-                -webkit-align-items: center;
-                justify-content: center;
-                -webkit-justify-content: center;
-            }
-
-            .big h1 {
-                font-size: 25em;
-                color: white;
-            }
         </style>
 
         <h1>{{ text }}</h1>
-
-        <div class="big" hidden?="{{ !bigText }}">
-            <h1>{{ bigText }}</h1>
-        </div>
 
         <sr-clock-pulse id="pulses"></sr-clock-pulse>
     </template>
@@ -47,8 +22,9 @@
             match: undefined,
             currentGameStart: undefined,
             currentGameEnd: undefined,
+            text: '',
             ready: function() {
-                this.updateDisplay();
+                this.updateDisplay({detail: new Date()});
                 this.$.pulses.addEventListener('pulse', this.updateDisplay.bind(this));
             },
             matchChanged: function() {
@@ -75,33 +51,24 @@
                 var secondsLeft = delta - parseInt(delta / 60, 10) * 60;
                 return prefix + minutesLeft + ":" + this.pad(secondsLeft);
             },
-            updateDisplay: function() {
-                var currentTime = new Date();
+            updateDisplay: function(e) {
+                var currentTime = e.detail;
                 var gameStartTime = this.currentGameStart;
                 var gameEndTime = this.currentGameEnd;
 
                 if (gameStartTime == null || gameEndTime == null) {
                     this.text = '';
-                    this.bigText = null;
                 } else if (currentTime >= gameEndTime) {
                     // next slot starting in 0-30 seconds
                     this.text = 'Finished';
-                    this.bigText = null;
                 } else if (currentTime >= gameStartTime) {
                     // game ending in 0-180 seconds
                     var t = (gameEndTime - currentTime) / 1000;
                     this.text = this.formatTimeDelta(t);
-                    this.bigText = null;
                 } else if (currentTime <= gameStartTime) {
                     // game starting in 0-90 seconds
                     var t = (gameStartTime - currentTime) / 1000;
                     this.text = this.formatTimeDelta(-t);
-
-                    if (t < 1) {
-                        this.bigText = 'Begin!'
-                    } else if (t <= 6) {
-                        this.bigText = parseInt(t);
-                    }
                 }
             }
         });
