@@ -42,31 +42,44 @@
     <script>
         Polymer({
             comp: null,
-            leaderboard: {},
+            teams: {},
             teamsChunks: [],
+            updateTableRequest: undefined,
             compChanged: function() {
                 this.comp.stream.addEventListener('team', function(e) {
-                    this.leaderboard[e.detail.tla] = e.detail;
-
-                    var teams = [];
-                    for (var key in this.leaderboard) {
-                        teams.push(this.leaderboard[key]);
-                    }
-
-                    teams.sort(function(a, b) {
-                        return naturalSort(a.tla, b.tla);
-                    });
-
-                    var teamsChunks = [];
-
-                    for (var i = 0; i < teams.length; i += 4) {
-                        teamsChunks.push(teams.slice(i, i + 4));
-                    }
-
-                    this.teamsChunks = teamsChunks;
-
-                    this.$['last-scored'].comp = this.comp;
+                    this.teams[e.detail.tla] = e.detail;
+                    this.requestTableUpdate();
                 }.bind(this));
+
+                this.$['last-scored'].comp = this.comp;
+            },
+            requestTableUpdate: function() {
+                if (this.tableUpdateRequest != undefined) {
+                    clearTimeout(this.tableUpdateRequest);
+                }
+
+                this.tableUpdateRequest = setTimeout(function() {
+                    this.updateTable();
+                    this.tableUpdateRequest = undefined;
+                }.bind(this), 1000);
+            },
+            updateTable: function() {
+                var teams = [];
+                for (var key in this.teams) {
+                    teams.push(this.teams[key]);
+                }
+
+                teams.sort(function(a, b) {
+                    return naturalSort(a.tla, b.tla);
+                });
+
+                var teamsChunks = [];
+
+                for (var i = 0; i < teams.length; i += 4) {
+                    teamsChunks.push(teams.slice(i, i + 4));
+                }
+
+                this.teamsChunks = teamsChunks;
             }
         });
     </script>
