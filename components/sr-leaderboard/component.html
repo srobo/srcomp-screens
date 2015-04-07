@@ -28,7 +28,7 @@
                 <th width="30%">League Points</th>
             </tr>
 
-            <template repeat="{{ team in teams }}">
+            <template repeat="{{ team in leaderboard }}">
                 <tr>
                     <td>{{ team.tla }}</td>
                     <td>{{ team.name }}</td>
@@ -43,23 +43,34 @@
     <script>
         Polymer({
             comp: null,
-            leaderboard: {},
-            teams: [],
+            teams: {},
+            leaderboard: [],
+            tableUpdateRequest: undefined,
             compChanged: function() {
                 this.comp.stream.addEventListener('team', function(e) {
-                    this.leaderboard[e.detail.tla] = e.detail;
-                    this.updateTable();
+                    this.teams[e.detail.tla] = e.detail;
+                    this.requestTableUpdate();
                 }.bind(this));
 
                 this.$['last-scored'].comp = this.comp;
             },
-            updateTable: function() {
-                var teams = [];
-                for (var key in this.leaderboard) {
-                    teams.push(this.leaderboard[key]);
+            requestTableUpdate: function() {
+                if (this.tableUpdateRequest != undefined) {
+                    clearTimeout(this.tableUpdateRequest);
                 }
 
-                teams.sort(function(a, b) {
+                this.tableUpdateRequest = setTimeout(function() {
+                    this.updateTable();
+                    this.tableUpdateRequest = undefined;
+                }.bind(this), 1000);
+            },
+            updateTable: function() {
+                var leaderboard = [];
+                for (var key in this.teams) {
+                    leaderboard.push(this.teams[key]);
+                }
+
+                leaderboard.sort(function(a, b) {
                     // smaller league pos at the top
                     var diff = a.league_pos - b.league_pos;
                     if (diff == 0) {
@@ -69,9 +80,9 @@
                     }
                 });
 
-                teams.splice(10);
+                leaderboard.splice(10);
 
-                this.teams = teams;
+                this.leaderboard = leaderboard;
             }
         });
     </script>
