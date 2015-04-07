@@ -7,6 +7,7 @@
         <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
 
         <link rel="import" href="components/sr-comp/component.html" />
+        <link rel="import" href="components/sr-corner-clock/component.html" />
         <link rel="import" href="components/sr-arena/component.html" />
         <link rel="import" href="components/sr-arena-picker/component.html" />
 
@@ -38,7 +39,9 @@
     </head>
 
     <body>
-        <sr-comp id="comp"></sr-comp>
+        <sr-comp id="comp">
+            <sr-corner-clock id="error-clock"></sr-corner-clock>
+        </sr-comp>
 
         <sr-arena-picker id="picker" hidden includecorners="true"></sr-arena-picker>
         <sr-arena id="arena" hidden></sr-arena>
@@ -48,6 +51,19 @@
                 var fragment = window.location.search;
                 var tokens = fragment.substr(1).split(',');
                 return {arena: tokens[0], corner: tokens[1]};
+            };
+
+            var setUpNormal = function(args, comp) {
+                var arena = document.querySelector('#arena');
+                var errorClock = document.querySelector('#error-clock');
+                arena.hidden = false;
+                arena.arena = args.arena;
+                arena.maincorner = args.corner;
+                arena.comp = comp;
+
+                arena.$.corner0.addEventListener('match', function(e) {
+                    errorClock.match = e.detail;
+                });
             };
 
             document.addEventListener('polymer-ready', function() {
@@ -64,11 +80,7 @@
                     comp.api.getArena(args.arena, function(compArena) {
                         comp.api.getCorner(args.corner, function(compCorner) {
                             if (compArena && compCorner) {
-                                var arena = document.querySelector('#arena');
-                                arena.hidden = false;
-                                arena.arena = args.arena;
-                                arena.maincorner = args.corner;
-                                arena.comp = comp;
+                                setUpNormal(args, comp);
                             } else {
                                 var picker = document.querySelector('#picker');
                                 picker.hidden = false;
