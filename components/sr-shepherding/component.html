@@ -26,23 +26,6 @@
                 overflow-y: auto;
             }
 
-            #corners {
-                flex: 0 0 auto;
-                -webkit-flex: 0 0 auto;
-
-                width: 100%;
-
-                display: flex;
-                display: -webkit-flex;
-                flex-direction: row;
-                -webkit-flex-direction: row;
-            }
-
-            #corners > sr-corner {
-                flex: 1 1 auto;
-                -webkit-flex: 1 1 auto;
-            }
-
             #time {
                 flex: 0 0 auto;
                 -webkit-flex: 0 0 auto;
@@ -55,25 +38,16 @@
                 -webkit-flex-direction: row;
             }
 
-            sr-clock {
-                text-align: right;
-            }
-
             sr-clock, sr-delay {
                 flex: 1 1 auto;
                 -webkit-flex: 1 1 auto;
+
+                text-align: center;
 
                 margin: 0.1em;
                 font-size: 3.6em;
             }
         </style>
-
-        <div id="corners">
-            <sr-corner show="tla" corner="0" id="corner0"></sr-corner>
-            <sr-corner show="tla" corner="1" id="corner1"></sr-corner>
-            <sr-corner show="tla" corner="2" id="corner2"></sr-corner>
-            <sr-corner show="tla" corner="3" id="corner3"></sr-corner>
-        </div>
 
         <sr-schedule id="schedule" back="1" forward="15"></sr-schedule>
 
@@ -86,19 +60,8 @@
     <script>
         Polymer({
             comp: null,
-            arena: null,
-            arenaChanged: function() {
-                for (var i = 0; i < 4; i++) {
-                    this.$['corner' + i].arena = this.arena;
-                }
-            },
             compChanged: function() {
                 this.$.schedule.comp = this.comp;
-
-                for (var i = 0; i < 4; i++) {
-                    this.$['corner' + i].comp = this.comp;
-                }
-
                 this.$.delay.comp = this.comp;
             }
         });
