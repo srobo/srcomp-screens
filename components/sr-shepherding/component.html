@@ -75,9 +75,7 @@
             <sr-corner show="tla" corner="3" id="corner3"></sr-corner>
         </div>
 
-        <sr-schedule id="schedule"
-                     back="1" forward="15"
-                     headings="false"></sr-schedule>
+        <sr-schedule id="schedule" back="1" forward="15"></sr-schedule>
 
         <div id="time">
             <sr-clock></sr-clock>
@@ -90,8 +88,6 @@
             comp: null,
             arena: null,
             arenaChanged: function() {
-                this.$.schedule.onlyarena = this.arena;
-
                 for (var i = 0; i < 4; i++) {
                     this.$['corner' + i].arena = this.arena;
                 }

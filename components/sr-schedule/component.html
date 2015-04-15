@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../moment/component.html">
 
-<polymer-element name="sr-schedule" attributes="onlyarena back forward headings">
+<polymer-element name="sr-schedule" attributes="back forward">
     <template>
         <style>
             :host {
@@ -35,16 +35,14 @@
         </style>
 
         <table>
-            <template if="{{ headings }}">
-                <tr>
+            <tr>
+                <th></th>
+                <th></th>
+                <template repeat="{{ arena in arenasList }}">
                     <th></th>
-                    <th></th>
-                    <template repeat="{{ arena in arenasList }}">
-                        <th></th>
-                        <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
-                    </template>
-                </tr>
-            </template>
+                    <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
+                </template>
+            </tr>
 
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match | formatMatchClass }}">
@@ -73,7 +71,6 @@
             arenas: undefined,
             arenasList: undefined,
             corners: undefined,
-            headings: true,
             back: 2,
             forward: 9,
             schedule: {},
@@ -95,28 +92,18 @@
                     return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.1)';
                 }
             },
-            updateArenas: function() {
-                this.arenasList = [this.onlyarena];
-
-                this.comp.api.getArenas(function(arenas) {
-                    this.arenas = arenas;
-                    if (this.onlyarena == null) {
-                        this.arenasList = Object.keys(arenas);
-                    }
-                    this.updateSchedule();
-                }.bind(this));
-            },
             backChanged: function() {
                 this.updateSchedule();
             },
             forwardChanged: function() {
                 this.updateSchedule();
             },
-            onlyarenaChanged: function() {
-                this.updateArenas();
-            },
             compChanged: function() {
-                this.updateArenas();
+                this.comp.api.getArenas(function(arenas) {
+                    this.arenas = arenas;
+                    this.arenasList = Object.keys(arenas);
+                    this.updateSchedule();
+                }.bind(this));
 
                 this.comp.api.getCorners(function(corners) {
                     this.corners = corners;
