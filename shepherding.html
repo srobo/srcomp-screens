@@ -8,10 +8,7 @@
 
         <link rel="import" href="components/sr-comp/component.html" />
         <link rel="import" href="components/sr-arena-picker/component.html" />
-        <link rel="import" href="components/sr-schedule/component.html" />
-        <link rel="import" href="components/sr-corner/component.html" />
-        <link rel="import" href="components/sr-clock/component.html" />
-        <link rel="import" href="components/sr-delay/component.html" />
+        <link rel="import" href="components/sr-shepherding/component.html" />
 
         <style>
             body {
@@ -34,63 +31,6 @@
             #shepherding {
                 width: 100%;
                 height: 100%;
-
-                display: flex;
-                display: -webkit-flex;
-                flex-direction: column;
-                -webkit-flex-direction: column;
-                align-items: center;
-                -webkit-align-items: center;
-            }
-
-            #schedule {
-                flex: 1 1 auto;
-                -webkit-flex: 1 1 auto;
-
-                margin: 1em;
-
-                overflow-y: auto;
-            }
-
-            #corners {
-                flex: 0 0 auto;
-                -webkit-flex: 0 0 auto;
-
-                width: 100%;
-
-                display: flex;
-                display: -webkit-flex;
-                flex-direction: row;
-                -webkit-flex-direction: row;
-            }
-
-            #corners > sr-corner {
-                flex: 1 1 auto;
-                -webkit-flex: 1 1 auto;
-            }
-
-            #time {
-                flex: 0 0 auto;
-                -webkit-flex: 0 0 auto;
-
-                width: 100%;
-
-                display: flex;
-                display: -webkit-flex;
-                flex-direction: row;
-                -webkit-flex-direction: row;
-            }
-
-            sr-clock {
-                text-align: right;
-            }
-
-            sr-clock, sr-delay {
-                flex: 1 1 auto;
-                -webkit-flex: 1 1 auto;
-
-                margin: 0.1em;
-                font-size: 3.6em;
             }
         </style>
     </head>
@@ -100,23 +40,7 @@
 
         <sr-arena-picker id="picker" hidden></sr-arena-picker>
 
-        <main id="shepherding" hidden>
-            <div id="corners">
-                <sr-corner show="tla" corner="0" id="corner0"></sr-corner>
-                <sr-corner show="tla" corner="1" id="corner1"></sr-corner>
-                <sr-corner show="tla" corner="2" id="corner2"></sr-corner>
-                <sr-corner show="tla" corner="3" id="corner3"></sr-corner>
-            </div>
-
-            <sr-schedule id="schedule"
-                         back="1" forward="15"
-                         headings="false"></sr-schedule>
-
-            <div id="time">
-                <sr-clock></sr-clock>
-                <sr-delay id="delay"></sr-delay>
-            </div>
-        </main>
+        <sr-shepherding id="shepherding" hidden></sr-shepherding>
 
         <script>
             var parseArguments = function() {
@@ -141,23 +65,12 @@
                     picker.comp = comp;
                     comp.stream.load();
                 } else {
-                    var delay = document.getElementById('delay');
-                    delay.comp = comp;
-
                     comp.api.getArena(args.arena, function(compArena) {
                         if (compArena) {
                             var shepherding = document.querySelector('#shepherding');
                             shepherding.hidden = false;
-
-                            var schedule = document.getElementById('schedule');
-                            schedule.onlyarena = args.arena;
-                            schedule.comp = comp;
-
-                            for (var i = 0; i < 4; ++i) {
-                                var corner = document.getElementById('corner' + i);
-                                corner.arena = args.arena;
-                                corner.comp = comp;
-                            }
+                            shepherding.comp = comp;
+                            shepherding.arena = args.arena;
                         } else {
                             var picker = document.querySelector('#picker');
                             picker.hidden = false;
