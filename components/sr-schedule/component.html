@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../moment/component.html">
 
-<polymer-element name="sr-schedule" attributes="back forward">
+<polymer-element name="sr-schedule" attributes="back forward showstaging">
     <template>
         <style>
             :host {
@@ -47,7 +47,7 @@
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match | formatMatchClass }}">
                     <td>{{ match.displayName }}</td>
-                    <td><time datetime="{{ match.gameStart }}"></time></td>
+                    <td><time datetime="{{ showstaging ? match.stagingEnd : match.gameStart }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
                         <template repeat="{{ corner in [0, 1, 2, 3] }}">
@@ -73,6 +73,7 @@
             corners: undefined,
             back: 2,
             forward: 9,
+            showstaging: false,
             schedule: {},
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
@@ -131,6 +132,7 @@
                     var startTimes = {};
                     var endTimes = {};
                     var gameStartTimes = {};
+                    var stagingEndTimes = {};
                     var displayNames = {};
 
                     matches.forEach(function(match) {
@@ -143,6 +145,7 @@
                         startTimes[match.num] = match.times.slot.start;
                         endTimes[match.num] = match.times.slot.end;
                         gameStartTimes[match.num] = match.times.game.start;
+                        stagingEndTimes[match.num] = match.times.staging.end;
                     }.bind(this));
 
                     var formattedSchedule = [];
@@ -152,7 +155,8 @@
                                                 arenas: schedule[matchNumber],
                                                 start: startTimes[matchNumber],
                                                 end: endTimes[matchNumber],
-                                                gameStart: gameStartTimes[matchNumber]})
+                                                gameStart: gameStartTimes[matchNumber],
+                                                stagingEnd: stagingEndTimes[matchNumber]})
                     }
 
                     // shrink the schedule to the matches around the current match
