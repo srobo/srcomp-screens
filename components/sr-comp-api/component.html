@@ -148,6 +148,13 @@
                     callback(response.rounds);
                 });
             },
+            getTiebreaker: function(callback) {
+                this._apiCall('/tiebreaker', function(response) {
+                    callback(response.tiebreaker, undefined);
+                }, function(err) {
+                    callback(undefined, err);
+                });
+            },
             getKnockoutMatches: function(callback) {
                 this._apiCall('/matches?type=knockout', function(response) {
                     callback(response.matches);
