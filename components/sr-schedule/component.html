@@ -38,6 +38,9 @@
             <tr>
                 <th></th>
                 <th></th>
+                <template if="{{ showstaging }}">
+                    <th></th>
+                </template>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
                     <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
@@ -47,7 +50,10 @@
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match | formatMatchClass }}">
                     <td>{{ match.displayName }}</td>
-                    <td><time datetime="{{ showstaging ? match.stagingEnd : match.gameStart }}"></time></td>
+                    <td><time datetime="{{ match.gameStart }}"></time></td>
+                    <template if="{{ showstaging }}">
+                        <td><time datetime="{{ match.stagingEnd }}"></time></td>
+                    </template>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
                         <template repeat="{{ corner in [0, 1, 2, 3] }}">
