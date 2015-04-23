@@ -139,6 +139,8 @@
                     var startTimes = {};
                     var endTimes = {};
                     var gameStartTimes = {};
+                    var gameEndTimes = {};
+                    var stagingStartTimes = {};
                     var stagingEndTimes = {};
                     var displayNames = {};
 
@@ -152,6 +154,8 @@
                         startTimes[match.num] = match.times.slot.start;
                         endTimes[match.num] = match.times.slot.end;
                         gameStartTimes[match.num] = match.times.game.start;
+                        gameEndTimes[match.num] = match.times.game.end;
+                        stagingStartTimes[match.num] = match.times.staging.opens;
                         stagingEndTimes[match.num] = match.times.staging.closes;
                     }.bind(this));
 
@@ -163,6 +167,8 @@
                                                 start: startTimes[matchNumber],
                                                 end: endTimes[matchNumber],
                                                 gameStart: gameStartTimes[matchNumber],
+                                                gameEnd: gameEndTimes[matchNumber],
+                                                stagingStart: stagingStartTimes[matchNumber]},
                                                 stagingEnd: stagingEndTimes[matchNumber]})
                     }
 
