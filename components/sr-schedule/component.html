@@ -37,9 +37,9 @@
         <table>
             <tr>
                 <th></th>
-                <th></th>
+                <th><template if="{{ showstaging }}">Match</template></th>
                 <template if="{{ showstaging }}">
-                    <th></th>
+                    <th>Staging</th>
                 </template>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
