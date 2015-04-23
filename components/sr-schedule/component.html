@@ -196,9 +196,16 @@
                 this.comp.api.getMatches(receiveMatchList);
             },
             formatMatchClass: function(match) {
-                if (moment(match.end) < new Date()) {
+                var end = match.end;
+                var start = match.start;
+                if (this.showstaging) {
+                    end = match.stagingEnd;
+                    start = match.stagingStart;
+                }
+
+                if (moment(end) < new Date()) {
                     return 'old';
-                } else if (moment(match.start) > new Date()) {
+                } else if (moment(start) > new Date()) {
                     return 'next';
                 } else {
                     return 'current';
