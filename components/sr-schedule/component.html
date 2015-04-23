@@ -118,9 +118,15 @@
                     this.updateSchedule();
                 }.bind(this));
 
-                this.comp.stream.addEventListener('match', function(e) {
-                    this.updateSchedule();
-                }.bind(this));
+                if (this.showstaging) {
+                    this.comp.stream.addEventListener('current-staging-matches', function(e) {
+                        this.updateSchedule();
+                    }.bind(this));
+                } else {
+                    this.comp.stream.addEventListener('match', function(e) {
+                        this.updateSchedule();
+                    }.bind(this));
+                }
 
                 this.comp.stream.addEventListener('knockouts', function() {
                     this.updateSchedule();
@@ -176,7 +182,7 @@
                     var now = new Date();
                     var currentIndex = 0;
                     formattedSchedule.forEach(function(match, ix) {
-                        if (moment(match.start) < now) {
+                        if (new Date(match.start) < now) {
                             currentIndex = ix;
                         }
                     });
