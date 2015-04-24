@@ -1,17 +1,13 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../moment/component.html">
 
-<polymer-element name="sr-schedule" attributes="back forward showstaging">
+<polymer-element name="sr-shepherd-schedule">
     <template>
         <style>
             :host {
                 display: block;
                 font-size: 1.6em;
                 text-align: center;
-            }
-
-            table {
-
             }
 
             td, th {
@@ -37,10 +33,8 @@
         <table>
             <tr>
                 <th></th>
-                <th><template if="{{ showstaging }}">Match</template></th>
-                <template if="{{ showstaging }}">
-                    <th>Staging</th>
-                </template>
+                <th>Match</th>
+                <th>Staging</th>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
                     <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
@@ -51,9 +45,7 @@
                 <tr class="{{ match | formatMatchClass }}">
                     <td>{{ match.displayName }}</td>
                     <td><time datetime="{{ match.gameStart }}"></time></td>
-                    <template if="{{ showstaging }}">
-                        <td><time datetime="{{ match.stagingEnd }}"></time></td>
-                    </template>
+                    <td><time datetime="{{ match.stagingEnd }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
                         <template repeat="{{ corner in [0, 1, 2, 3] }}">
@@ -77,9 +69,8 @@
             arenas: undefined,
             arenasList: undefined,
             corners: undefined,
-            back: 2,
-            forward: 9,
-            showstaging: false,
+            back: 1,
+            forward: 15,
             schedule: {},
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
@@ -118,15 +109,9 @@
                     this.updateSchedule();
                 }.bind(this));
 
-                if (this.showstaging) {
-                    this.comp.stream.addEventListener('current-staging-matches', function(e) {
-                        this.updateSchedule();
-                    }.bind(this));
-                } else {
-                    this.comp.stream.addEventListener('match', function(e) {
-                        this.updateSchedule();
-                    }.bind(this));
-                }
+                this.comp.stream.addEventListener('current-staging-matches', function(e) {
+                    this.updateSchedule();
+                }.bind(this));
 
                 this.comp.stream.addEventListener('knockouts', function() {
                     this.updateSchedule();
@@ -202,12 +187,8 @@
                 this.comp.api.getMatches(receiveMatchList);
             },
             formatMatchClass: function(match) {
-                var end = match.end;
-                var start = match.start;
-                if (this.showstaging) {
-                    end = match.stagingEnd;
-                    start = match.stagingStart;
-                }
+                var end = match.stagingEnd;
+                var start = match.stagingStart;
 
                 if (moment(end) < new Date()) {
                     return 'old';
