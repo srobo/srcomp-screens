@@ -123,7 +123,7 @@
                     var tla = this.match.teams[this.corner];
                     this.comp.api.getTeam(tla, function(team) {
                         if (team.image_url) {
-                            this.$.main.style.backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(' + team.image_url + ')';
+                            this.$.main.style.backgroundImage = 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(' + team.image_url + ')';
                         } else {
                             this.$.main.style.backgroundImage = null;
                         }
