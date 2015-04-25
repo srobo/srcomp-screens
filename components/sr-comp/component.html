@@ -88,7 +88,7 @@
                         return;  // Timeout set by something else.
                     }
 
-                    var pingPeriod = err ? 1 : config['ping_period'] * 3.5;
+                    var pingPeriod = err ? 1 : config['ping_period'] * 5;
                     console.log('Registering a disconnect in',
                                 pingPeriod, 'seconds.');
                     this.pingTimeout = setTimeout(function() {
