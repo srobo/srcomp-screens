@@ -72,9 +72,9 @@
                 this.stream.addEventListener('knockouts', clearCache);
                 this.stream.addEventListener('last-scored-match', clearCache);
 
-                this.stream.addEventListener('ping', function() {
+                this.stream.addEventListener('ping', function(e) {
                     this.cancelPingTimeout();
-                    this.startPingTimeout();
+                    this.startPingTimeout(e.detail);
                 }.bind(this));
             },
             cancelPingTimeout: function() {
@@ -82,19 +82,27 @@
                 clearTimeout(this.pingTimeout);
                 this.pingTimeout = null;
             },
-            startPingTimeout: function() {
-                this.api.getConfig(function(config, err) {
-                    if (this.pingTimeout !== null) {
-                        return;  // Timeout set by something else.
-                    }
+            registerPingTimeout: function(delay) {
+              if (this.pingTimeout !== null) {
+                  return;  // Timeout set by something else.
+              }
 
-                    var pingPeriod = err ? 1 : config['ping_period'] * 5;
-                    console.log('Registering a disconnect in',
-                                pingPeriod, 'seconds.');
-                    this.pingTimeout = setTimeout(function() {
-                        this.stream.close();
-                    }.bind(this), pingPeriod * 1000);
-                }.bind(this));
+              console.log('Registering a disconnect in', delay, 'seconds.');
+              this.pingTimeout = setTimeout(function() {
+                  this.stream.close();
+              }.bind(this), delay);
+            },
+            startPingTimeout: function(delay) {
+                var multiplier = 3;
+
+                if (delay === undefined) {
+                    this.api.getConfig(function(config, err) {
+                        var d = err ? 1 : config['ping_period'] * multiplier;
+                        this.registerPingTimeout(d * 1000);
+                    }.bind(this));
+                } else {
+                    this.registerPingTimeout(delay * multiplier);
+                }
             },
             connectedChanged: function() {
                 this.$.error.hidden = this.connected;
