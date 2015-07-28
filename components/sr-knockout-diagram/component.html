@@ -184,8 +184,9 @@
 
                 this.comp.api.getKnockout(function(rounds) {
                     this.comp.api.getTiebreaker(function(tiebreaker) {
-                        this.rounds = processKnockouts(this.sliceRounds(rounds),
-                                                       tiebreaker);
+                        this.rounds = processKnockouts(this.sliceRounds(rounds), tiebreaker);
+
+                        this.style.fontSize = Math.sqrt(5 / this.rounds.length) + 'em';
                     }.bind(this));
                 }.bind(this));
             },
