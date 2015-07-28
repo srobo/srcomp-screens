@@ -169,6 +169,14 @@
                     this.updateDiagram();
                 }.bind(this));
             },
+            sliceRounds: function(rounds) {
+                var start = rounds.length - 5;
+                if (start < 0) {
+                  start = 0;
+                }
+
+                return rounds.slice(start);
+            },
             updateDiagram: function() {
                 if (this.arenas == null || this.corners == null) {
                     return;  // wait until they're set
@@ -176,7 +184,7 @@
 
                 this.comp.api.getKnockout(function(rounds) {
                     this.comp.api.getTiebreaker(function(tiebreaker) {
-                        this.rounds = processKnockouts(rounds.slice(1),
+                        this.rounds = processKnockouts(this.sliceRounds(rounds),
                                                        tiebreaker);
                     }.bind(this));
                 }.bind(this));
