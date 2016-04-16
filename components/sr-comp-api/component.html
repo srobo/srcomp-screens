@@ -130,9 +130,18 @@
                     callback(response['matches']);
                 });
             },
-            getTeam: function(tla, callback) {
+            getLocations: function(callback) {
+                 this._apiCall('/locations', function(response) {
+                     callback(response['locations']);
+                 });
+            },
+            getTeams: function(callback) {
                  this._apiCall('/teams', function(response) {
-                     var teamList = response['teams'];
+                     callback(response['teams']);
+                 });
+            },
+            getTeam: function(tla, callback) {
+                 this.getTeams(function(teamList) {
                      var team = teamList[tla];
                      if (team != null) {
                          callback(team);

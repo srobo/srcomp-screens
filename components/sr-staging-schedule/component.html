@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html" />
 <link rel="import" href="../moment/component.html">
 
-<polymer-element name="sr-shepherd-schedule">
+<polymer-element name="sr-staging-schedule">
     <template>
         <style>
             :host {
@@ -48,8 +48,12 @@
                     <td><time datetime="{{ match.stagingEnd }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
-                        <template repeat="{{ team in match.arenas[arena].teams }}">
-                            <td style="color: {{ locations[teams[team].location.name].shepherds.colour }}">{{ team || '—' }}</td>
+                        <template repeat="{{ corner in [0, 1, 2, 3] }}">
+                            <td style="background-color: {{ arenas[arena].colour | arenaColour }}">
+                                <span style="color: {{ corners[corner].colour }}">
+                                    {{ match.arenas[arena].teams[corner] || '—' }}
+                                </span>
+                            </td>
                         </template>
                     </template>
                 </tr>
@@ -64,8 +68,7 @@
             comp: null,
             arenas: undefined,
             arenasList: undefined,
-            locations: undefined,
-            teams: undefined,
+            corners: undefined,
             back: 1,
             forward: 15,
             schedule: {},
@@ -101,13 +104,8 @@
                     this.updateSchedule();
                 }.bind(this));
 
-                this.comp.api.getLocations(function(locations) {
-                    this.locations = locations;
-                    this.updateSchedule();
-                }.bind(this));
-
-                this.comp.api.getTeams(function(teams) {
-                    this.teams = teams;
+                this.comp.api.getCorners(function(corners) {
+                    this.corners = corners;
                     this.updateSchedule();
                 }.bind(this));
 
@@ -121,7 +119,7 @@
             },
             updateSchedule: function() {
                 if (this.arenasList == null || this.arenas == null
-                    || this.locations == null || this.teams == null) {
+                    || this.corners == null) {
                     return;  // wait until they're set
                 }
 
