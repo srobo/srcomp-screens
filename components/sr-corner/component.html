@@ -97,6 +97,12 @@
                     }.bind(this));
                 }
             }.bind(this));
+
+            this.comp.stream.addEventListener('knockouts', function() {
+                this.comp.api.getUpcomingMatches(this.arena, function(matches) {
+                    this.match = matches[0];
+                }.bind(this));
+            }.bind(this));
         };
         Polymer({
             comp: null,
