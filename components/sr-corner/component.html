@@ -99,9 +99,15 @@
             }.bind(this));
 
             this.comp.stream.addEventListener('knockouts', function() {
-                this.comp.api.getUpcomingMatches(this.arena, function(matches) {
-                    this.match = matches[0];
-                }.bind(this));
+                if (this.match) {
+                    this.comp.api.getMatch(this.arena, this.match.num, function(matches) {
+                        this.match = matches[0];
+                    }.bind(this));
+                } else {
+                    this.comp.api.getUpcomingMatches(this.arena, function(matches) {
+                        this.match = matches[0];
+                    }.bind(this));
+                }
             }.bind(this));
         };
         Polymer({
