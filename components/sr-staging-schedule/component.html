@@ -33,8 +33,8 @@
         <table>
             <tr>
                 <th></th>
-                <th>Match</th>
-                <th>Staging</th>
+                <th>Start Match</th>
+                <th>Open Staging</th>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
                     <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
@@ -44,8 +44,8 @@
             <template repeat="{{ match in schedule }}">
                 <tr class="{{ match | formatMatchClass }}">
                     <td>{{ match.displayName }}</td>
-                    <td><time datetime="{{ match.gameStart }}"></time></td>
-                    <td><time datetime="{{ match.stagingEnd }}"></time></td>
+                    <td><time class="game-start" datetime="{{ match.gameStart }}"></time></td>
+                    <td><time class="staging" datetime="{{ match.stagingStart }}/{{ match.stagingEnd }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
                         <template repeat="{{ corner in [0, 1, 2, 3] }}">
@@ -76,11 +76,29 @@
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
             },
             _updateDisplayedTimes: function() {
-                var dates = this.shadowRoot.querySelectorAll('time');
-                dates.array().forEach(function(elem) {
+                var game_start_times = this.shadowRoot.querySelectorAll('time.game-start');
+                game_start_times.array().forEach(function(elem) {
                     var epoch = moment(elem.getAttribute('datetime'));
                     elem.textContent = epoch.fromNow();
                     elem.title = elem.getAttribute('datetime');
+                });
+                var now = moment();
+                var staging_times = this.shadowRoot.querySelectorAll('time.staging');
+                staging_times.array().forEach(function(elem) {
+                    var date_range = elem.getAttribute('datetime');
+                    elem.title = date_range;
+
+                    var times = date_range.split('/');
+                    var start = moment(times[0]);
+                    var end = moment(times[1]);
+
+                    if (start.isAfter(now)) {
+                        elem.textContent = start.fromNow();
+                    } else if (end.isAfter(now)) {
+                        elem.textContent = "Open";
+                    } else {
+                        elem.textContent = "Closed";
+                    }
                 });
             },
             arenaColour: function(val) {
@@ -187,8 +205,8 @@
                 this.comp.api.getMatches(receiveMatchList);
             },
             formatMatchClass: function(match) {
-                var end = match.stagingEnd;
                 var start = match.stagingStart;
+                var end = match.gameStart;
 
                 if (moment(end) < new Date()) {
                     return 'old';
