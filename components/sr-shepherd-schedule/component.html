@@ -72,6 +72,16 @@
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
             },
+            _getEarliest: function(a, b) {
+                return Date.parse(a) < Date.parse(b) ? a : b;
+            },
+            _getValues: function(obj) {
+                var values = [];
+                for (var key in obj) {
+                    values.push(obj[key]);
+                }
+                return values;
+            },
             _updateDisplayedTimes: function() {
                 var dates = this.shadowRoot.querySelectorAll('time');
                 dates.array().forEach(function(elem) {
@@ -156,6 +166,8 @@
 
                     var formattedSchedule = [];
                     for (var matchNumber in schedule) {
+                        var shepherdingSignals = this._getValues(shepherdingSignalTimes[matchNumber]);
+                        var shepherdingSignal = shepherdingSignals.reduce(this._getEarliest);
                         formattedSchedule.push({num: matchNumber,
                                                 displayName: displayNames[matchNumber],
                                                 arenas: schedule[matchNumber],
@@ -165,7 +177,7 @@
                                                 gameEnd: gameEndTimes[matchNumber],
                                                 stagingStart: stagingStartTimes[matchNumber],
                                                 stagingEnd: stagingEndTimes[matchNumber],
-                                                shepherdingSignal: shepherdingSignalTimes[matchNumber]})
+                                                shepherdingSignal: shepherdingSignal})
                     }
 
                     // shrink the schedule to the matches around the current match
