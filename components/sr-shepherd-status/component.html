@@ -23,7 +23,7 @@
                 }.bind(this);
                 this.comp.api.getShepherdingMatches(updateMatches);
                 this.comp.stream.addEventListener('current-shepherding-matches', function(e) {
-                    udpateMatches(e.detail);
+                    updateMatches(e.detail);
                 });
             },
             value: '',
