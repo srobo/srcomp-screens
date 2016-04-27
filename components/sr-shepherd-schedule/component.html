@@ -207,14 +207,12 @@
                 var shepherdSignal = moment(match.shepherdingSignal);
                 var stagingStart = moment(match.stagingStart);
 
-                var start, end = null;
+                var end = moment(match.stagingEnd);
 
                 if (shepherdSignal.isBefore(stagingStart)) {
                     start = shepherdSignal;
-                    end = stagingStart;
                 } else {
                     start = stagingStart;
-                    end = moment(match.stagingEnd);
                 }
 
                 if (end < new Date()) {
