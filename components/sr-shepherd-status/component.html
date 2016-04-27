@@ -1,0 +1,112 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-shepherd-status">
+    <template>
+        <style>
+            h1 {
+                margin: inherit;
+                color: inherit;
+                font-size: inherit;
+                vertical-align: middle;
+            }
+        </style>
+
+        <h1>{{ value }}</h1>
+    </template>
+
+    <script>
+        Polymer({
+            comp: null,
+            compChanged: function() {
+                var updateMatches = function (matches) {
+                    this.matches = matches;
+                }.bind(this);
+                this.comp.api.getShepherdingMatches(updateMatches);
+                this.comp.stream.addEventListener('current-shepherding-matches', function(e) {
+                    udpateMatches(e.detail);
+                });
+            },
+            value: '',
+            matches: [],
+            ready: function() {
+                setInterval(this.matchesChanged.bind(this), 1000);
+            },
+            _getKeys: function(obj) {
+                var keys = [];
+                for (var key in obj) {
+                    keys.push(key);
+                }
+                return keys;
+            },
+            _grouped: function(map) {
+                var result = {};
+                for (var key in map) {
+                    var value = map[key];
+                    if (!(value in result)) {
+                        result[value] = [key];
+                    } else {
+                        result[value].push(key);
+                    }
+                }
+                return result;
+            },
+            _describe: function(words) {
+                if (!words || words.length == 0) {
+                    return '';
+                }
+
+                if (words.length == 1) {
+                    return words[0];
+                } else {
+                    var last = words.pop();
+                    var description = words.join(', ') + " and " + last;
+                    return description;
+                }
+            },
+            matchesChanged: function() {
+                this.value = '';
+                if (!this.matches || this.matches.length == 0) {
+                    return;
+                }
+
+                // TODO: make this a configuration thing
+                var DISPLAY_SECONDS = 60;
+
+                var now = new Date();
+                var is_current = function(time_string) {
+                    var start = new Date(time_string);
+                    var end = new Date(time_string);
+                    end.setSeconds(end.getSeconds() + DISPLAY_SECONDS);
+                    return start <= now && now <= end;
+                };
+
+                var messages = {};
+                for (var i=0; i<this.matches.length; i++) {
+                    // Look at all the things we think should signal something
+                    // determine whether it should be shown and show it
+
+                    var match = this.matches[i];
+                    var staging = match.times.staging;
+
+                    if (is_current(staging.opens)) {
+                        messages["Open Staging for Match " + match.num] = null;
+                    }
+
+                    if (is_current(staging.closes)) {
+                        messages["Close Staging for Match " + match.num] = null;
+                    }
+
+                    var shepherding_groups = this._grouped(staging.signal_shepherds);
+                    for (var time in shepherding_groups) {
+                        if (is_current(time)) {
+                            var areas = shepherding_groups[time];
+                            messages["Fetch " + this._describe(areas) + " for Match " + match.num] = null;
+                        }
+                    }
+                }
+
+                this.value = this._getKeys(messages).join(', ');
+            },
+        });
+    </script>
+</polymer-element>

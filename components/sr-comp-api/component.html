@@ -130,6 +130,11 @@
                     callback(response['matches']);
                 });
             },
+            getShepherdingMatches: function(callback) {
+                this._apiCall('/current', function(response) {
+                    callback(response['shepherding_matches']);
+                });
+            },
             getLocations: function(callback) {
                  this._apiCall('/locations', function(response) {
                      callback(response['locations']);

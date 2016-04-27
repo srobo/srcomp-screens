@@ -2,6 +2,7 @@
 
 <link rel="import" href="../sr-corner/component.html" />
 <link rel="import" href="../sr-shepherd-schedule/component.html" />
+<link rel="import" href="../sr-shepherd-status/component.html" />
 <link rel="import" href="../sr-clock/component.html" />
 <link rel="import" href="../sr-delay/component.html" />
 
@@ -30,12 +31,9 @@
                 overflow-y: auto;
             }
 
-            #time {
+            sr-shepherd-status, #time {
                 flex: 0 0 auto;
                 -webkit-flex: 0 0 auto;
-
-                border-top: 1px solid white;
-                background: rgb(50, 50, 50);
 
                 width: 100%;
 
@@ -45,6 +43,12 @@
                 -webkit-flex-direction: row;
             }
 
+            #time {
+                border-top: 1px solid white;
+                background: rgb(50, 50, 50);
+           }
+
+            sr-shepherd-status,
             sr-clock, sr-delay {
                 flex: 1 1 auto;
                 -webkit-flex: 1 1 auto;
@@ -60,6 +64,10 @@
 
         <sr-shepherd-schedule id="schedule"></sr-shepherd-schedule>
 
+        <div>
+            <sr-shepherd-status id="status"></sr-shepherd-status>
+        </div>
+
         <div id="time">
             <sr-clock></sr-clock>
             <sr-delay id="delay"></sr-delay>
@@ -71,6 +79,7 @@
             comp: null,
             compChanged: function() {
                 this.$.schedule.comp = this.comp;
+                this.$.status.comp = this.comp;
                 this.$.delay.comp = this.comp;
             }
         });
