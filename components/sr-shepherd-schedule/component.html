@@ -42,7 +42,7 @@
             </tr>
 
             <template repeat="{{ match in schedule }}">
-                <tr class="{{ match | formatMatchClass }}">
+                <tr class="{{ formatMatchClass(now, match) }}">
                     <td>{{ match.displayName }}</td>
                     <td><time datetime="{{ match.stagingEnd }}"></time></td>
                     <td><time datetime="{{ match.shepherdingSignal }}"></time></td>
@@ -83,6 +83,7 @@
                 return values;
             },
             _updateDisplayedTimes: function() {
+                this.now = new Date();
                 var dates = this.shadowRoot.querySelectorAll('time');
                 dates.array().forEach(function(elem) {
                     var epoch = moment(elem.getAttribute('datetime'));
@@ -203,7 +204,7 @@
 
                 this.comp.api.getMatches(receiveMatchList);
             },
-            formatMatchClass: function(match) {
+            formatMatchClass: function(now, match) {
                 var shepherdSignal = moment(match.shepherdingSignal);
                 var stagingStart = moment(match.stagingStart);
 
@@ -215,9 +216,9 @@
                     start = stagingStart;
                 }
 
-                if (end < new Date()) {
+                if (end < now) {
                     return 'old';
-                } else if (start > new Date()) {
+                } else if (start > now) {
                     return 'next';
                 } else {
                     return 'current';

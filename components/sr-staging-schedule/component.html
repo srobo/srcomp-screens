@@ -42,7 +42,7 @@
             </tr>
 
             <template repeat="{{ match in schedule }}">
-                <tr class="{{ match | formatMatchClass }}">
+                <tr class="{{ formatMatchClass(now, match) }}">
                     <td>{{ match.displayName }}</td>
                     <td><time class="game-start" datetime="{{ match.gameStart }}"></time></td>
                     <td><time class="staging" datetime="{{ match.stagingStart }}/{{ match.stagingEnd }}"></time></td>
@@ -76,13 +76,13 @@
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
             },
             _updateDisplayedTimes: function() {
+                var now = this.now = moment();
                 var game_start_times = this.shadowRoot.querySelectorAll('time.game-start');
                 game_start_times.array().forEach(function(elem) {
                     var epoch = moment(elem.getAttribute('datetime'));
                     elem.textContent = epoch.fromNow();
                     elem.title = elem.getAttribute('datetime');
                 });
-                var now = moment();
                 var staging_times = this.shadowRoot.querySelectorAll('time.staging');
                 staging_times.array().forEach(function(elem) {
                     var date_range = elem.getAttribute('datetime');
@@ -204,13 +204,13 @@
 
                 this.comp.api.getMatches(receiveMatchList);
             },
-            formatMatchClass: function(match) {
+            formatMatchClass: function(now, match) {
                 var start = match.stagingStart;
                 var end = match.gameStart;
 
-                if (moment(end) < new Date()) {
+                if (moment(end) < now) {
                     return 'old';
-                } else if (moment(start) > new Date()) {
+                } else if (moment(start) > now) {
                     return 'next';
                 } else {
                     return 'current';
