@@ -18,18 +18,19 @@
         Polymer({
             comp: null,
             compChanged: function() {
-                var updateMatches = function (matches) {
-                    this.matches = matches;
+                var updateMatchList = function (matches) {
+                    this.matchList = matches;
                 }.bind(this);
-                this.comp.api.getShepherdingMatches(updateMatches);
+                this.comp.api.getShepherdingMatches(updateMatchList);
                 this.comp.stream.addEventListener('current-shepherding-matches', function(e) {
-                    updateMatches(e.detail);
+                    updateMatchList(e.detail);
                 });
             },
             value: '',
-            matches: [],
+            // Can't call this "matches" since that causes issues in firefox
+            matchList: [],
             ready: function() {
-                setInterval(this.matchesChanged.bind(this), 2000);
+                setInterval(this.matchListChanged.bind(this), 2000);
             },
             _getKeys: function(obj) {
                 var keys = [];
@@ -63,9 +64,9 @@
                     return description;
                 }
             },
-            matchesChanged: function() {
+            matchListChanged: function() {
                 this.value = '';
-                if (!this.matches || this.matches.length == 0) {
+                if (!this.matchList || this.matchList.length == 0) {
                     return;
                 }
 
@@ -81,11 +82,11 @@
                 };
 
                 var messages = {};
-                for (var i=0; i<this.matches.length; i++) {
+                for (var i=0; i<this.matchList.length; i++) {
                     // Look at all the things we think should signal something
                     // determine whether it should be shown and show it
 
-                    var match = this.matches[i];
+                    var match = this.matchList[i];
                     var staging = match.times.staging;
 
                     if (is_current(staging.opens)) {
