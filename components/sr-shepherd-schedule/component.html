@@ -34,7 +34,6 @@
             <tr>
                 <th></th>
                 <th>Staging Closes</th>
-                <th>Fetch Teams</th>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
                     <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
@@ -45,7 +44,6 @@
                 <tr class="{{ formatMatchClass(now, match) }}">
                     <td>{{ match.displayName }}</td>
                     <td><time datetime="{{ match.stagingEnd }}"></time></td>
-                    <td><time datetime="{{ match.shepherdingSignal }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
                         <template repeat="{{ team in match.arenas[arena].teams }}">
