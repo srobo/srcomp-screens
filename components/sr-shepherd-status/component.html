@@ -89,14 +89,6 @@
                     var match = this.matchList[i];
                     var staging = match.times.staging;
 
-                    if (is_current(staging.opens)) {
-                        messages["Open Staging for Match " + match.num] = null;
-                    }
-
-                    if (is_current(staging.closes)) {
-                        messages["Close Staging for Match " + match.num] = null;
-                    }
-
                     var shepherding_groups = this._grouped(staging.signal_shepherds);
                     for (var time in shepherding_groups) {
                         if (is_current(time)) {
