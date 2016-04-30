@@ -99,14 +99,18 @@
             }.bind(this));
 
             this.comp.stream.addEventListener('knockouts', function() {
+                var updateMatch = function(matches) {
+                    // only update if it's the same match
+                    var newMatch = matches[0];
+                    if (this.match != null && newMatch != null && this.match.num == newMatch.num) {
+                        this.match = newMatch;
+                    }
+                }.bind(this);
+
                 if (this.match) {
-                    this.comp.api.getMatch(this.arena, this.match.num, function(matches) {
-                        this.match = matches[0];
-                    }.bind(this));
+                    this.comp.api.getMatch(this.arena, this.match.num, updateMatch);
                 } else {
-                    this.comp.api.getUpcomingMatches(this.arena, function(matches) {
-                        this.match = matches[0];
-                    }.bind(this));
+                    this.comp.api.getUpcomingMatches(this.arena, updateMatch);
                 }
             }.bind(this));
         };
