@@ -3,6 +3,10 @@
 This repository contains the web pages for the various screens that are
 displayed at the competition.
 
+## Configuration
+
+Create a file called `config.json` based on `config.example.json`.
+
 ## Installation & Running
 
 Dependencies are managed with [Bower](http://bower.io/), therefore you must
@@ -14,9 +18,6 @@ The best way to test these screens is to run an HTTP server in the root of your
 clone and navigate to it with your web browser.
 
     $ python3 -m http.server
-
-**Note:** Currently, the screens assume that you will have an `srcomp-stream`
-and `srcomp-http` instance running locally on ports 5112 and 5001 respectively.
 
 ## Screens
 

@@ -50,10 +50,15 @@
     <script>
         Polymer({
             connected: false,
-            apiurl: '{protocol}//{host}/comp-api',
-            streamurl: '{protocol}//{hostname}:5001',
+            apiurl: undefined,
+            streamurl: undefined,
             pingTimeout: undefined,
             ready: function() {
+                this.getUrls(function(apiurl, streamurl) {
+                    this.apiurl = apiurl;
+                    this.streamurl = streamurl;
+                }.bind(this));
+
                 this.api = this.$.api;
                 this.stream = this.$.stream;
                 this.stream.addEventListener('open', function() {
@@ -106,6 +111,17 @@
             },
             connectedChanged: function() {
                 this.$.error.hidden = this.connected;
+            },
+            getUrls: function(callback) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'config.json', true);
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var config = JSON.parse(this.responseText);
+                        callback(config.apiurl, config.streamurl);
+                    }
+                };
+                xhr.send();
             }
         });
     </script>
