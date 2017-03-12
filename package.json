@@ -1,0 +1,23 @@
+{
+  "name": "srcomp-screens",
+  "version": "1.0.0",
+  "description": "This repository contains the web pages for the various screens that are displayed at the competition.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/srobo/srcomp-screens.git"
+  },
+  "author": "Student Robotics",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/srobo/srcomp-screens/issues"
+  },
+  "homepage": "https://github.com/srobo/srcomp-screens",
+  "dependencies": {
+    "bower": "1.8.x",
+    "http-server": "0.9.x"
+  },
+  "scripts": {
+      "postinstall": "./node_modules/bower/bin/bower install"
+  }
+}
