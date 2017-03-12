@@ -57,6 +57,12 @@
                 this.getUrls(function(apiurl, streamurl) {
                     this.apiurl = apiurl;
                     this.streamurl = streamurl;
+
+                    setTimeout(function() {
+                      var event = document.createEvent('Event');
+                      event.initEvent('sr-ready', true, true);
+                      document.dispatchEvent(event);
+                    }, 0);
                 }.bind(this));
 
                 this.api = this.$.api;
