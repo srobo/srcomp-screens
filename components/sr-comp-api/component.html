@@ -76,6 +76,14 @@
                                                     return window.location[p1];
                                                 });
                 console.log('API URL is:', this.realUrl);
+
+                // we have to do this here as we can only guarantee the events
+                // have been fired at this point
+                setTimeout(function() {
+                  var event = document.createEvent('Event');
+                  event.initEvent('sr-ready', true, true);
+                  document.dispatchEvent(event);
+                }, 250);
             },
             clearCache: function() {
                 // Remove all the cached core-ajax queries.

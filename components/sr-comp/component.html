@@ -117,12 +117,6 @@
                 var urls = e.detail.response;
                 this.apiurl = urls.apiurl;
                 this.streamurl = urls.streamurl;
-
-                setTimeout(function() {
-                  var event = document.createEvent('Event');
-                  event.initEvent('sr-ready', true, true);
-                  document.dispatchEvent(event);
-                }, 500);
             }
         });
     </script>
