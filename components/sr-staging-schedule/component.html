@@ -37,7 +37,7 @@
                 <th>Staging Opens</th>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
-                    <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
+                    <th colspan="{{ cornersList.length }}" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
                 </template>
             </tr>
 
@@ -48,7 +48,7 @@
                     <td><time class="staging" datetime="{{ match.stagingStart }}/{{ match.stagingEnd }}"></time></td>
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
-                        <template repeat="{{ corner in [0, 1, 2, 3] }}">
+                        <template repeat="{{ corner in cornersList }}">
                             <td style="background-color: {{ arenas[arena].colour | arenaColour }}">
                                 <span style="color: {{ corners[corner].colour }}">
                                     {{ match.arenas[arena].teams[corner] || '—' }}
@@ -69,6 +69,7 @@
             arenas: undefined,
             arenasList: undefined,
             corners: undefined,
+            cornersList: undefined,
             back: 1,
             forward: 7,
             schedule: {},
@@ -124,6 +125,7 @@
 
                 this.comp.api.getCorners(function(corners) {
                     this.corners = corners;
+                    this.cornersList = Object.keys(corners);
                     this.updateSchedule();
                 }.bind(this));
 
@@ -137,7 +139,7 @@
             },
             updateSchedule: function() {
                 if (this.arenasList == null || this.arenas == null
-                    || this.corners == null) {
+                    || this.cornersList == null || this.corners == null) {
                     return;  // wait until they're set
                 }
 

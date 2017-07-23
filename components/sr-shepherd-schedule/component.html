@@ -36,7 +36,7 @@
                 <th>Staging Closes</th>
                 <template repeat="{{ arena in arenasList }}">
                     <th></th>
-                    <th colspan="4" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
+                    <th colspan="{{ numCorners }}" style="background-color: {{ arenas[arena].colour | arenaColour }}">{{ arenas[arena].display_name }}</th>
                 </template>
             </tr>
 
@@ -62,6 +62,7 @@
             comp: null,
             arenas: undefined,
             arenasList: undefined,
+            numCorners: undefined,
             locations: undefined,
             teams: undefined,
             back: 1,
@@ -110,6 +111,11 @@
                     this.updateSchedule();
                 }.bind(this));
 
+                this.comp.api.getCorners(function(corners) {
+                    this.numCorners = Object.keys(corners).length;
+                    this.updateSchedule();
+                }.bind(this));
+
                 this.comp.api.getLocations(function(locations) {
                     this.locations = locations;
                     this.updateSchedule();
@@ -130,7 +136,8 @@
             },
             updateSchedule: function() {
                 if (this.arenasList == null || this.arenas == null
-                    || this.locations == null || this.teams == null) {
+                    || this.locations == null || this.teams == null
+                    || this.numCorners == null) {
                     return;  // wait until they're set
                 }
 
