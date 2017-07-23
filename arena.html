@@ -53,9 +53,10 @@
                 return {arena: tokens[0], corner: tokens[1]};
             };
 
-            var setUpNormal = function(args, comp) {
+            var setUpNormal = function(args, comp, numCorners) {
                 var arena = document.querySelector('#arena');
                 var errorClock = document.querySelector('#error-clock');
+                arena.showOtherCorners = numCorners == 4;
                 arena.hidden = false;
                 arena.arena = args.arena;
                 arena.maincorner = args.corner;
@@ -78,9 +79,10 @@
                     comp.stream.load();
                 } else {
                     comp.api.getArena(args.arena, function(compArena) {
-                        comp.api.getCorner(args.corner, function(compCorner) {
-                            if (compArena && compCorner) {
-                                setUpNormal(args, comp);
+                        comp.api.getCorners(function(compCorners) {
+                            if (compArena && compCorners[args.corner]) {
+                                var numCorners = Object.keys(compCorners).length;
+                                setUpNormal(args, comp, numCorners);
                             } else {
                                 var picker = document.querySelector('#picker');
                                 picker.hidden = false;

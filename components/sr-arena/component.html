@@ -34,11 +34,13 @@
 
         <sr-corner id="corner0" show="all"></sr-corner>
 
-        <div>
-            <sr-corner id="corner1" show="tla"></sr-corner>
-            <sr-corner id="corner2" show="tla"></sr-corner>
-            <sr-corner id="corner3" show="tla"></sr-corner>
-        </div>
+        <template if="{{ showOtherCorners }}">
+            <div>
+                <sr-corner id="corner1" show="tla"></sr-corner>
+                <sr-corner id="corner2" show="tla"></sr-corner>
+                <sr-corner id="corner3" show="tla"></sr-corner>
+            </div>
+        </template>
     </template>
 
     <script>
@@ -46,6 +48,7 @@
             comp: null,
             arena: null,
             maincorner: 0,
+            showOtherCorners: true,
             arenaChanged: function() {
                 var corners = this.shadowRoot.querySelectorAll('sr-corner');
                 for (var i = 0; i < corners.length; i++) {
@@ -53,23 +56,25 @@
                 }
             },
             maincornerChanged: function() {
-                var otherCorners = [0, 1, 2, 3];
-                otherCorners.splice(this.maincorner, 1);
-
                 var corners = this.shadowRoot.querySelectorAll('sr-corner');
-                for (var i = 0; i < corners.length; i++) {
-                    if (i == 0) {
-                        corners[i].corner = this.maincorner;
-                    } else {
+                corners[0].corner = this.maincorner;
+
+                if (this.showOtherCorners) {
+                    var otherCorners = [0, 1, 2, 3];
+                    otherCorners.splice(this.maincorner, 1);
+
+                    for (var i = 1; i < corners.length; i++) {
                         corners[i].corner = otherCorners[i - 1];
                     }
                 }
             },
             compChanged: function() {
                 this.$.corner0.comp = this.comp;
-                this.$.corner1.comp = this.comp;
-                this.$.corner2.comp = this.comp;
-                this.$.corner3.comp = this.comp;
+                if (this.showOtherCorners) {
+                    this.$.corner1.comp = this.comp;
+                    this.$.corner2.comp = this.comp;
+                    this.$.corner3.comp = this.comp;
+                }
             }
         });
     </script>
