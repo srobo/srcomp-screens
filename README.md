@@ -19,6 +19,20 @@ clone and navigate to it with your web browser.
 
     $ python3 -m http.server
 
+## Browser support
+
+The canonical platform for these screens is the browsers available on
+the current version of Raspbian and as configured by [srcomp-kiosk][srcomp-kiosk].
+This generally means Firefox and Chromium.
+
+Current versions of Firefox and Chromium should also work, primarily so
+that development is easy without a Raspberry Pi.
+
+Microsoft Edge (pre-Chromium) is known not to work, due to a lack of support
+for the `EventSource` API.
+
+[srcomp-kiosk]: https://github.com/PeterJCLaw/srcomp-kiosk
+
 ## Screens
 
 Here are the screens that are in this repository.
