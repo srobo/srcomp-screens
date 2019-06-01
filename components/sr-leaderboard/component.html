@@ -24,7 +24,8 @@
         <table>
             <tr>
                 <th colspan="2">Team</th>
-                <th width="30%">League Points</th>
+                <th width="20%">League Points</th>
+                <th width="20%">Game Points</th>
             </tr>
 
             <template repeat="{{ team in leaderboard }}">
@@ -32,6 +33,7 @@
                     <td>{{ team.tla }}</td>
                     <td>{{ team.name }}</td>
                     <td>{{ team.scores.league }}</td>
+                    <td>{{ team.scores.game }}</td>
                 </tr>
             </template>
         </table>
