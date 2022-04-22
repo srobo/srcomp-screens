@@ -30,6 +30,7 @@
   version "0.6.1"
   resolved "https://codeload.github.com/Polymer/webcomponentsjs/tar.gz/2a1003f895dc55510015898809deefc419899011"
 
-moment@moment/moment#~2.9.0:
-  version "2.9.0"
-  resolved "https://codeload.github.com/moment/moment/tar.gz/94ad539f965689289af54b6493abca0a65ab4ce6"
+moment@moment/moment#~2.29.2:
+  version "2.29.3"
+  uid "57c90622e402c929504cc6d6f3de4ebe2a9ffc73"
+  resolved "https://codeload.github.com/moment/moment/tar.gz/57c90622e402c929504cc6d6f3de4ebe2a9ffc73"
