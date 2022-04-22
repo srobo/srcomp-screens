@@ -9,10 +9,10 @@ Create a file called `config.json` based on `config.example.json`.
 
 ## Installation & Running
 
-Dependencies are managed with [Bower](http://bower.io/), therefore you must
-install them in the normal way:
+Dependencies are managed with [Yarn](https://yarnpkg.com/getting-started/install),
+therefore you must install them in the normal way:
 
-    $ bower install
+    $ yarn install
 
 The best way to test these screens is to run an HTTP server in the root of your
 clone and navigate to it with your web browser.
