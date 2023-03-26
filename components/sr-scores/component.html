@@ -47,8 +47,19 @@
             updateTableRequest: undefined,
             compChanged: function() {
                 this.comp.stream.addEventListener('team', function(e) {
-                    this.teams[e.detail.tla] = e.detail;
-                    this.requestTableUpdate();
+                    // For some reason e.detail is an empty object when the
+                    // event body is explicitly passed `null`, so we need to
+                    // detect that explicitly.
+                    if (Object.keys(e.detail).length == 0) {
+                        // A team was removed. Refresh everything.
+                        this.comp.api.getTeams(function(teams) {
+                            this.teams = teams;
+                            this.requestTableUpdate();
+                        }.bind(this));
+                    } else {
+                        this.teams[e.detail.tla] = e.detail;
+                        this.requestTableUpdate();
+                    }
                 }.bind(this));
 
                 this.$['last-scored'].comp = this.comp;
