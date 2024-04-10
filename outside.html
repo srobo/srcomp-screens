@@ -76,13 +76,19 @@
                 border-top: 1px solid rgb(100, 100, 100);
             }
 
-            #progress > h1 {
-                font-size: 2.6em;
+            #progress > h1, #progress > h2 {
                 color: rgb(200, 200, 200);
                 margin: 0.1em 0.3em;
 
                 flex: 1 1 auto;
                 -webkit-flex: 1 1 auto;
+            }
+            #progress > h1 {
+                font-size: 2.6em;
+            }
+            #progress > h2 {
+                font-size: 1.7em;
+                font-style: italic;
             }
 
             #progress > sr-clock {
@@ -98,24 +104,29 @@
         <core-pages id="pages" selected="0">
             <sr-competitor-schedule
                 data-title="Schedule"
+                data-website-url-slug="schedule"
                 data-needs-comp
             ></sr-competitor-schedule>
             <sr-leaderboard
                 data-title="League Leaderboard"
+                data-website-url-slug="league"
                 data-needs-comp
             ></sr-leaderboard>
             <sr-scores
                 data-title="League Scores"
+                data-website-url-slug="league"
                 data-needs-comp
             ></sr-scores>
             <sr-knockout-diagram
                 data-title="Knockouts"
+                data-website-url-slug="knockout"
                 data-needs-comp
             ></sr-knockout-diagram>
         </core-pages>
 
         <sr-progress id="progress" progress="1">
             <h1 id="progress-title"></h1>
+            <h2 id="website-url"></h2>
             <sr-clock></sr-clock>
         </sr-progress>
 
@@ -144,10 +155,12 @@
                 var pages = document.querySelector('#pages');
                 var progress = document.querySelector('#progress');
                 var progressTitle = document.querySelector('#progress-title');
+                var websiteUrl = document.querySelector('#website-url');
 
                 var nextPage = function() {
                     pages.selected = (pages.selected + 1) % pages.children.length;
                     progressTitle.textContent = pages.children[pages.selected].dataset.title;
+                    websiteUrl.textContent = "srobo.org/comp/" + pages.children[pages.selected].dataset.websiteUrlSlug;
                     progress.progress = 0;
                 };
 
