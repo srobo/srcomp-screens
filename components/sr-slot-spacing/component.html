@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+
+<polymer-element name="sr-slot-spacing">
+    <template>
+        <style>
+            h2 {
+                margin: 1em 0 0;
+                color: inherit;
+                font-size: 0.6em;
+            }
+        </style>
+
+        <h2>
+            {{ slotDuration | formatDuration }} slots,
+            {{ gameDuration | formatDuration }} games,
+            {{ gapDuration | formatDuration }} gap
+        </h2>
+    </template>
+
+    <script src="../../node_modules/moment/moment.js"></script>
+    <script src="../../node_modules/moment-duration-format/lib/moment-duration-format.js"></script>
+
+    <script>
+        Polymer({
+            comp: null,
+            slotDuration: '',
+            gameDuration: '',
+            gapDuration: '',
+            compChanged: function() {
+                console.log("comp changed");
+                if (!this.comp) {
+                    return;
+                }
+                this.comp.api.getConfig(this.updateConfig.bind(this));
+            },
+            updateConfig: function(config) {
+                console.log('update config');
+                console.log(config);
+                if (!config) {
+                    console.log("bail");
+                    return;
+                }
+                const info = config.match_slots;
+                console.log(info);
+                this.slotDuration = moment.duration(info.total, 'seconds');
+                this.gameDuration = moment.duration(info.match, 'seconds');
+                this.gapDuration = moment.duration(info.pre + info.post, 'seconds');
+                console.log(this);
+            },
+            formatDuration: function(value) {
+                console.log(value);
+                return value && value.format('m:ss', {trim: false});
+            },
+        });
+    </script>
+</polymer-element>
