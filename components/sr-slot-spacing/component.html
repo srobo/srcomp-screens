@@ -27,28 +27,21 @@
             gameDuration: '',
             gapDuration: '',
             compChanged: function() {
-                console.log("comp changed");
                 if (!this.comp) {
                     return;
                 }
                 this.comp.api.getConfig(this.updateConfig.bind(this));
             },
             updateConfig: function(config) {
-                console.log('update config');
-                console.log(config);
                 if (!config) {
-                    console.log("bail");
                     return;
                 }
                 const info = config.match_slots;
-                console.log(info);
                 this.slotDuration = moment.duration(info.total, 'seconds');
                 this.gameDuration = moment.duration(info.match, 'seconds');
                 this.gapDuration = moment.duration(info.pre + info.post, 'seconds');
-                console.log(this);
             },
             formatDuration: function(value) {
-                console.log(value);
                 return value && value.format('m:ss', {trim: false});
             },
         });
