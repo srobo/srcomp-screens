@@ -3,18 +3,18 @@
 <polymer-element name="sr-slot-spacing">
     <template>
         <style>
-            h2 {
+            p {
                 margin: 1em 0 0;
                 color: inherit;
                 font-size: 0.6em;
             }
         </style>
 
-        <h2>
+        <p>
             {{ slotDuration | formatDuration }} slots,
             {{ gameDuration | formatDuration }} games,
             {{ gapDuration | formatDuration }} gap
-        </h2>
+        </p>
     </template>
 
     <script src="../../node_modules/moment/moment.js"></script>
