@@ -3,6 +3,7 @@
 <link rel="import" href="../sr-corner/component.html" />
 <link rel="import" href="../sr-staging-schedule/component.html" />
 <link rel="import" href="../sr-clock/component.html" />
+<link rel="import" href="../sr-slot-spacing/component.html" />
 <link rel="import" href="../sr-delay/component.html" />
 
 <polymer-element name="sr-staging" attributes="arena">
@@ -45,7 +46,7 @@
                 -webkit-flex-direction: row;
             }
 
-            sr-clock, sr-delay {
+            sr-clock, sr-slot-spacing, sr-delay {
                 flex: 1 1 auto;
                 -webkit-flex: 1 1 auto;
 
@@ -62,6 +63,7 @@
 
         <div id="time">
             <sr-clock></sr-clock>
+            <sr-slot-spacing id="spacing"></sr-slot-spacing>
             <sr-delay id="delay"></sr-delay>
         </div>
     </template>
@@ -71,6 +73,7 @@
             comp: null,
             compChanged: function() {
                 this.$.schedule.comp = this.comp;
+                this.$.spacing.comp = this.comp;
                 this.$.delay.comp = this.comp;
             }
         });
