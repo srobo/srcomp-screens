@@ -34,6 +34,14 @@
                 border-width: 3px;
                 padding-block: calc(0.25em - 3px);
             }
+
+            #clear-outlines-button {
+                background: none;
+                border: none;
+                color: lightblue;
+                font-size: inherit;
+                width: 100%;
+            }
         </style>
 
         <table>
@@ -64,6 +72,11 @@
                 </tr>
             </template>
         </table>
+        <template if="{{showClearButton}}">
+        <button id="clear-outlines-button" on-click="{{clearTeamOutlines}}">
+            ⎚ Clear outlines
+        </button>
+        </template>
     </template>
 
     <script src="../../node_modules/moment/moment.js"></script>
@@ -88,12 +101,18 @@
             teams: undefined,
             /** Maps team TLAs to a border style to be applied to their entries. */
             teamOutline: {},
+            showClearButton: false,
             back: 1,
             forward: 7,
             schedule: {},
+            clearTeamOutlines: function() {
+                this.teamOutline = {};
+                this.showClearButton = false;
+            },
             handleTeamClick: function(ev, detail, sender) {
                 const tla = sender.dataset.teamTla;
                 this.teamOutline[tla] = nextOutline(this.teamOutline[tla]);
+                this.showClearButton = true;
             },
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
