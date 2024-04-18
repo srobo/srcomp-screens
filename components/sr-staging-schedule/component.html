@@ -87,12 +87,14 @@
                 game_start_times.array().forEach(function(elem) {
                     var epoch = moment(elem.getAttribute('datetime'));
                     elem.textContent = formatTime(epoch);
-                    elem.title = elem.getAttribute('datetime');
+                    // don't do this because it causes them to appear on screens
+                    // elem.title = elem.getAttribute('datetime');
                 });
                 var staging_times = this.shadowRoot.querySelectorAll('time.staging');
                 staging_times.array().forEach(function(elem) {
                     var date_range = elem.getAttribute('datetime');
-                    elem.title = date_range;
+                    // don't do this because it causes them to appear on screens
+                    // elem.title = date_range;
 
                     var times = date_range.split('/');
                     var start = moment(times[0]);
