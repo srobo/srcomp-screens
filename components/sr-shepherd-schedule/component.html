@@ -87,8 +87,6 @@
                 dates.array().forEach(function(elem) {
                     var epoch = moment(elem.getAttribute('datetime'));
                     elem.textContent = epoch.fromNow();
-                    // don't do this because it causes them to appear on screens
-                    // elem.title = elem.getAttribute('datetime');
                 });
             },
             arenaColour: function(val) {
