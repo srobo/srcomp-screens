@@ -47,9 +47,10 @@
                     prefix = "Starting in ";
                 }
 
-                var minutesLeft = parseInt(delta / 60, 10);
-                var secondsLeft = delta - parseInt(delta / 60, 10) * 60;
-                return prefix + minutesLeft + ":" + this.pad(secondsLeft);
+                var hoursLeft = parseInt(delta / 3600, 10);
+                var minutesLeft = parseInt((delta - hoursLeft * 3600) / 60, 10);
+                var secondsLeft = delta - hoursLeft * 3600 - minutesLeft * 60;
+                return prefix + (hoursLeft > 0 ? this.pad(hoursLeft) + ':' : '') + this.pad(minutesLeft) + ':' + this.pad(secondsLeft);
             },
             updateDisplay: function(e) {
                 var currentTime = e.detail;
