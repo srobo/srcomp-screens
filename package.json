@@ -21,7 +21,8 @@
     "@bower_components/core-selector": "Polymer/core-selector#^0.5",
     "@bower_components/polymer": "Polymer/polymer#~0.5.2",
     "@bower_components/webcomponentsjs": "Polymer/webcomponentsjs#^0.6.0",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "moment-duration-format": "^2.3.2"
   },
   "engines": {
     "yarn": ">= 1.0.0"
