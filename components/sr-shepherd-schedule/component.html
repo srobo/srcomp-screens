@@ -28,6 +28,20 @@
                 opacity: 0.8;
                 font-size: 1.3em;
             }
+
+            .team {
+                border-radius: 0.5em;
+                border-width: 3px;
+                padding-block: calc(0.25em - 3px);
+            }
+
+            #clear-outlines-button {
+                background: none;
+                border: none;
+                color: lightblue;
+                font-size: inherit;
+                width: 100%;
+            }
         </style>
 
         <table>
@@ -47,17 +61,37 @@
                     <template repeat="{{ arena in arenasList }}">
                         <td style="width: 0.1em;"></td>
                         <template repeat="{{ team in match.arenas[arena].teams }}">
-                            <td style="color: {{ locations[teams[team].location.name].shepherds.colour }}">{{ team || '—' }}</td>
+                            <td class="team"
+                                style="color: {{ locations[teams[team].location.name].shepherds.colour }}; border-style: {{ teamOutline[team] || 'none' }}"
+                                data-team-tla="{{team}}"
+                                on-click="{{handleTeamClick}}">
+                                {{ team || '—' }}
+                            </td>
                         </template>
                     </template>
                 </tr>
             </template>
         </table>
+        <template if="{{showClearButton}}">
+        <button id="clear-outlines-button" on-click="{{clearTeamOutlines}}">
+            ⎚ Clear outlines
+        </button>
+        </template>
     </template>
 
     <script src="../../node_modules/moment/moment.js"></script>
 
     <script>
+        const nextOutline = (currentOutline) => {
+            switch (currentOutline) {
+                default:
+                case 'none':   return 'dotted';
+                case 'dotted': return 'dashed';
+                case 'dashed': return 'solid';
+                case 'solid':  return 'none';
+            }
+        };
+
         Polymer({
             comp: null,
             arenas: undefined,
@@ -65,9 +99,21 @@
             numCorners: undefined,
             locations: undefined,
             teams: undefined,
+            /** Maps team TLAs to a border style to be applied to their entries. */
+            teamOutline: {},
+            showClearButton: false,
             back: 1,
             forward: 7,
             schedule: {},
+            clearTeamOutlines: function() {
+                this.teamOutline = {};
+                this.showClearButton = false;
+            },
+            handleTeamClick: function(ev, detail, sender) {
+                const tla = sender.dataset.teamTla;
+                this.teamOutline[tla] = nextOutline(this.teamOutline[tla]);
+                this.showClearButton = true;
+            },
             ready: function() {
                 setInterval(this._updateDisplayedTimes.bind(this), 5000);
             },
