@@ -36,7 +36,7 @@
                 <div>
                     <template repeat="{{ corner in corners }}">
                         <a href="?{{ arena.name }},{{ corner.number }}">
-                            <span style="color: {{ arena.colour }}">{{ arena.display_name }}</span>
+                            <span style="color: {{ arena.colour }}">{{ _arenaNameForCorner(arena) }}</span>
                             <span style="color: {{ corner.colour }}">{{ corner.number }}</span>
                         </a>
                     </template>
@@ -50,7 +50,7 @@
             <template repeat="{{ arena in arenas }}">
                 <span>
                     <a href="?{{ arena.name }}">
-                        <span style="color: {{ arena.colour }}">{{ arena.display_name }}</span>
+                        <span style="color: {{ arena.colour }}">{{ arena.display_name || arena.name }}</span>
                     </a>
                 </span>
             </template>
@@ -78,6 +78,12 @@
                 this.comp.api.getCorners(function(corners) {
                     this.corners = this._getValues(corners);
                 }.bind(this));
+            },
+            _arenaNameForCorner: function(arena) {
+                if (this.arenas.length > 1) {
+                    return arena.display_name || arena.name;
+                }
+                return arena.display_name;
             },
             go: function() {
 
