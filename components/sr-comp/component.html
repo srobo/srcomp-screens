@@ -57,6 +57,12 @@
     </template>
 
     <script>
+        const MatchState = Object.freeze({
+            FUTURE: 'future',
+            HELD: 'held',
+            RELEASED: 'released',
+        });
+
         Polymer({
             connected: false,
             apiurl: undefined,
