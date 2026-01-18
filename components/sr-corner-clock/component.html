@@ -41,16 +41,10 @@
                 return num < 10 ? "0" + num : num.toString();
             },
             formatTimeDelta: function(delta) {
-                var prefix = "";
-                if (delta < 0) {
-                    delta = -delta;
-                    prefix = "Starting in ";
-                }
-
                 var hoursLeft = parseInt(delta / 3600, 10);
                 var minutesLeft = parseInt((delta - hoursLeft * 3600) / 60, 10);
                 var secondsLeft = delta - hoursLeft * 3600 - minutesLeft * 60;
-                return prefix + (hoursLeft > 0 ? this.pad(hoursLeft) + ':' : '') + this.pad(minutesLeft) + ':' + this.pad(secondsLeft);
+                return (hoursLeft > 0 ? this.pad(hoursLeft) + ':' : '') + this.pad(minutesLeft) + ':' + this.pad(secondsLeft);
             },
             updateDisplay: function(e) {
                 var currentTime = e.detail;
@@ -69,7 +63,7 @@
                 } else if (currentTime <= gameStartTime) {
                     // game starting in 0-90 seconds
                     var t = (gameStartTime - currentTime) / 1000;
-                    this.text = this.formatTimeDelta(-t);
+                    this.text = "Starting in " + this.formatTimeDelta(t);
                 }
             }
         });
