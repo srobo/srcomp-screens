@@ -39,10 +39,6 @@
     </template>
 
     <script>
-        console.assert(
-            typeof MatchState !== "undefined",
-            "MatchState not defined. Are you missing use of sr-comp component?",
-        );
         Polymer({
             match: undefined,
             currentGameStart: undefined,
@@ -52,15 +48,15 @@
             },
             matchChanged: function() {
                 if (this.match) {
-                    this.currentGameState = this.match.state;
+                    this.currentGameIsReleased = this.match.is_released;
                     this.currentGameStart = new Date(this.match.times.game.start);
                 } else {
-                    this.currentGameState = null;
+                    this.currentGameIsReleased = null;
                     this.currentGameStart = null;
                 }
             },
             updateDisplay: function(e) {
-                if (this.currentGameState != MatchState.RELEASED) {
+                if (!this.currentGameIsReleased) {
                     this.text = null;
                     return;
                 }
