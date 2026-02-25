@@ -1,4 +1,7 @@
 {
+  "displayConfig": {
+    "externalUrl": "srobo.org/comp/"
+  },
   "apiurl": "http://localhost/comp-api",
   "streamurl": "http://localhost/stream"
 }

@@ -7,6 +7,22 @@ displayed at the competition.
 
 Create a file called `config.json` based on `config.example.json`.
 
+```json
+{
+  "displayConfig": {
+    // Base url to an instance of the competition-website, shown on outside.html
+    // and intended to allow viewers to visit a page with similar information on
+    // their own device.
+    "externalUrl": "srobo.org/comp/"
+  },
+  "apiurl": "http://localhost/comp-api",
+  "streamurl": "http://localhost/stream"
+}
+```
+
+`apiurl` and `streamurl` are required and should point to instances of the SRComp HTTP API and Stream respectively.
+`displayConfig` is optional and if present its keys will be merged with the defaults (the above values are the defaults).
+
 ## Installation & Running
 
 Dependencies are managed with [Yarn](https://yarnpkg.com/getting-started/install),

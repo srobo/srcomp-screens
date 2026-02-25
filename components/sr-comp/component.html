@@ -3,7 +3,7 @@
 <link rel="import" href="../sr-comp-api/component.html" />
 <link rel="import" href="../sr-comp-stream/component.html" />
 
-<polymer-element name="sr-comp" attributes="apiurl streamurl">
+<polymer-element name="sr-comp" attributes="displayConfig apiurl streamurl">
     <template>
         <style>
             #error {
@@ -45,7 +45,7 @@
           auto
           url="../../config.json"
           handleAs="json"
-          on-core-response="{{ gotUrls }}"></core-ajax>
+          on-core-response="{{ gotConfig }}"></core-ajax>
 
         <sr-comp-api id="api" url="{{ apiurl }}"></sr-comp-api>
         <sr-comp-stream id="stream" url="{{ streamurl }}"></sr-comp-stream>
@@ -57,8 +57,13 @@
     </template>
 
     <script>
+        const DEFAULT_DISPLAY_CONFIG = {
+            externalUrl: "srobo.org/comp/",
+        };
+
         Polymer({
             connected: false,
+            displayConfig: DEFAULT_DISPLAY_CONFIG,
             apiurl: undefined,
             streamurl: undefined,
             pingTimeout: undefined,
@@ -116,10 +121,12 @@
             connectedChanged: function() {
                 this.$.error.hidden = this.connected;
             },
-            gotUrls: function(e) {
-                var urls = e.detail.response;
-                this.apiurl = urls.apiurl;
-                this.streamurl = urls.streamurl;
+            gotConfig: function(e) {
+                var response = e.detail.response;
+                this.displayConfig = { ...DEFAULT_DISPLAY_CONFIG, ...response.displayConfig };
+                console.log("Display config:", this.displayConfig);
+                this.apiurl = response.apiurl;
+                this.streamurl = response.streamurl;
             }
         });
     </script>
