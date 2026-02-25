@@ -121,26 +121,11 @@
             };
         }();
 
-        var processKnockouts = function(rounds, tiebreaker) {
+        var processKnockouts = function(rounds) {
             var output = [];
             for (var i = 0; i < rounds.length; i++) {
                 output.push(process_knockout_round(rounds[i]));
             }
-
-            if (tiebreaker) {
-                output.push([
-                    {
-                        'number': tiebreaker.num,
-                        'description': tiebreaker.display_name,
-                        'time': new Date(tiebreaker.times.slot.start),
-                        'games': [{
-                            'arena': tiebreaker.arena,
-                            'teams': tiebreaker.teams
-                        }]
-                    }
-                ]);
-            }
-
             return output;
         };
 
@@ -184,7 +169,10 @@
 
                 this.comp.api.getKnockout(function(rounds) {
                     this.comp.api.getTiebreaker(function(tiebreaker) {
-                        this.rounds = processKnockouts(this.sliceRounds(rounds), tiebreaker);
+                        if (tiebreaker) {
+                            rounds = [...rounds, [tiebreaker]];
+                        }
+                        this.rounds = processKnockouts(this.sliceRounds(rounds));
 
                         this.style.fontSize = Math.sqrt(5 / this.rounds.length) + 'em';
                     }.bind(this));
