@@ -170,7 +170,7 @@
                 }.bind(this));
             },
             sliceRounds: function(rounds) {
-                var start = rounds.length - 5;
+                var start = rounds.length - this.comp.displayConfig.maxKnockoutRounds;
                 if (start < 0) {
                   start = 0;
                 }

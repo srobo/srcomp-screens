@@ -1,7 +1,8 @@
 {
   "displayConfig": {
       "externalUrl": "srobo.org/comp/",
-      "hideOutsidePages": []
+      "hideOutsidePages": [],
+      "maxKnockoutRounds": 5
   },
   "apiurl": "http://localhost/comp-api",
   "streamurl": "http://localhost/stream"

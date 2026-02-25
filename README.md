@@ -17,7 +17,9 @@ Create a file called `config.json` based on `config.example.json`.
     // Pages within the rotating collection used by outside.html which should be
     // hidden. For example if a competition does not want to show the knockout
     // page then this would be ["sr-knockout-diagram"].
-    "hideOutsidePages": []
+    "hideOutsidePages": [],
+    // How many "rounds" to show on the knockouts page of the "outside" screen.
+    "maxKnockoutRounds": 5
   },
   "apiurl": "http://localhost/comp-api",
   "streamurl": "http://localhost/stream"
