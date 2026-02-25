@@ -166,6 +166,9 @@
 
                 var shouldSelectAutomatically = function(index) {
                     const tagName = pages.children[index].tagName.toLowerCase();
+                    if (comp.displayConfig.hideOutsidePages.includes(tagName)) {
+                        return false;
+                    }
                     if (tagName == 'sr-knockout-diagram') {
                         if (knockoutTime != null && moment().isBefore(knockoutTime)) {
                             return false;

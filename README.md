@@ -13,7 +13,11 @@ Create a file called `config.json` based on `config.example.json`.
     // Base url to an instance of the competition-website, shown on outside.html
     // and intended to allow viewers to visit a page with similar information on
     // their own device.
-    "externalUrl": "srobo.org/comp/"
+    "externalUrl": "srobo.org/comp/",
+    // Pages within the rotating collection used by outside.html which should be
+    // hidden. For example if a competition does not want to show the knockout
+    // page then this would be ["sr-knockout-diagram"].
+    "hideOutsidePages": []
   },
   "apiurl": "http://localhost/comp-api",
   "streamurl": "http://localhost/stream"
