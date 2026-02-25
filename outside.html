@@ -165,12 +165,13 @@
                 };
 
                 var shouldSelectAutomatically = function(index) {
-                    if (index == 3) {  // knockouts
+                    const tagName = pages.children[index].tagName.toLowerCase();
+                    if (tagName == 'sr-knockout-diagram') {
                         if (knockoutTime != null && moment().isBefore(knockoutTime)) {
                             return false;
                         }
                     }
-                    if (index == 1) {  // leaderboard
+                    if (tagName == 'sr-leaderboard') {
                         if (noLeaderboardTime != null && moment().isAfter(noLeaderboardTime)) {
                             return false;
                         }
