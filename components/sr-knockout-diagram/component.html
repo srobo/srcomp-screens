@@ -155,12 +155,35 @@
                 }.bind(this));
             },
             sliceRounds: function(rounds) {
-                var start = rounds.length - this.comp.displayConfig.maxKnockoutRounds;
-                if (start < 0) {
-                  start = 0;
+                const maxKnockoutRounds = this.comp.displayConfig.maxKnockoutRounds;
+                if (rounds.length <= maxKnockoutRounds) {
+                    return rounds;
                 }
 
-                return rounds.slice(start);
+                // Find the last match which has been scored. Scored matches
+                // have definitely been played.
+                let lastScoredMatchRoundIndex = 0;
+                rounds.forEach((round, roundIdx) => {
+                    round.forEach(match => {
+                        if (!!match.scores) {
+                            lastScoredMatchRoundIndex = roundIdx;
+                        }
+                    });
+                });
+
+                const start = Math.min(
+                    lastScoredMatchRoundIndex,
+                    rounds.length - maxKnockoutRounds,
+                );
+
+                console.debug("Rounds slicing", {
+                    start,
+                    lastScoredMatchRoundIndex,
+                    maxKnockoutRounds,
+                    roundsLength: rounds.length,
+                })
+
+                return rounds.slice(start, start + maxKnockoutRounds);
             },
             updateDiagram: function() {
                 if (this.arenas == null || this.corners == null) {
