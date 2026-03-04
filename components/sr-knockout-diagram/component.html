@@ -121,26 +121,11 @@
             };
         }();
 
-        var processKnockouts = function(rounds, tiebreaker) {
+        var processKnockouts = function(rounds) {
             var output = [];
             for (var i = 0; i < rounds.length; i++) {
                 output.push(process_knockout_round(rounds[i]));
             }
-
-            if (tiebreaker) {
-                output.push([
-                    {
-                        'number': tiebreaker.num,
-                        'description': tiebreaker.display_name,
-                        'time': new Date(tiebreaker.times.slot.start),
-                        'games': [{
-                            'arena': tiebreaker.arena,
-                            'teams': tiebreaker.teams
-                        }]
-                    }
-                ]);
-            }
-
             return output;
         };
 
@@ -170,12 +155,35 @@
                 }.bind(this));
             },
             sliceRounds: function(rounds) {
-                var start = rounds.length - 5;
-                if (start < 0) {
-                  start = 0;
+                const maxKnockoutRounds = this.comp.displayConfig.maxKnockoutRounds;
+                if (rounds.length <= maxKnockoutRounds) {
+                    return rounds;
                 }
 
-                return rounds.slice(start);
+                // Find the last match which has been scored. Scored matches
+                // have definitely been played.
+                let lastScoredMatchRoundIndex = 0;
+                rounds.forEach((round, roundIdx) => {
+                    round.forEach(match => {
+                        if (!!match.scores) {
+                            lastScoredMatchRoundIndex = roundIdx;
+                        }
+                    });
+                });
+
+                const start = Math.min(
+                    lastScoredMatchRoundIndex,
+                    rounds.length - maxKnockoutRounds,
+                );
+
+                console.debug("Rounds slicing", {
+                    start,
+                    lastScoredMatchRoundIndex,
+                    maxKnockoutRounds,
+                    roundsLength: rounds.length,
+                })
+
+                return rounds.slice(start, start + maxKnockoutRounds);
             },
             updateDiagram: function() {
                 if (this.arenas == null || this.corners == null) {
@@ -184,7 +192,10 @@
 
                 this.comp.api.getKnockout(function(rounds) {
                     this.comp.api.getTiebreaker(function(tiebreaker) {
-                        this.rounds = processKnockouts(this.sliceRounds(rounds), tiebreaker);
+                        if (tiebreaker) {
+                            rounds = [...rounds, [tiebreaker]];
+                        }
+                        this.rounds = processKnockouts(this.sliceRounds(rounds));
 
                         this.style.fontSize = Math.sqrt(5 / this.rounds.length) + 'em';
                     }.bind(this));
