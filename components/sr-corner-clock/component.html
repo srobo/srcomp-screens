@@ -29,9 +29,13 @@
             },
             matchChanged: function() {
                 if (this.match) {
+                    this.currentGameIsReleased = this.match.is_released;
+                    this.currentGameRelease = new Date(this.match.times.operations.release_threshold);
                     this.currentGameStart = new Date(this.match.times.game.start);
                     this.currentGameEnd = new Date(this.match.times.game.end);
                 } else {
+                    this.currentGameIsReleased = null;
+                    this.currentGameRelease = null;
                     this.currentGameStart = null;
                     this.currentGameEnd = null;
                 }
@@ -41,24 +45,22 @@
                 return num < 10 ? "0" + num : num.toString();
             },
             formatTimeDelta: function(delta) {
-                var prefix = "";
-                if (delta < 0) {
-                    delta = -delta;
-                    prefix = "Starting in ";
-                }
-
                 var hoursLeft = parseInt(delta / 3600, 10);
                 var minutesLeft = parseInt((delta - hoursLeft * 3600) / 60, 10);
                 var secondsLeft = delta - hoursLeft * 3600 - minutesLeft * 60;
-                return prefix + (hoursLeft > 0 ? this.pad(hoursLeft) + ':' : '') + this.pad(minutesLeft) + ':' + this.pad(secondsLeft);
+                return (hoursLeft > 0 ? this.pad(hoursLeft) + ':' : '') + this.pad(minutesLeft) + ':' + this.pad(secondsLeft);
             },
             updateDisplay: function(e) {
                 var currentTime = e.detail;
+                var gameReleaseTime = this.currentGameRelease;
                 var gameStartTime = this.currentGameStart;
                 var gameEndTime = this.currentGameEnd;
 
                 if (gameStartTime == null || gameEndTime == null) {
                     this.text = '';
+                } else if (currentTime >= gameReleaseTime && !this.currentGameIsReleased) {
+                    var t = (gameStartTime - gameReleaseTime) / 1000;
+                    this.text = "Hold at " + this.formatTimeDelta(t);
                 } else if (currentTime >= gameEndTime) {
                     // next slot starting in 0-30 seconds
                     this.text = 'Finished';
@@ -69,7 +71,7 @@
                 } else if (currentTime <= gameStartTime) {
                     // game starting in 0-90 seconds
                     var t = (gameStartTime - currentTime) / 1000;
-                    this.text = this.formatTimeDelta(-t);
+                    this.text = "Starting in " + this.formatTimeDelta(t);
                 }
             }
         });

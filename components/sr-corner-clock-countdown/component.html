@@ -48,12 +48,19 @@
             },
             matchChanged: function() {
                 if (this.match) {
+                    this.currentGameIsReleased = this.match.is_released;
                     this.currentGameStart = new Date(this.match.times.game.start);
                 } else {
+                    this.currentGameIsReleased = null;
                     this.currentGameStart = null;
                 }
             },
             updateDisplay: function(e) {
+                if (!this.currentGameIsReleased) {
+                    this.text = null;
+                    return;
+                }
+
                 var now = e.detail;
                 if (now <= this.currentGameStart) {
                     var t = (this.currentGameStart - now) / 1000;
