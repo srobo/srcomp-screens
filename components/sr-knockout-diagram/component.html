@@ -8,7 +8,7 @@
                 font-size: 0.5em;
             }
 
-            #knockout {
+            .knockout-diagram {
                 display: flex;
                 display: -webkit-flex;
                 align-items: center;
@@ -44,7 +44,7 @@
             }
         </style>
 
-        <div id="knockout">
+        <div class="knockout-diagram">
             <template repeat="{{ round, i in rounds }}">
                 <div class="round">
                     <template repeat="{{ match in round }}">
